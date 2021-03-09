@@ -1,5 +1,7 @@
 package com.example.sparktrials;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -8,9 +10,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -19,6 +27,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,23 +49,63 @@ public class MainActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference collectionReference = db.collection("users");
 
-//        Map<String, Object> user = new HashMap<>();
-//        user.put("id",user_id);
-//        user.put("name", "Philip");
-//        user.put("cellphone", 12345);
+        String userId = getUserId();
+        Log.d("USER ID",userId);
 
-//        collectionReference.add(user).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentReference> task) {
-//                if (task.isSuccessful()) {
-//                    Log.d("Test","Success");
-//                } else {
-//                    Log.w("Test","Something wrong.", task.getException());
-//                }
-//            }
-//        });
+        Map<String, Object> user_test = new HashMap<>();
+        user_test.put("uid",userId);
+        user_test.put("name", "Test");
+        user_test.put("cellphone", 12345);
+
+        // Add a test document to users collection.
+        collectionReference.document(userId).set(user_test).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d("ADD USER","Success");
+                } else {
+                    Log.d("ADD USER","Something wrong.", task.getException());
+                }
+            }
+        });
+
+        // Retrieve and log user information from Firestore.
+        DocumentReference user = collectionReference.document(userId);
+        user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("DB USER INFO", "DocumentSnapshot data: " + document.getData());
+                    } else {
+                        Log.d("DB USER INFO", "No such document");
+                    }
+                } else {
+                    Log.d("DB USER INFO", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
 
 
+    /**
+     * Return the unique user id. Generate a random UUID if no id is found in the preference file.
+     * Note: This user id is lost when the app is uninstalled.
+     * @return
+     * Return the user id as a string.
+     */
+    private String getUserId() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        String userId = sharedPref.getString("userId", "-1");
+
+        if (userId.equals("-1")) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("userId", UUID.randomUUID().toString());
+            editor.apply();
+            userId = sharedPref.getString("userId", "-1");
+        }
+        return userId;
     }
 
 }

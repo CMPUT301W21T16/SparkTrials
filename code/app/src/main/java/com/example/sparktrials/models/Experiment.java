@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Experiment {
     private Profile owner;
+    private String experimentID;
     private ArrayList<Trial> trials;
     private String title;
     private String desc;

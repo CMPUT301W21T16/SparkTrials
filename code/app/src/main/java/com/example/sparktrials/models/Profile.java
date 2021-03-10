@@ -1,27 +1,27 @@
 package com.example.sparktrials.models;
 
 public class Profile {
-    Integer id;
+    String userID;
     String username;
     String contact;
 
     public Profile(){
-        this.id = null;
+        this.userID = null;
         this.username = null;
         this.contact = null;
     }
 
-    public Profile(Integer id){
-        this.id = id;
-        this.username = "user"+id;
+    public Profile(String userID){
+        this.userID = userID;
+        this.username = "user"+userID;
     }
 
-    public Integer getId() {
-        return id;
+    public String getId() {
+        return userID;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setId(String userID) {
+        this.userID = userID;
     }
 
     public String getUsername() {

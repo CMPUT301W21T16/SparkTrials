@@ -1,4 +1,4 @@
 package com.example.sparktrials.exp_ui.action;
 
-public class ActionFragment {
+public class HomeViewModel {
 }

@@ -1,41 +1,96 @@
 package com.example.sparktrials.models;
 
+/**
+ * This class keeps track of each user profile with an id, their username and contact info
+ */
 public class Profile {
     Integer id;
     String username;
     String contact;
 
+    /**
+     * This constructor creates a default Profile with no attributes
+     */
     public Profile(){
         this.id = null;
         this.username = null;
         this.contact = null;
     }
 
+    /**
+     * This constructor initializes a unique profile
+     * @param id
+     *    A unique id used to identify this profile. Generated elsewhere and passed up
+     *    Default username will be based on their id
+     */
     public Profile(Integer id){
         this.id = id;
         this.username = "user"+id;
     }
 
+    /**
+     * This method returns the profile's id
+     * @return
+     *    Returns the id of this profile
+     */
     public Integer getId() {
         return id;
     }
 
+    /**
+     * This method initializes the id of the user
+     * id should not be overwritten on accident
+     * @param id
+     *    New id that this profile will take
+     */
     public void setId(Integer id) {
+        if (this.id == null){
+            this.id = id;
+        }
+    }
+
+    /**
+     * This method overwrites the id of the user
+     * Irreversible
+     * @param id
+     *    New id that this profile will take
+     */
+    public void overwriteId(Integer id) {
         this.id = id;
     }
 
+    /**
+     * This method retrieves the name of this profile
+     * @return
+     *    Returns the username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * This method sets the username of the profile
+     * @param username
+     *    The new username that this profile will take
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * This method retrieves the contact info from this profile
+     * @return
+     *    Returns the contact info from the profile
+     */
     public String getContact() {
         return contact;
     }
 
+    /**
+     * This method sets the contact info of the profile
+     * @param contact
+     *    The new contact that this profile will take
+     */
     public void setContact(String contact) {
         this.contact = contact;
     }

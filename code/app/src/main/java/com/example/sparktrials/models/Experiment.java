@@ -2,6 +2,9 @@ package com.example.sparktrials.models;
 
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class Experiment {
     private Profile owner;
     private String experimentID;

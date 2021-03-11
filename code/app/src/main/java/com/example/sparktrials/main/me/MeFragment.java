@@ -1,4 +1,4 @@
-package com.example.sparktrials.main_ui.me;
+package com.example.sparktrials.main.me;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

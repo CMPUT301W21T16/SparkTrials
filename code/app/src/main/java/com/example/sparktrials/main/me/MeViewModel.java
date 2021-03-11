@@ -1,4 +1,4 @@
-package com.example.sparktrials.main_ui.me;
+package com.example.sparktrials.main.me;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

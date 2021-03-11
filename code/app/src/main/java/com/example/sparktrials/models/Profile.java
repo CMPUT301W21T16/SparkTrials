@@ -4,7 +4,7 @@ package com.example.sparktrials.models;
  * This class keeps track of each user profile with an id, their username and contact info
  */
 public class Profile {
-    Integer id;
+    String id;
     String username;
     String contact;
 
@@ -23,9 +23,25 @@ public class Profile {
      *    A unique id used to identify this profile. Generated elsewhere and passed up
      *    Default username will be based on their id
      */
-    public Profile(Integer id){
+    public Profile(String id){
         this.id = id;
         this.username = "user"+id;
+    }
+
+    /**
+     * This constructor fills out a profile
+     * TO BE USED WHEN DOWNLOADING A PRE-EXISTING profile
+     * @param id
+     *    A unique id used to identify this profile
+     * @param username
+     *    The username of the person
+     * @param contact
+     *    The contact info of the person
+     */
+    public Profile(String id, String username, String contact){
+        this.id = id;
+        this.username = username;
+        this.contact = contact;
     }
 
     /**
@@ -33,7 +49,7 @@ public class Profile {
      * @return
      *    Returns the id of this profile
      */
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -43,7 +59,7 @@ public class Profile {
      * @param id
      *    New id that this profile will take
      */
-    public void setId(Integer id) {
+    public void setId(String id) {
         if (this.id == null){
             this.id = id;
         }
@@ -55,7 +71,7 @@ public class Profile {
      * @param id
      *    New id that this profile will take
      */
-    public void overwriteId(Integer id) {
+    public void overwriteId(String id) {
         this.id = id;
     }
 

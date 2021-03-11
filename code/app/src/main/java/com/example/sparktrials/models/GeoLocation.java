@@ -8,8 +8,8 @@ import java.util.ArrayList;
  * Lon is the longitude of the point
  */
 public class GeoLocation {
-    Float lat;
-    Float lon;
+    Double lat;
+    Double lon;
 
     /**
      * Constructor that initiates the point on Earth
@@ -17,19 +17,19 @@ public class GeoLocation {
      * @param lat
      * @param lon
      */
-    public GeoLocation(Float lat, Float lon){
+    public GeoLocation(Double lat, Double lon){
         if (lat<-90){
-            this.lat = (float)-90.0;
+            this.lat = -90.0;
         } else if (lat>90){
-            this.lat = (float)90.0;
+            this.lat = 90.0;
         } else {
             this.lat = lat;
         }
 
         if (lon<-180){
-            this.lat = (float)-180.0;
+            this.lat = -180.0;
         } else if (lon>180){
-            this.lat = (float)180.0;
+            this.lat = 180.0;
         } else {
             this.lat = lat;
         }
@@ -40,8 +40,8 @@ public class GeoLocation {
      * @return
      *    Returns an array list containing the lat lon as a coord
      */
-    public ArrayList<Float> getCoords(){
-        ArrayList<Float> coords = new ArrayList<>();
+    public ArrayList<Double> getCoords(){
+        ArrayList<Double> coords = new ArrayList<>();
         coords.add(this.lat);
         coords.add(this.lon);
         
@@ -53,7 +53,7 @@ public class GeoLocation {
      * @return
      *    Returns the latitude
      */
-    public Float getLat() {
+    public Double getLat() {
         return lat;
     }
 
@@ -62,11 +62,11 @@ public class GeoLocation {
      * @param lat
      *    Overrides the previously held lat value
      */
-    public void setLat(Float lat) {
+    public void setLat(Double lat) {
         if (lat<-90){
-            this.lat = (float)-90.0;
+            this.lat = -90.0;
         } else if (lat>90){
-            this.lat = (float)90.0;
+            this.lat = 90.0;
         } else {
             this.lat = lat;
         }
@@ -77,7 +77,7 @@ public class GeoLocation {
      * @return
      *    Returns the longitude
      */
-    public Float getLon() {
+    public Double getLon() {
         return lon;
     }
 
@@ -85,11 +85,11 @@ public class GeoLocation {
      * This edits the latitude of this geolocation. Adjusts for invalid entry
      * @param lon
      */
-    public void setLon(Float lon) {
+    public void setLon(Double lon) {
         if (lon<-180){
-            this.lat = (float)-180.0;
+            this.lat = -180.0;
         } else if (lon>180){
-            this.lat = (float)180.0;
+            this.lat = 180.0;
         } else {
             this.lat = lat;
         }

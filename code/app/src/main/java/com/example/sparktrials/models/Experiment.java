@@ -175,10 +175,10 @@ public class Experiment {
      * @return
      *    Returns a list of trials, where each trials is from the specified user
      */
-    public ArrayList<Trial> getUserTrials(Integer id){
+    public ArrayList<Trial> getUserTrials(String id){
         ArrayList<Trial> chosenTrials = new ArrayList<>();
         for (int i=0; i < this.trials.size(); i++){
-            if (this.trials.get(i).getId()==id){
+            if (this.trials.get(i).getProfile().getId()==id){
                 chosenTrials.add(this.trials.get(i));
             }
         }

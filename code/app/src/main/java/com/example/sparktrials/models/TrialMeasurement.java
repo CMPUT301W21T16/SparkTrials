@@ -1,18 +1,18 @@
 package com.example.sparktrials.models;
 
 /**
- * This class extends the basic trial class. This type of trial will keep a float number
+ * This class extends the basic trial class. This type of trial will keep a double number
  * used to represent some kind of measurement
  */
 public class TrialMeasurement extends Trial{
-    Float measure;
+    Double measure;
 
     /**
      * Initializes a blank trial and sets the measure attribute to measure
      * @param measure
      *    The measure that this trial will initially hold
      */
-    public TrialMeasurement(Float measure){
+    public TrialMeasurement(Double measure){
         this.measure = measure;
     }
     /**
@@ -26,7 +26,7 @@ public class TrialMeasurement extends Trial{
      * @param measure
      *    A measure of something that the measure attribute will take
      */
-    public TrialMeasurement(Integer id, GeoLocation location, Profile profile, Float measure){
+    public TrialMeasurement(Integer id, GeoLocation location, Profile profile, Double measure){
         super(id, location, profile);
     }
 
@@ -35,7 +35,7 @@ public class TrialMeasurement extends Trial{
      * @return
      *    Returns the measure attribute that this trial holds
      */
-    public Float getMeasure() {
+    public Double getMeasure() {
         return measure;
     }
 
@@ -44,7 +44,7 @@ public class TrialMeasurement extends Trial{
      * @param measure
      *    The new measure that this trial will hold
      */
-    public void setMeasure(Float measure) {
+    public void setMeasure(Double measure) {
         this.measure = measure;
     }
 }

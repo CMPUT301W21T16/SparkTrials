@@ -1,4 +1,4 @@
-package com.example.sparktrials.main_ui.search;
+package com.example.sparktrials.main.search;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

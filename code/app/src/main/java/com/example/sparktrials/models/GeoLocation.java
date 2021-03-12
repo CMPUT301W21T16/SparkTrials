@@ -27,11 +27,11 @@ public class GeoLocation {
         }
 
         if (lon<-180){
-            this.lat = -180.0;
+            this.lon = -180.0;
         } else if (lon>180){
-            this.lat = 180.0;
+            this.lon = 180.0;
         } else {
-            this.lat = lat;
+            this.lon = lon;
         }
     }
 
@@ -87,11 +87,11 @@ public class GeoLocation {
      */
     public void setLon(Double lon) {
         if (lon<-180){
-            this.lat = -180.0;
+            this.lon = -180.0;
         } else if (lon>180){
-            this.lat = 180.0;
+            this.lon = 180.0;
         } else {
-            this.lat = lat;
+            this.lon = lon;
         }
     }
 }

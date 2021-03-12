@@ -28,6 +28,7 @@ public class TrialMeasurement extends Trial{
      */
     public TrialMeasurement(Integer id, GeoLocation location, Profile profile, Double measure){
         super(id, location, profile);
+        this.measure = measure;
     }
 
     /**

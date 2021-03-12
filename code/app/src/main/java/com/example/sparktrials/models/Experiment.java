@@ -15,6 +15,7 @@ import java.util.HashMap;
  * open is a boolean value, that states whether the experiment is accepting new trials or not
  */
 public class Experiment {
+    private Integer id;
     private Profile owner;
     private ArrayList<Trial> trials;
     private String title;
@@ -28,7 +29,8 @@ public class Experiment {
      * Initiates an empty experiment that will be filled out later
      * Sets experiment attribute to some default values
      */
-    public Experiment(){
+    public Experiment(Integer id){
+        this.id = id;
         this.owner = null;
         this.trials = new ArrayList<>();
         this.title = "N/A";
@@ -52,7 +54,8 @@ public class Experiment {
      * @param minNTrials
      *    The minimum number of trials that a user has to commit before their trials are counted
      */
-    public Experiment(Profile owner, String title, String desc, GeoLocation region, Integer minNTrials){
+    public Experiment(Integer id, Profile owner, String title, String desc, GeoLocation region, Integer minNTrials){
+        this.id = id;
         this.owner = owner;
         this.trials = new ArrayList<>();
         this.title = title;
@@ -83,8 +86,9 @@ public class Experiment {
      * @param date
      *    The date that the experiment was created on
      */
-    public Experiment(Profile owner, ArrayList<Trial> trials, String title, String desc,
+    public Experiment(Integer id, Profile owner, ArrayList<Trial> trials, String title, String desc,
                       GeoLocation region, Integer minNTrials, Boolean open, Date date){
+        this.id = id;
         this.owner = owner;
         this.trials = trials;
         this.title = title;
@@ -93,6 +97,15 @@ public class Experiment {
         this.minNTrials = minNTrials;
         this.open = open;
         this.date = date;
+    }
+
+    /**
+     * Fetches the id of the experiment
+     * @return
+     *    The integer id that the experiment holds
+     */
+    public Integer getId() {
+        return id;
     }
 
     /**

@@ -49,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference collectionReference = db.collection("users");
 
-        String userId = getUserId();
+        String userId = MainManager.getUserId(this);
         Log.d("USER ID",userId);
 
         Map<String, Object> user_test = new HashMap<>();
         user_test.put("uid",userId);
         user_test.put("name", "Test");
-        user_test.put("cellphone", 12345);
+        user_test.put("contact","123456890");
 
         // Add a test document to users collection.
         collectionReference.document(userId).set(user_test).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -89,23 +89,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Return the unique user id. Generate a random UUID if no id is found in the preference file.
-     * Note: This user id is lost when the app is uninstalled.
-     * @return
-     * Return the user id as a string.
-     */
-    private String getUserId() {
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        String userId = sharedPref.getString("userId", "-1");
 
-        if (userId.equals("-1")) {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("userId", UUID.randomUUID().toString());
-            editor.apply();
-            userId = sharedPref.getString("userId", "-1");
-        }
-        return userId;
-    }
 
 }

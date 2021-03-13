@@ -83,8 +83,9 @@ public class ExperimentActivity extends AppCompatActivity {
         description.setText(experiment.getDesc());
         owner.setText("Owner McOwnerface");
         date.setText(dateFormat.format(experiment.getDate()));
-        String regionText = "Latitude: " + String.format("%.2f", experiment.getRegion().getLat()) +
-                "  Longitude: " + String.format("%.2f", experiment.getRegion().getLon());
+        GeoLocation regionObj = new GeoLocation();
+        String regionText = "Latitude: " + String.format("%.2f", regionObj.getLat()) +
+                "  Longitude: " + String.format("%.2f", regionObj.getLon());
         region.setText(regionText);
         String trialsText = "Minimum trials to upload: " + experiment.getMinNTrials();
         minTrials.setText(trialsText);

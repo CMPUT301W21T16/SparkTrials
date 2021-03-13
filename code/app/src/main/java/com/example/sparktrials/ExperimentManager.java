@@ -41,8 +41,9 @@ public class ExperimentManager {
 
     public void getExperimentFromDatabase(String expID) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        //DocumentReference exp = db.collection("experiments").document(expID);
         DocumentReference exp = db.collection("experiments").document(expID);
-        Log.d(TAG, "outside the onComplete");
+        Log.d(TAG, expID);
         exp.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -52,7 +53,7 @@ public class ExperimentManager {
                     // at the time of writing, experiments are not connected to users in the database yet
                     // so there is no setting of the experiments owner Profile yet. on the experiment
                     // activity a placeholder owner name "Owner McOwnerface" is used.
-                    if (expData.exists()) {//expData.exists()
+                    if (expData.exists()) {
                         Log.d(TAG, expData.getId() + " => " + expData.getData());
                         experiment.setTitle((String) expData.getData().get("Title"));
                         experiment.setDesc((String) expData.getData().get("Description"));
@@ -60,7 +61,7 @@ public class ExperimentManager {
                         region.setLat((Double) expData.getData().get("Latitude"));
                         region.setLon((Double) expData.getData().get("Longitude"));
                         experiment.setRegion(region);
-                        experiment.setMinNTrials((Integer) expData.getData().get("MinNTrials"));
+                        experiment.setMinNTrials(((Long) expData.getData().get("MinNTrials")).intValue());
                         Timestamp date = (Timestamp) expData.getData().get("Date");
                         experiment.setDate(date.toDate());
                         experiment.setOpen((Boolean) expData.getData().get("Open"));

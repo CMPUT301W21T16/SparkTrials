@@ -46,6 +46,7 @@ public class SearchViewModel {
      *      Returns the list of experiments in the database
      */
     public ArrayList<Experiment> getExperiments() {
+        refresh();
         return experiments;
     }
 

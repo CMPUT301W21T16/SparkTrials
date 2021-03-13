@@ -96,8 +96,7 @@ public class SearchViewModel {
                  for (int keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
                     String currentKeyword = keywords[keywordIndex];
                     Experiment experimentToBeSearched = experiments.get(experimentIndex);
-                    if (experimentToBeSearched.getTitle().toLowerCase().contains(currentKeyword)
-                            || experimentToBeSearched.getDesc().toLowerCase().contains(currentKeyword)) {
+                    if (experimentMatches(currentKeyword, experimentToBeSearched)) {
                         // If an experiment matches a keyword
                         resultSet.add(experimentToBeSearched);
                     }
@@ -128,6 +127,16 @@ public class SearchViewModel {
             experiments.add(experiment);
         }
 
+    }
+
+    private boolean experimentMatches(String keyword, Experiment experiment) {
+        String experimentTitle = experiment.getTitle().toLowerCase();
+        String experimentDescription = experiment.getDesc().toLowerCase();
+        String experimentOwnerUsername = experiment.getOwner().getUsername().toLowerCase();
+
+        return (experimentTitle.contains(keyword)
+                    || experimentDescription.contains(keyword)
+                    || experimentOwnerUsername.contains(keyword));
     }
 
 }

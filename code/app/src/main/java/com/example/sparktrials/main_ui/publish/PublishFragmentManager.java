@@ -63,7 +63,6 @@ public class PublishFragmentManager {
                         profile = new Profile(userID,name,cellphone);
                         experiment= new Experiment(experimentID,profile,title,desc,geoLocation,minNTrials);
                         Log.d("Data", document.getId() + " => " + document.getData());
-                        Log.d("Data", name + " => " + lonString);
                         Log.d("Data", name + " => " + Double.parseDouble(lonString));
                         uploadExperiment(experiment,geoLocation,profile);
                     }

@@ -55,7 +55,7 @@ public class Profile {
 
     /**
      * This method initializes the id of the user
-     * id should not be overwritten on accident
+     * id should not overwrite an existing id
      * @param id
      *    New id that this profile will take
      */

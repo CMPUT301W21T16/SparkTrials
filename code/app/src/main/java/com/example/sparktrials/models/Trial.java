@@ -57,6 +57,14 @@ public abstract class Trial {
             this.id = id;
         }
     }
+    /**
+     * Gets the location of the trial
+     * @return
+     *    Returns the location that the trial has. Will often be null
+     */
+    public GeoLocation getLocation(){
+        return this.location;
+    }
 
     /**
      * Sets the location of the trial
@@ -65,15 +73,6 @@ public abstract class Trial {
      */
     public void setLocation(GeoLocation location){
         this.location = location;
-    }
-
-    /**
-     * Gets the location of the trial
-     * @return
-     *    Returns the location that the trial has. Will often be null
-     */
-    public GeoLocation getLocation(){
-        return this.location;
     }
 
     /**

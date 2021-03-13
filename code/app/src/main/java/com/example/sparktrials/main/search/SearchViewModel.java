@@ -25,7 +25,7 @@ public class SearchViewModel {
 
         // For testing
         for (int i = 1; i <= 10000; i++) {
-            Experiment experiment = new Experiment();
+            Experiment experiment = new Experiment(""+i);
             experiment.setTitle("Title " + Integer.toString(i) + " " +  (int) Math.pow(i, 2));
             experiment.setDesc("Description " + Integer.toString(i) + " " + (int) Math.pow(i, 3));
             experiments.add(experiment);

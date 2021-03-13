@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <EditText
+        android:id="@+id/expTitle_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Experiment Title"
+        android:inputType="textPersonName"
+        android:textSize="20sp"
+        />
+    <EditText
+        android:id="@+id/expDesc_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Experiment Description"
+        android:inputType="textPersonName"
+        android:textSize="20sp"
+        />
+    <EditText
+        android:id="@+id/expMinNTrials_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Minimum Number Of Trials"
+        android:inputType="number"
+        android:textSize="20sp"
+        />
+    <EditText
+        android:id="@+id/expLat_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Latitude"
+        android:textSize="20sp"
+        />
+    <EditText
+        android:id="@+id/expLon_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Longitude"
+        android:textSize="20sp"
+        />
+
+</GridLayout>

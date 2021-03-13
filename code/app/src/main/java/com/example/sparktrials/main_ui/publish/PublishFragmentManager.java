@@ -23,7 +23,7 @@ public class PublishFragmentManager {
     private Experiment experiment;
 
     /**
-     *Constructer which receives the input from the UI and converts the minimum number of trials into int and lat/lon pair into double
+     *Constructor which receives the input from the UI and converts the minimum number of trials into int and lat/lon pair into double
      * Then accesses firebase and retrieves the name and cellphone associated with the UUID
      * @param userID
      * The UUID of the user publishing the experiment
@@ -59,8 +59,9 @@ public class PublishFragmentManager {
                         assert document != null;
                         String name= (String) document.get("name");
                         String cellphone = (String) document.get("cellphone");
+                        String experimentID= UUID.randomUUID().toString();
                         profile = new Profile(userID,name,cellphone);
-                        experiment= new Experiment(profile,title,desc,geoLocation,minNTrials);
+                        experiment= new Experiment(experimentID,profile,title,desc,geoLocation,minNTrials);
                         Log.d("Data", document.getId() + " => " + document.getData());
                         Log.d("Data", name + " => " + lonString);
                         Log.d("Data", name + " => " + Double.parseDouble(lonString));
@@ -70,8 +71,7 @@ public class PublishFragmentManager {
     }
     public void uploadExperiment(Experiment experiment, GeoLocation geoLocation){
         Map<String,Object> data = new HashMap<>();
-        String experimentID= UUID.randomUUID().toString();
-        DocumentReference dRef = FirebaseFirestore.getInstance().collection("experiments").document(experimentID);
+        DocumentReference dRef = FirebaseFirestore.getInstance().collection("experiments").document(experiment.getId());
         data.put("Title",experiment.getTitle());
         data.put("Description",experiment.getDesc());
         data.put("Latitude",geoLocation.getLat());

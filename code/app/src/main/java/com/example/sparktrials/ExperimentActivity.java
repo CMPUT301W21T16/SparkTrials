@@ -23,12 +23,20 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import org.w3c.dom.Text;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public class ExperimentActivity extends AppCompatActivity {
 
     private String userID;
     private String experimentID;
     private TextView title;
+    private TextView open;
     private TextView description;
+    private TextView owner;
+    private TextView date;
     private TextView region;
     private TextView minTrials;
 
@@ -38,9 +46,13 @@ public class ExperimentActivity extends AppCompatActivity {
         setContentView(R.layout.experiment_main);
         BottomNavigationView navView = findViewById(R.id.nav_view_exp);
         title = (TextView) findViewById(R.id.experiment_title);
+        open = (TextView) findViewById(R.id.experiment_isOpen);
         description = (TextView) findViewById(R.id.experiment_description);
+        owner = (TextView) findViewById(R.id.experiment_owner);
+        date = (TextView) findViewById(R.id.experiment_date);
         region = (TextView) findViewById(R.id.experiment_region);
         minTrials = (TextView) findViewById(R.id.experiment_min_trials);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 
         ExperimentManager manager = new ExperimentManager();
 
@@ -57,10 +69,19 @@ public class ExperimentActivity extends AppCompatActivity {
         Experiment experiment = manager.getExperiment(experimentID);
 
         title.setText(experiment.getTitle());
+        if(experiment.getOpen()){
+            open.setText("Open");
+        } else {
+            open.setText("Closed");
+        }
         description.setText(experiment.getDesc());
-        region.setText("Latitude: " + String.format("%.2f", experiment.getRegion().getLat().toString()) +
-        "  Longitude: " + String.format("%.2f", experiment.getRegion().getLon().toString()));
-        minTrials.setText("Minimum trials to upload: " + experiment.getMinNTrials());
+        owner.setText("Owner McOwnerface");
+        date.setText(dateFormat.format(experiment.getDate()));
+        String regionText = "Latitude: " + String.format("%.2f", experiment.getRegion().getLat()) +
+                "  Longitude: " + String.format("%.2f", experiment.getRegion().getLon());
+        region.setText(regionText);
+        String trialsText = "Minimum trials to upload: " + experiment.getMinNTrials();
+        minTrials.setText(trialsText);
 
 
     }

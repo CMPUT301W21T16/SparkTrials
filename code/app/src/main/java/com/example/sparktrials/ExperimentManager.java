@@ -8,6 +8,7 @@ import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.GeoLocation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,6 +32,9 @@ public class ExperimentManager {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
                     DocumentSnapshot expData = task.getResult();
+                    // at the time of writing, experiments are not connected to users in the database yet
+                    // so there is no setting of the experiments owner Profile yet. on the experiment
+                    // activity a placeholder owner name "Owner McOwnerface" is used.
                     if(expData.exists()){
                         experiment.setTitle((String) expData.getData().get("Title"));
                         experiment.setDesc((String) expData.getData().get("Description"));
@@ -39,6 +43,9 @@ public class ExperimentManager {
                         region.setLon((Double) expData.getData().get("Longitude"));
                         experiment.setRegion(region);
                         experiment.setMinNTrials((Integer) expData.getData().get("MinNTrials"));
+                        Timestamp date = (Timestamp) expData.getData().get("Date");
+                        experiment.setDate(date.toDate());
+                        experiment.setOpen((Boolean) expData.getData().get("Open"));
                     } else {
                         Log.d("Retrieval", "Document does not exists");
                     }

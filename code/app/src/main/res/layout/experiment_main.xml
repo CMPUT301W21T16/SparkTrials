@@ -29,12 +29,25 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/experiment_title"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:textSize="20dp"
-            android:textColor="@color/black"/>
+            android:layout_height="60dp">
+
+            <TextView
+                android:id="@+id/experiment_title"
+                android:layout_width="250dp"
+                android:layout_height="match_parent"
+                android:textSize="20dp"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/experiment_isOpen"
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:textSize="16dp"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/experiment_description"
@@ -43,10 +56,30 @@
             android:textSize="14dp"
             android:textColor="#444444"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+
+            <TextView
+                android:id="@+id/experiment_owner"
+                android:layout_width="205dp"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:textSize="16dp"/>
+
+            <TextView
+                android:id="@+id/experiment_date"
+                android:layout_width="205dp"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:textSize="16dp"/>
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/experiment_region"
             android:layout_width="match_parent"
-            android:layout_height="62dp"
+            android:layout_height="60dp"
             android:textSize="16dp"
             android:textColor="@color/black" />
 

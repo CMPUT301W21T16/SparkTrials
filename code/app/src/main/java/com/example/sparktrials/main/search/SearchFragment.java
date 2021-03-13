@@ -48,6 +48,7 @@ public class SearchFragment extends Fragment {
 
         searchManager = new SearchViewModel();
 
+
         searchListAdapter = new CustomList(getActivity(), searchManager.getExperiments());
         searchListView.setAdapter(searchListAdapter);
 
@@ -58,7 +59,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Hide the keyboard from the current screen
-                hideKeyboardFrom();//getContext(), getView());
+                hideKeyboardFrom();
 
                 updateAdapter();
             }
@@ -75,7 +76,8 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If a key-down event was invoked on the "Enter" key on the keyboard
-                // and the key pressed was the "Enter" key
+                // and the key pressed was the "Enter" key, it acts as if the "SEARCH" button was
+                // clicked
                 if (event.getAction() == KeyEvent.ACTION_DOWN
                         && keyCode == KeyEvent.KEYCODE_ENTER) {
                     searchButton.callOnClick();
@@ -112,6 +114,7 @@ public class SearchFragment extends Fragment {
         ArrayList<Experiment> searchResults = searchManager.search(keywords);
 
         searchListAdapter = new CustomList(getContext(), searchResults);
+
         searchListView.setAdapter(searchListAdapter);
     }
 

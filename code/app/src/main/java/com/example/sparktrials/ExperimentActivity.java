@@ -1,5 +1,6 @@
 package com.example.sparktrials;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -47,7 +48,7 @@ public class ExperimentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.experiment_main);
-        BottomNavigationView navView = findViewById(R.id.nav_view_exp);
+        //BottomNavigationView navView = findViewById(R.id.nav_view_exp);
         title = (TextView) findViewById(R.id.experiment_title);
         open = (TextView) findViewById(R.id.experiment_isOpen);
         description = (TextView) findViewById(R.id.experiment_description);
@@ -58,17 +59,18 @@ public class ExperimentActivity extends AppCompatActivity {
         backToMain = findViewById(R.id.back_button);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 
-        ExperimentManager manager = new ExperimentManager();
+
 
         userID = getIntent().getStringExtra("USER_ID");
         experimentID = getIntent().getStringExtra("EXPERIMENT_ID");
-
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_search, R.id.navigation_me)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
+        ExperimentManager manager = new ExperimentManager(experimentID);
+//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+//                R.id.navigation_home, R.id.navigation_search, R.id.navigation_me)
+//                .build();
+//        Activity mainActivity = MainActivity;
+//        NavController navController = Navigation.findNavController(MainActivity, R.id.nav_host_fragment);
+//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(navView, navController);
 
         Experiment experiment = manager.getExperiment(experimentID);
 
@@ -81,8 +83,9 @@ public class ExperimentActivity extends AppCompatActivity {
         description.setText(experiment.getDesc());
         owner.setText("Owner McOwnerface");
         date.setText(dateFormat.format(experiment.getDate()));
-        String regionText = "Latitude: " + String.format("%.2f", experiment.getRegion().getLat()) +
-                "  Longitude: " + String.format("%.2f", experiment.getRegion().getLon());
+        GeoLocation regionObj = new GeoLocation();
+        String regionText = "Latitude: " + String.format("%.2f", regionObj.getLat()) +
+                "  Longitude: " + String.format("%.2f", regionObj.getLon());
         region.setText(regionText);
         String trialsText = "Minimum trials to upload: " + experiment.getMinNTrials();
         minTrials.setText(trialsText);

@@ -1,7 +1,16 @@
 package com.example.sparktrials;
 
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,7 +45,28 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 //        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-//        Toolbar myToolbar = (Toolbar) findViewById(R.id.top_app_bar);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.top_app_bar);
+        myToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
+            @SuppressLint("NonConstantResourceId")
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.top_app_bar_draft:
+                        Log.d("BUTTON", "draftClicked");
+                        break;
+                    case R.id.top_app_bar_scan_qr_code:
+                        Log.d("BUTTON", "scanClicked");
+                        break;
+                    case R.id.top_app_bar_publish_experiment:
+                        Log.d("BUTTON", "publishClicked");
+                        break;
+                    default:
+                        Log.d("BUTTON", "something wrong");
+                }
+                return true;
+            }
+        });
 //        setSupportActionBar(myToolbar);
         NavigationUI.setupWithNavController(navView, navController);
 
@@ -82,8 +112,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
-
 }

@@ -90,6 +90,18 @@
             android:textSize="16dp"
             android:textColor="@color/black"/>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/back_button"
+            android:layout_width="44dp"
+            android:layout_height="59dp"
+            android:layout_gravity="bottom|start"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="visible"
+            app:srcCompat="@android:drawable/ic_media_previous" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

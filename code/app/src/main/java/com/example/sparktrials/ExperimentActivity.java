@@ -1,5 +1,6 @@
 package com.example.sparktrials;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.example.sparktrials.models.GeoLocation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -39,6 +41,7 @@ public class ExperimentActivity extends AppCompatActivity {
     private TextView date;
     private TextView region;
     private TextView minTrials;
+    FloatingActionButton backToMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,7 @@ public class ExperimentActivity extends AppCompatActivity {
         date = (TextView) findViewById(R.id.experiment_date);
         region = (TextView) findViewById(R.id.experiment_region);
         minTrials = (TextView) findViewById(R.id.experiment_min_trials);
+        backToMain = findViewById(R.id.back_button);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 
         ExperimentManager manager = new ExperimentManager();
@@ -82,6 +86,13 @@ public class ExperimentActivity extends AppCompatActivity {
         region.setText(regionText);
         String trialsText = "Minimum trials to upload: " + experiment.getMinNTrials();
         minTrials.setText(trialsText);
+
+        backToMain.setOnClickListener((v) -> {
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            this.finish();
+        });
 
 
     }

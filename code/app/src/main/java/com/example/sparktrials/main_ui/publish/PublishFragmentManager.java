@@ -85,6 +85,7 @@ public class PublishFragmentManager {
         data.put("MinNTrials",experiment.getMinNTrials());
         data.put("profileID",profile.getId());
         data.put("Date",experiment.getDate());
+        data.put("Open",experiment.getOpen());
         dRef.set(data);
     }
 

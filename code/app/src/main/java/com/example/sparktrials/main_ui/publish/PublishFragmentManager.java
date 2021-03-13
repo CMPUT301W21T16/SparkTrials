@@ -69,6 +69,12 @@ public class PublishFragmentManager {
                     }
                 });
     }
+
+    /**
+     * Recieves experiment and geolocations object and uploads the data to firebase
+     * @param experiment
+     * @param geoLocation
+     */
     public void uploadExperiment(Experiment experiment, GeoLocation geoLocation){
         Map<String,Object> data = new HashMap<>();
         DocumentReference dRef = FirebaseFirestore.getInstance().collection("experiments").document(experiment.getId());

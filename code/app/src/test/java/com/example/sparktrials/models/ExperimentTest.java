@@ -2,65 +2,207 @@ package com.example.sparktrials.models;
 
 import junit.framework.TestCase;
 
+import java.util.ArrayList;
+import java.util.Date;
+
+/**
+ * A class to test every single method of the Experiment class
+ */
 public class ExperimentTest extends TestCase {
 
+    Experiment exp;
+
+    /**
+     * Verifies that the id retrieved is the same as the id that the class holds
+     */
+    public void testGetId(){
+        exp = new Experiment("10");
+        assertEquals("getId does not work", "10", exp.getId());
+    }
+
+    /**
+     * Verifies that the trials retrieved are the trials that the experiment actually has
+     * Assumes setTrials works
+     */
     public void testGetAllTrials() {
+        exp = new Experiment("10");
+        ArrayList<Trial> toSet = this.createTrials();
+        exp.setTrials(toSet);
+        assertEquals("getAllTrials returns wrong amount", 15, exp.getAllTrials().size());
+        assertEquals("getAllTrials returns wrong trial", 0, (int)exp.getAllTrials().get(0).getId());
+        assertEquals("getAllTrials returns wrong trial", 14, (int)exp.getAllTrials().get(exp.getAllTrials().size()-1).getId());
+
     }
 
+    /**
+     * Verifies that the trials retrieved are the trials whose submitter has submitted
+     * sufficiently many trials
+     * Assumes setTrials and setMinNTrials works
+     */
     public void testGetValidTrials() {
+        exp = new Experiment("10");
+        exp.setMinNTrials(5);
+        ArrayList<Trial> toSet = this.createTrials();
+        exp.setTrials(toSet);
+        assertEquals("getValidTrials returns wrong amount", 11, exp.getValidTrials().size());
+        assertEquals("getValidTrials returns wrong trial", 4, (int)exp.getValidTrials().get(0).getId());
+        assertEquals("getValidTrials returns wrong trial", 14, (int)exp.getAllTrials().get(exp.getAllTrials().size()-1).getId());
     }
 
+    /**
+     * Tests the get trial method by verifying that the trials it retrieves are the ones that the experiment holds
+     * Assumes setTrials works
+     */
     public void testGetTrial() {
+        exp = new Experiment("10");
+        ArrayList<Trial> toSet = this.createTrials();
+        exp.setTrials(toSet);
+        assertEquals("getTrial incorrect", "id1", exp.getTrial(1).getProfile().getId());
+        assertEquals("getTrial incorrect", "id2", exp.getTrial(5).getProfile().getId());
+        assertEquals("getTrial incorrect", "id3", exp.getTrial(11).getProfile().getId());
+        assertEquals("getTrial incorrect", null, exp.getTrial(-1));
     }
 
+    /**
+     * Tests the add trial method by adding a trial and then verifying that the experiment
+     * now holds the trial that was submitted
+     * Assumes getTrial works
+     */
     public void testAddTrial() {
+        exp = new Experiment("10");
+        TrialCount trial = new TrialCount(109, new GeoLocation(0.0, 0.0), new Profile());
+        exp.addTrial(trial);
+        assertEquals("addTrial does not work", 109, (int)exp.getTrial(109).getId());
+        assertEquals("addTrial does not work", null, exp.getTrial(109).getProfile().getId());
     }
 
+    /**
+     * Tests the getUserTrials method by checking if the trials returned given a profile id are all the trials
+     * that that profile submitted
+     */
     public void testGetUserTrials() {
+        exp = new Experiment("10");
+        ArrayList<Trial> toSet = this.createTrials();
+        exp.setTrials(toSet);
+        assertEquals("getUserTrials does not work", 0, (int)exp.getUserTrials("id1").get(0).getId());
+        assertEquals("getUserTrials does not work", 9, (int)exp.getUserTrials("id2").get(exp.getUserTrials("id2").size()-1).getId());
     }
 
+    /**
+     * Tests the addTrials methods by checking if the added trials match those given to the method
+     * Assumes that getTrial works
+     */
     public void testAddTrials() {
+        exp = new Experiment("10");
+        TrialCount trial1 = new TrialCount(109, new GeoLocation(0.0, 0.0), new Profile());
+        TrialCount trial2 = new TrialCount(110, new GeoLocation(1.0, 1.0), new Profile());
+        ArrayList<Trial> trials = new ArrayList<>();
+        trials.add(trial1);
+        trials.add(trial2);
+        exp.addTrials(trials);
+
+        assertEquals("addTrials does not work", 109, (int)exp.getTrial(109).getId());
+        assertEquals("AddTrials does not work", 110, (int)exp.getTrial(110).getId());
     }
 
-    public void testGetTitle() {
+    /**
+     * Tests both the getTitle and setTitle methods by setting the title and then
+     * checking that the set title is what is returned by the getTitle method
+     */
+    public void testGetSetTitle() {
+        exp = new Experiment("10");
+        exp.setTitle("test");
+        assertEquals("test/set title does not work", "test", exp.getTitle());
     }
 
-    public void testSetTitle() {
+    /**
+     * Tests both the getDesc and setDesc methods by setting the desc and then
+     * checking that the set desc is what is returned by the getDesc method
+     */
+    public void testGetSetDesc() {
+        exp = new Experiment("10");
+        exp.setDesc("test");
+        assertEquals("get/setDesc does not work", "test", exp.getDesc());
     }
 
-    public void testGetDesc() {
+    /**
+     * Tests both the getRegion and setRegion methods by setting the region and then
+     * checking that the set region is what is returned by the getRegion method
+     */
+    public void testGetSetRegion() {
+        exp = new Experiment("10");
+        GeoLocation location = new GeoLocation(50.0, 40.0);
+        exp.setRegion(location);
+        assertEquals("get/setRegion does not work", 50.0, exp.getRegion().getLat());
+        assertEquals("get/setRegion does not work", 40.0, exp.getRegion().getLon());
     }
 
-    public void testSetDesc() {
+    /**
+     * Tests both the getMinNTrials and setMinNTrials methods by setting the minNTrials and then
+     * checking that the set minNTrials is what is returned by the getMinNTrials method
+     */
+    public void testGetSetMinNTrials() {
+        exp = new Experiment("10");
+        exp.setMinNTrials(5);
+        assertEquals("get/setMinNTrials does not work", 5, (int)exp.getMinNTrials());
     }
 
-    public void testGetRegion() {
+    /**
+     * Tests both the getOwner and setOwner methods by setting the owner and then
+     * checking that the set owner is what is returned by the getOwner method
+     */
+    public void testGetSetOwner() {
+        exp = new Experiment("10");
+        Profile owner = new Profile("id1", "owner", "contact");
+        exp.setOwner(owner);
+        assertEquals("get/setOwner does not work", "owner", exp.getOwner().getUsername());
     }
 
-    public void testSetRegion() {
+    /**
+     * Tests both the getOpen and setOpen methods by setting open to false and then
+     * checking that open is now returning false
+     */
+    public void testGetSetOpen() {
+        exp = new Experiment("10");
+        exp.setOpen(false);
+        assertEquals("get/setOpen does not work", false, (boolean)exp.getOpen());
     }
 
-    public void testGetMinNTrials() {
+    /**
+     * Tests both the getDate and setDate methods by setting the date and then
+     * checking that the set date is what is returned by the getOwner method
+     */
+    public void testGetSetDate() {
+        exp = new Experiment("10");
+        Date date = new Date();
+        exp.setDate(date);
+        assertEquals("get/setDate does not work", date, exp.getDate());
     }
 
-    public void testSetMinNTrials() {
-    }
+    /**
+     * NOT A TEST
+     * Creates 15 trials, where their id is the number in which they were created
+     * First 4 trials have profile id id1, next 6 have id2, and final 5 have id3
+     * @return
+     *    returns the array of trials created
+     */
+    public ArrayList<Trial> createTrials(){
+        Profile profile1 = new Profile("id1");
+        Profile profile2 = new Profile("id2");
+        Profile profile3 = new Profile("id3");
+        GeoLocation uni_loc = new GeoLocation(0.0, 0.0);
+        ArrayList<Trial> trials = new ArrayList<>();
 
-    public void testGetOwner() {
-    }
+        for (int i=0; i<15; i++){
+            if (i<4){
+                trials.add(new TrialCount(i, uni_loc, profile1));
+            } else if (i<10){
+                trials.add(new TrialCount(i, uni_loc, profile2));
+            } else {
+                trials.add(new TrialCount(i, uni_loc, profile3));
+            }
+        }
 
-    public void testSetOwner() {
-    }
-
-    public void testGetOpen() {
-    }
-
-    public void testSetOpen() {
-    }
-
-    public void testGetDate() {
-    }
-
-    public void testSetDate() {
+        return trials;
     }
 }

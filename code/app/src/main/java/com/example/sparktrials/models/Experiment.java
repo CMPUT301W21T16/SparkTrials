@@ -15,7 +15,7 @@ import java.util.HashMap;
  * open is a boolean value, that states whether the experiment is accepting new trials or not
  */
 public class Experiment {
-    private Integer id;
+    private String id;
     private Profile owner;
     private ArrayList<Trial> trials;
     private String title;
@@ -29,7 +29,7 @@ public class Experiment {
      * Initiates an empty experiment that will be filled out later
      * Sets experiment attribute to some default values
      */
-    public Experiment(Integer id){
+    public Experiment(String id){
         this.id = id;
         this.owner = null;
         this.trials = new ArrayList<>();
@@ -54,7 +54,7 @@ public class Experiment {
      * @param minNTrials
      *    The minimum number of trials that a user has to commit before their trials are counted
      */
-    public Experiment(Integer id, Profile owner, String title, String desc, GeoLocation region, Integer minNTrials){
+    public Experiment(String id, Profile owner, String title, String desc, GeoLocation region, Integer minNTrials){
         this.id = id;
         this.owner = owner;
         this.trials = new ArrayList<>();
@@ -86,7 +86,7 @@ public class Experiment {
      * @param date
      *    The date that the experiment was created on
      */
-    public Experiment(Integer id, Profile owner, ArrayList<Trial> trials, String title, String desc,
+    public Experiment(String id, Profile owner, ArrayList<Trial> trials, String title, String desc,
                       GeoLocation region, Integer minNTrials, Boolean open, Date date){
         this.id = id;
         this.owner = owner;
@@ -104,7 +104,7 @@ public class Experiment {
      * @return
      *    The integer id that the experiment holds
      */
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -118,30 +118,43 @@ public class Experiment {
     }
 
     /**
+     * Replaces the list of trials with a new list of trials
+     * Should ONLY be used to initialize an experiment, NEVER to replace trials
+     * @param trials
+     */
+    public void setTrials(ArrayList<Trial> trials){
+        if (this.trials.size() == 0) {
+            this.trials = trials;
+        }
+    }
+
+    /**
      * For each experimenter that has submitted more than the minimum number of trials,
      * retrieve their trials
      * @return
      *    returns a list of "valid" trials
      */
     public ArrayList<Trial> getValidTrials() {
+        ArrayList<Trial> valid_trials = new ArrayList<>();
         //create a hash map that, for each user, will have an array list populated with
         //that users trials
-        HashMap<Integer, ArrayList<Trial>> user_trials = new HashMap<>();
+        HashMap<String, ArrayList<Trial>> user_trials = new HashMap<>();
         Trial trial;
-        Integer trial_id;
+        String user_id;
         for (int i=0; i < this.trials.size(); i++){
             trial = this.trials.get(i);
-            trial_id = trial.getId();
-            if (user_trials.get(trial_id) == null){
+            user_id = trial.getProfile().getId();
+            if (user_trials.get(user_id) == null){
                 ArrayList<Trial> arr_list = new ArrayList<>();
-                user_trials.put(trial_id, arr_list);
+                user_trials.put(user_id, arr_list);
             }
-            user_trials.get(trial_id).add(trial);
+
+            user_trials.get(user_id).add(trial);
         }
+
         //for each user in the hash map, check if their trials should be included
         //be checking if there are enough of them (enough = more than the min)
-        ArrayList<Trial> valid_trials = new ArrayList<>();
-        for (int i : user_trials.keySet()){
+        for (String i : user_trials.keySet()){
             ArrayList<Trial> trials_of_user = user_trials.get(i);
             if (trials_of_user.size()>=this.minNTrials){
                 for (int j=0; j<trials_of_user.size(); j++){

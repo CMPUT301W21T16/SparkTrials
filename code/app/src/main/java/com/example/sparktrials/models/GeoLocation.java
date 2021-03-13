@@ -11,6 +11,11 @@ public class GeoLocation {
     Double lat;
     Double lon;
 
+    public GeoLocation(){
+        this.lat = 1000.0;
+        this.lon = 1000.0;
+    }
+
     /**
      * Constructor that initiates the point on Earth
      * Ensures that coordinates are valid

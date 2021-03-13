@@ -17,6 +17,7 @@ import java.util.HashMap;
 public class Experiment {
     private String id;
     private Profile owner;
+    private String experimentID;
     private ArrayList<Trial> trials;
     private String title;
     private String desc;

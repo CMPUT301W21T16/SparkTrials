@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.example.sparktrials.models.Experiment;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class CustomList extends ArrayAdapter<Experiment> {
@@ -29,9 +30,12 @@ public class CustomList extends ArrayAdapter<Experiment> {
     private TextView experimentDate;
 
     /**
-     *
+     * Constructor for a CustomList list adapter, which shows a customized list of experiments,
+     * with some of their data
      * @param context
+     *      The context which we are currently in
      * @param experiments
+     *      The list of experiments which we want to display
      */
     public CustomList(@NonNull Context context, ArrayList<Experiment> experiments) {
         super(context, 0, experiments);
@@ -74,8 +78,11 @@ public class CustomList extends ArrayAdapter<Experiment> {
         experimentTitle.setText(experiment.getTitle());
         experimentDescription.setText(experiment.getDesc());
         experimentStatus.setText("Active");
-        experimentOwner.setText("Owner");
-        experimentDate.setText("Date");
+        experimentOwner.setText(experiment.getOwner().getUsername());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+
+        experimentDate.setText(dateFormat.format(experiment.getDate()));
     }
 
 }

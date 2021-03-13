@@ -2,6 +2,7 @@ package com.example.sparktrials.main.search;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -20,6 +21,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.example.sparktrials.CustomList;
+import com.example.sparktrials.ExperimentActivity;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
 
@@ -58,7 +60,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Hide the keyboard from the current screen
-                hideKeyboardFrom();//getContext(), getView());
+                hideKeyboardFrom();
 
                 updateAdapter();
             }
@@ -67,7 +69,9 @@ public class SearchFragment extends Fragment {
         searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Launch ExperimentActivity
+                Experiment experiment = searchListAdapter.getItem(position);
+
+                startExperimentActivity(experiment.getId(), experiment.getOwner().getId());
             }
         });
 
@@ -75,7 +79,8 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If a key-down event was invoked on the "Enter" key on the keyboard
-                // and the key pressed was the "Enter" key
+                // and the key pressed was the "Enter" key, it acts as if the "SEARCH" button was
+                // clicked
                 if (event.getAction() == KeyEvent.ACTION_DOWN
                         && keyCode == KeyEvent.KEYCODE_ENTER) {
                     searchButton.callOnClick();
@@ -112,6 +117,7 @@ public class SearchFragment extends Fragment {
         ArrayList<Experiment> searchResults = searchManager.search(keywords);
 
         searchListAdapter = new CustomList(getContext(), searchResults);
+
         searchListView.setAdapter(searchListAdapter);
     }
 
@@ -122,6 +128,22 @@ public class SearchFragment extends Fragment {
     private void hideKeyboardFrom() {
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+    }
+
+    /**
+     * Starts an ExperimentActivity when an item on the ListView is clicked to display its
+     * information
+     * @param experimentId
+     *      This is the ID of the experiment whose information we want displayed, namely the
+     *      experiment that the user chose after clicking on its corresponding ListView element
+     * @param ownerId
+     *      This is the ID of the owner of the experiment
+     */
+    public void startExperimentActivity(String experimentId, String ownerId) {
+        Intent intent = new Intent(this.getActivity(), ExperimentActivity.class);
+        intent.putExtra("EXPERIMENT_ID", experimentId);
+        intent.putExtra("USER_ID", ownerId);
+        startActivity(intent);
     }
 
 }

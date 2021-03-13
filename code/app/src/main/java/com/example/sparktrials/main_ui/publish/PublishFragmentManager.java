@@ -65,7 +65,7 @@ public class PublishFragmentManager {
                         Log.d("Data", document.getId() + " => " + document.getData());
                         Log.d("Data", name + " => " + lonString);
                         Log.d("Data", name + " => " + Double.parseDouble(lonString));
-                        uploadExperiment(experiment,geoLocation);
+                        uploadExperiment(experiment,geoLocation,profile);
                     }
                 });
     }
@@ -75,7 +75,7 @@ public class PublishFragmentManager {
      * @param experiment
      * @param geoLocation
      */
-    public void uploadExperiment(Experiment experiment, GeoLocation geoLocation){
+    public void uploadExperiment(Experiment experiment, GeoLocation geoLocation, Profile profile){
         Map<String,Object> data = new HashMap<>();
         DocumentReference dRef = FirebaseFirestore.getInstance().collection("experiments").document(experiment.getId());
         data.put("Title",experiment.getTitle());
@@ -83,6 +83,8 @@ public class PublishFragmentManager {
         data.put("Latitude",geoLocation.getLat());
         data.put("Longitude",geoLocation.getLon());
         data.put("MinNTrials",experiment.getMinNTrials());
+        data.put("profileID",profile.getId());
+        data.put("Date",experiment.getDate());
         dRef.set(data);
     }
 

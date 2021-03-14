@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 //        setSupportActionBar(myToolbar);
         NavigationUI.setupWithNavController(navView, navController);
 
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference collectionReference = db.collection("users");
 
@@ -96,6 +95,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Retrieve and log user information from Firestore.
+        FirebaseManager firebaseManager = new FirebaseManager();
+        firebaseManager.retrieve("users", "726c77d8-54c7-41a1-a149-afe608892add", new Callback() {
+            @Override
+            public void onCallback(DocumentSnapshot document) {
+                Log.d("FIREBASE", "retrieved");
+            }
+        });
         DocumentReference user = collectionReference.document(userId);
         user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

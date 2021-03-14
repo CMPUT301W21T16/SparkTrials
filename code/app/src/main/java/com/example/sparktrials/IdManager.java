@@ -42,21 +42,19 @@ public class IdManager {
         return UUID.randomUUID().toString();
     }
 
-    // Under construction
-//    public static boolean generateRandomId(CollectionReference collection_to_check) {
-//        String id = generateRandomId();
-//        collection_to_check.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document.exists()) {
-//                        return;
-//                    }
-//                }
-//            }
-//        });
-//
-//    }
+
+    public static boolean generateRandomId(CollectionReference collection_to_check) {
+        String id = generateRandomId();
+        collection_to_check.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+
+                }
+            }
+        });
+        return true;
+    }
 
 }

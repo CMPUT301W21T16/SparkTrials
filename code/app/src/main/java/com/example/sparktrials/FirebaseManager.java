@@ -12,6 +12,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,17 +26,33 @@ interface Callback {
 
 public class FirebaseManager {
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-    private final String LOG_TAG = "FirebaseManager";
+    private final String LOG_TAG = "Firebase ";
 
-    public void retrieve(String collection, String document, Callback callback) {
+    /**
+     * Retrieve data from Firestore.
+     * @param collection
+     *      Collection name.
+     * @param document
+     *      Document name.
+     * @param callback
+     *      A callback method to handle retrieved result.
+     *      This method is only called if valid documents are retrieved.
+     */
+    public void get(String collection, String document, Callback callback) {
         CollectionReference ref = firestore.collection(collection);
         ref.document(document).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                String task_path = collection + "/" + document;
                 if (task.isSuccessful()) {
-                    callback.onCallback(task.getResult());
+                    DocumentSnapshot result = task.getResult();
+                    if (result.exists()) {
+                        callback.onCallback(result);
+                        Log.d(LOG_TAG + "[Retrieve]", "Succeed: " + task_path);
+                    } else
+                        Log.d(LOG_TAG + "[Retrieve]", "Failed (result empty): " + task_path);
                 } else {
-                    Log.d(LOG_TAG, "Retrieve failed." + task.getException());
+                    Log.d(LOG_TAG + "[Retrieve]", "Failed: " + task_path);
                 }
 
             }
@@ -42,25 +60,89 @@ public class FirebaseManager {
     }
 
 
-//    private Future<DocumentSnapshot> retrieve() {
+    /**
+     * Write a document to Firestore.
+     * The new data will overwrite any old data if the document already exists on Firestore.
+     * @param collection
+     *      Collection name.
+     * @param document
+     *      Document name.
+     * @param map
+     *      A Map object that holds all the fields and values of an document.
+     */
+    public void set(String collection, String document, Map<String, Object> map) {
+        CollectionReference ref = firestore.collection(collection);
+        ref.document(document).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                String task_path = collection + "/" + document;
+                if (task.isSuccessful()) {
+                    Log.d(LOG_TAG + "[Set]", "Succeed: " + task_path);
+                } else {
+                    Log.d(LOG_TAG + "[Set]", "Failed: " + task_path);
+                }
+            }
+        });
+    }
 
 
-//    public DocumentSnapshot get() {
-//        Future<> future = new FutureTask<>(new Callable<DocumentSnapshot>() {
-//            @Override
-//            public Task call() throws Exception {
-//                return firestore.collection("users").document("726c77d8-54c7-41a1-a149-afe608892add").get();
-//            }
-//        });
-//    }
+    /**
+     * Update data in a document on Firestore.
+     * This method only supports one change to the Firestore document.
+     * @param collection
+     *      Collection name.
+     * @param document
+     *      Document name.
+     * @param field
+     *      Field to change.
+     * @param value
+     *      Value of the field to change.
+     *
+     */
+    public void update(String collection, String document, String field, String value) {
+        CollectionReference ref = firestore.collection(collection);
+        ref.document(document).update(field, value).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                String task_path = collection + "/" + document;
+                if (task.isSuccessful()) {
+                    Log.d(LOG_TAG + "[Update]", "Succeed: " + task_path);
+                } else {
+                    Log.d(LOG_TAG + "[Update]", "Failed: " + task_path);
+                }
+            }
+        });
+    }
 
-//    public void retrieve(String collection, String id) {
-//        readData(new Callback() {
-//            @Override
-//            public void onCallback(DocumentSnapshot document) {
-//                Log.d("CALLBACK", document.getData().toString());
-//            }
-//        });
-//    }
+
+    /**
+     * Update data in a document on Firestore.
+     * This method supports multiple changes to the Firestore document via a map object.
+     * @param collection
+     *      Collection name.
+     * @param document
+     *      Document name.
+     * @param map
+     *      A Map object that holds all the fields and values of an document.
+     */
+    public void update(String collection, String document, Map<String, Object> map) {
+        CollectionReference ref = firestore.collection(collection);
+        ref.document(document).update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                String task_path = collection + "/" + document;
+                if (task.isSuccessful()) {
+                    Log.d(LOG_TAG + "[Update]", "Succeed: " + task_path);
+                } else {
+                    Log.d(LOG_TAG + "[Update]", "Failed: " + task_path);
+                }
+            }
+        });
+    }
+
+
+
+
+
 
 }

@@ -54,36 +54,32 @@ public class SearchFragment extends Fragment {
 
         searchManager = new ViewModelProvider(this).get(SearchViewModel.class);
 
+        // This will allow the list of experiments to be displayed when the search fragment
+        // is launched
         final Observer<ArrayList<Experiment>> nameObserver = new Observer<ArrayList<Experiment>>() {
             @Override
             public void onChanged(@Nullable final ArrayList<Experiment> newList) {
-                // Update the UI, in this case, a TextView.
                 searchListAdapter = new CustomList(getContext(), newList);
                 searchListView.setAdapter(searchListAdapter);
             }
         };
-
-        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         searchManager.getExperiments().observe(this, nameObserver);
-
-
-        //searchListAdapter = new CustomList(getActivity(), searchManager.getExperiments());
-        //searchListView.setAdapter(searchListAdapter);
 
         searchBar = getView().findViewById(R.id.search_bar);
         searchButton = getView().findViewById(R.id.search_button);
 
-        /*
+        // Handle clicking the "SEARCH" button
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Hide the keyboard from the current screen
                 hideKeyboardFrom();
-
-                //updateAdapter();
+                // Display search results on the ListView
+                updateAdapter();
             }
         });
-        */
+
+        // Launches an ExperimentActivity when an item in a ListView is pressed
         searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -92,7 +88,7 @@ public class SearchFragment extends Fragment {
                 startExperimentActivity(experiment.getId(), experiment.getOwner().getId());
             }
         });
-        /*
+
         searchBar.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -115,43 +111,47 @@ public class SearchFragment extends Fragment {
      * bar.
      * @return
      *      Returns a String array of keywords in lowercase.
-     *\/
+     */
     private String[] getKeywords() {
         // Trim to remove meaningless trailing and leading whitespace.
         // Lowercase because we want to get matching experiments, regardless of case.
         String searchString = searchBar.getText().toString().trim().toLowerCase();
-        String[] keywords = searchString.split(" ");
-
+        String[] keywords;
+        if (searchString.equals("")) {
+            keywords = new String[0];
+        } else {
+            keywords = searchString.split(" ");
+        }
         return keywords;
     }
 
     /**
      * Updates the list adapter with the list of matching experiments. Meant to be invoked only
      * when the user tries to search.
-     *\/
+     */
     private void updateAdapter() {
         String[] keywords = getKeywords();
 
-        ArrayList<Experiment> searchResults = searchManager.search(keywords);
+        if (keywords.length > 0) {
+            ArrayList<Experiment> searchResults = searchManager.search(keywords);
 
-        searchListAdapter = new CustomList(getContext(), searchResults);
+            searchListAdapter = new CustomList(getContext(), searchResults);
 
-        searchListView.setAdapter(searchListAdapter);
+            searchListView.setAdapter(searchListAdapter);
+        }
     }
 
     /**
      * Hides the keyboard from the screen.
-     *\/
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void hideKeyboardFrom() {
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
-    */
-    }
+
     /**
-     * Starts an ExperimentActivity when an item on the ListView is clicked to display its
-     * information
+     * Starts an ExperimentActivity.
      * @param experimentId
      *      This is the ID of the experiment whose information we want displayed, namely the
      *      experiment that the user chose after clicking on its corresponding ListView element

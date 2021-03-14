@@ -53,7 +53,7 @@ public class ExperimentActivity extends AppCompatActivity {
         adapter.addFragment(new ActionFragment(), "Action");
         adapter.addFragment(new StatsFragment(), "Stats");
         adapter.addFragment(new ForumFragment(), "Forum");
-        adapter.addFragment(new LocationFragment(), "Locale");
+        adapter.addFragment(new LocationFragment(), "Map");
         adapter.addFragment(new AdminFragment(), "Admin");
         //Adapter Setup
         viewPager.setAdapter(adapter);

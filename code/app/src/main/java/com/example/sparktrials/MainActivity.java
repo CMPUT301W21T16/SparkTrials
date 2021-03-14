@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.sparktrials.main_ui.publish.PublishFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.top_app_bar_publish_experiment:
                         Log.d("BUTTON", "publishClicked");
+                        new PublishFragment("726c77d8-54c7-41a1-a149-afe608892add").show(getSupportFragmentManager(),"Add Experiment");
                         break;
                     default:
                         Log.d("BUTTON", "something wrong");

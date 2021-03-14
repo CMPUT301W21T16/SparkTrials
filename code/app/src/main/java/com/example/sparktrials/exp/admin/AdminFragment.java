@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -11,7 +12,11 @@ import androidx.fragment.app.Fragment;
 import com.example.sparktrials.R;
 
 public class AdminFragment extends Fragment {
+
     View view;
+    private AuditLog userTrialListAdapter;
+    private ListView userTrialListView;
+
     public AdminFragment(){
 
     }

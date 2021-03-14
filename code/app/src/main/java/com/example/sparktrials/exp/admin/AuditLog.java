@@ -17,7 +17,7 @@ import com.example.sparktrials.models.Trial;
 
 import java.util.ArrayList;
 
-public class AuditLog extends ArrayAdapter<Trial> {
+public class AuditLog extends ArrayAdapter<Profile> {
     private ArrayList<Trial> trialList;
     private ArrayList<Profile> userList;
 
@@ -30,7 +30,7 @@ public class AuditLog extends ArrayAdapter<Trial> {
     private Button ignoreButton;
 
     public AuditLog(@NonNull Context context, ArrayList<Trial> trials, ArrayList<Profile> userList) {
-        super(context, 0, userList;
+        super(context, 0, userList);
         this.context = context;
         trialList = trials;
         this.userList = userList;

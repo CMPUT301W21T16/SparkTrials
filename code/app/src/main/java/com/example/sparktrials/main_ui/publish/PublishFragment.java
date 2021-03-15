@@ -80,7 +80,6 @@ public class PublishFragment extends DialogFragment {
         String[] items = new String[]{"Binomial Trials", "Counts", "Non-Negative Integer Counts","Measurement Trials"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,items);
         spinner.setAdapter(adapter);
-        String experimentType = spinner.getSelectedItem().toString();
         //experiment=this.experiment;
         String id = this.userID;
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -96,6 +95,8 @@ public class PublishFragment extends DialogFragment {
                         String MinNTrialsString = expMinNTrials.getText().toString();
                         String latString = expLat.getText().toString();
                         String lonString = expLon.getText().toString();
+                        String experimentType = spinner.getSelectedItem().toString();
+                        Log.d("Type",experimentType);
                         PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,latString,lonString,experimentType);
                     }
                 })

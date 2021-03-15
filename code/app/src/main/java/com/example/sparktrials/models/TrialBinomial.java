@@ -36,10 +36,14 @@ public class TrialBinomial extends Trial{
     /**
      * Gets whether this trial is a pass or a fail
      * @return
-     *    Returns a boolean value to signify pass or fail
+     *    Returns an integer value to signify pass or fail
      */
-    public Boolean getPass() {
-        return pass;
+    public Integer getValue() {
+
+        if (this.pass){
+            return 1;
+        }
+        return 0;
     }
 
     /**

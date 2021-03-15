@@ -43,7 +43,7 @@ public class TrialIntCount extends Trial {
      * @return
      *    Returns the count of this trial
      */
-    public Integer getCount() {
+    public Integer getValue() {
         return count;
     }
 

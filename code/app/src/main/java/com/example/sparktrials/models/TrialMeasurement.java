@@ -36,7 +36,7 @@ public class TrialMeasurement extends Trial{
      * @return
      *    Returns the measure attribute that this trial holds
      */
-    public Double getMeasure() {
+    public Double getValue() {
         return measure;
     }
 

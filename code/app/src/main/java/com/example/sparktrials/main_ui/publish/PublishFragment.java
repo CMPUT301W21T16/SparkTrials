@@ -96,7 +96,7 @@ public class PublishFragment extends DialogFragment {
                         String MinNTrialsString = expMinNTrials.getText().toString();
                         String latString = expLat.getText().toString();
                         String lonString = expLon.getText().toString();
-                        PublishFragmentManager manager = new PublishFragmentManager(id,experimentType,desc,title,MinNTrialsString,latString,lonString);
+                        PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,latString,lonString,experimentType);
                     }
                 })
                 .create();

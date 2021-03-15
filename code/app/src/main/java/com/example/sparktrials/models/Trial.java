@@ -11,6 +11,7 @@ public abstract class Trial {
     Integer id;
     GeoLocation location;
     Profile profile;
+    Double value;
 
     /**
      * This constructor creates a blank trial to be filled out
@@ -57,6 +58,15 @@ public abstract class Trial {
             this.id = id;
         }
     }
+    /**
+     * Gets what the value of this trial is
+     * @return
+     *    Returns the value attribute of this trial
+     */
+    public double getValue() {
+        return this.value;
+    }
+
     /**
      * Gets the location of the trial
      * @return

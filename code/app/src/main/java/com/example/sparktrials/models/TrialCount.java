@@ -5,14 +5,12 @@ package com.example.sparktrials.models;
  * starts at zero and can be incremented
  */
 public class TrialCount extends Trial{
-    Integer count;
-
     /**
      * Initializes a blank trial and sets count to 0
      */
     public TrialCount(){
         super();
-        this.count = 0;
+        this.value = 0.0;
     }
     /**
      * This constructor initializes a filled trial. Initializes count to 0 always
@@ -25,24 +23,16 @@ public class TrialCount extends Trial{
      */
     public TrialCount (Integer id, GeoLocation location, Profile profile){
         super(id, location, profile);
-        this.count = 0;
+        this.value = 0.0;
     }
 
     /**
      * Increments the count attribute
      */
     public void addCount() {
-        this.count++;
+        this.value += 1.0;
     }
 
-    /**
-     * Gets what the current count is at
-     * @return
-     *    Returns the count attribute of this trial
-     */
-    public Integer getValue() {
-        return count;
-    }
 
     /**
      * Completely sets the count to a specified amount. Should not be used often - counts should be incremented
@@ -50,6 +40,6 @@ public class TrialCount extends Trial{
      *    The new count value that the trial will hold
      */
     public void setCount(Integer count) {
-        this.count = count;
+        this.value = (double)count;
     }
 }

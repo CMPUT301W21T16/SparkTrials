@@ -4,8 +4,6 @@ package com.example.sparktrials.models;
  * A type of trial that takes either a single success or a single fail
  */
 public class TrialBinomial extends Trial{
-    Boolean pass;
-
     /**
      * This constructor initializes a blank trial with a given pass
      * @param pass
@@ -13,7 +11,11 @@ public class TrialBinomial extends Trial{
      */
     public TrialBinomial(Boolean pass){
         super();
-        this.pass = pass;
+        if (pass){
+            this.value = 1.0;
+        } else {
+            this.value = 0.0;
+        }
     }
 
     /**
@@ -29,21 +31,12 @@ public class TrialBinomial extends Trial{
      */
     public TrialBinomial(Integer id, GeoLocation location, Profile profile, Boolean pass){
         super(id, location, profile);
-        this.pass = pass;
-
-    }
-
-    /**
-     * Gets whether this trial is a pass or a fail
-     * @return
-     *    Returns an integer value to signify pass or fail
-     */
-    public Integer getValue() {
-
-        if (this.pass){
-            return 1;
+        if (pass){
+            this.value = 1.0;
+        } else {
+            this.value = 0.0;
         }
-        return 0;
+
     }
 
     /**
@@ -52,6 +45,10 @@ public class TrialBinomial extends Trial{
      *    A boolean value representing either a pass or a fail that the pass attribute will take
      */
     public void setPass(Boolean pass) {
-        this.pass = pass;
+        if (pass){
+            this.value = 1.0;
+        } else {
+            this.value = 0.0;
+        }
     }
 }

@@ -7,34 +7,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.sparktrials.ExperimentActivity"
     android:columnCount="1"
+    android:orientation="vertical"
     >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button_back"
-            android:layout_weight="10"
-            android:layout_width="match_parent"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/back_button"
+            android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_gravity="top|start"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="@string/button_back" />
-
-        <Space
-            android:layout_weight="10"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </Space>
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="visible"
+            android:text="Back" />
 
         <Button
             android:id="@+id/button_subscribe"
-            android:layout_weight="5"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="20dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:text="@string/button_subscribe" />

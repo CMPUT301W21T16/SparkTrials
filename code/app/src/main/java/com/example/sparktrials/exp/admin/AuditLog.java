@@ -59,6 +59,8 @@ public class AuditLog extends ArrayAdapter<Profile> {
 //            }
 //        }
 
+        setFields(position);
+
         return view;
 
     }
@@ -78,12 +80,15 @@ public class AuditLog extends ArrayAdapter<Profile> {
         for(Trial trial: trialList){
             if(trial.getProfile().equals(user)){
                 trials++;
+                if(trial.getValue() > 0){
+                    result++;
+                }
             }
         }
         ratio = result/trials;
 
         userTrials.setText(String.format("%.0f", trials));
-        userResults.setText(String.format("%.0f", result));
+        userResults.setText(String.format("%.0f/%.0f", result, trials));
         userRatio.setText(String.format("%.0f", ratio*100));
         userName.setText(user.getUsername());
     }

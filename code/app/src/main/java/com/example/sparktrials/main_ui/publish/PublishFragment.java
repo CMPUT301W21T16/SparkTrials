@@ -11,8 +11,10 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.sparktrials.models.Profile;
@@ -74,6 +76,11 @@ public class PublishFragment extends DialogFragment {
         expLon.setInputType(InputType.TYPE_CLASS_NUMBER |
                 InputType.TYPE_NUMBER_FLAG_DECIMAL |
                 InputType.TYPE_NUMBER_FLAG_SIGNED);
+        Spinner spinner = view.findViewById(R.id.experiment_type_spinner);
+        String[] items = new String[]{"Binomial Trials", "Counts", "Non-Negative Integer Counts","Measurement Trials"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,items);
+        spinner.setAdapter(adapter);
+        String experimentType = spinner.getSelectedItem().toString();
         //experiment=this.experiment;
         String id = this.userID;
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -89,7 +96,7 @@ public class PublishFragment extends DialogFragment {
                         String MinNTrialsString = expMinNTrials.getText().toString();
                         String latString = expLat.getText().toString();
                         String lonString = expLon.getText().toString();
-                        PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,latString,lonString);
+                        PublishFragmentManager manager = new PublishFragmentManager(id,experimentType,desc,title,MinNTrialsString,latString,lonString);
                     }
                 })
                 .create();

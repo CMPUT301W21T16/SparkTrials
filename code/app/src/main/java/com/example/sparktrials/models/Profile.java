@@ -127,6 +127,26 @@ public class Profile {
     }
 
     /**
+     * Overriding equals() method from object class for Profiles
+     * @param o
+     *  The object to compare with
+     * @return
+     *  True if the Profiles have the same ID
+     *  False otherwise
+     */
+    @Override
+    public boolean equals(Object o){
+        boolean retVal = false;
+
+        if(o instanceof Profile){
+            Profile profile = (Profile) o;
+            retVal = profile.getId().equals(this.id);
+        }
+
+        return retVal;
+    }
+
+    /**
      * This method sets the contact info of the profile
      * @param contact
      *    The new contact that this profile will take

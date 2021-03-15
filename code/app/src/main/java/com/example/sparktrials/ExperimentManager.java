@@ -65,6 +65,7 @@ public class ExperimentManager {
                         Timestamp date = (Timestamp) expData.getData().get("Date");
                         experiment.setDate(date.toDate());
                         experiment.setOpen((Boolean) expData.getData().get("Open"));
+                        experiment.setType((String) expData.getData().get("Type"));
                     } else {
                         Log.d(TAG, "Document does not exists");
                     }

@@ -2,6 +2,8 @@ package com.example.sparktrials.models;
 
 import junit.framework.TestCase;
 
+import java.util.ArrayList;
+
 /**
  * Class to test the Profile class and all its methods
  */
@@ -71,5 +73,40 @@ public class ProfileTest extends TestCase {
         this.profile = new Profile("foo", "foo", "foo");
         profile.setContact("=anything!23#(&4|`@)");
         assertEquals("setContact not working", "=anything!23#(&4|`@)", profile.getContact());
+    }
+
+    /**
+     * Tests subscription methods by adding, bulk adding, deleting, bulk deleting
+     * and then verifying that everything is as it should be afterwards
+     */
+    public void testSubscriptions(){
+        this.profile = new Profile("foo");
+        assertEquals("Wrong size subscriptions", 0, this.profile.getSubscriptions().size()); //
+        ArrayList<String> mid_array = new ArrayList<>();
+        ArrayList<String> temp_array;
+        for (int i=0; i<30; i++){
+            this.profile.addSubscription(""+i);
+            if (i == 20){
+                temp_array = this.profile.getSubscriptions();
+                for (int j=0; j<temp_array.size(); j++){
+                    mid_array.add(temp_array.get(j));
+                }
+                assertEquals("getSubscriptions broken", 21, mid_array.size());
+                assertEquals("Wrong size subscriptions", 21, this.profile.getSubscriptions().size());
+                assertEquals("Subscription IN broken", true, this.profile.isSubscribed("3"));
+                this.profile.delSubscription("3");
+                this.profile.delSubscription("4");
+                assertEquals("del subscription broken", 19, this.profile.getSubscriptions().size());
+                assertEquals("Subscription IN broken", false, this.profile.isSubscribed("3"));
+                this.profile.addSubscriptions(mid_array);
+                assertEquals("Add Subscription broken", 21, this.profile.getSubscriptions().size());
+
+            }
+        }
+        this.profile.addSubscription("31");
+        assertEquals("add subscription broken", 31, this.profile.getSubscriptions().size());
+        this.profile.delSubscriptions(mid_array);
+        assertEquals("del subscriptions broken", 10, this.profile.getSubscriptions().size());
+
     }
 }

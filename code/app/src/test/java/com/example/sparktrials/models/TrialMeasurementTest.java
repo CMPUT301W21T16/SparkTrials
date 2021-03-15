@@ -13,7 +13,7 @@ public class TrialMeasurementTest extends TestCase {
         GeoLocation location = new GeoLocation(30.0, 40.0);
         Profile profile = new Profile("foo1", "foo2", "foo3");
         this.trial = new TrialMeasurement(1, location, profile, 100.0);
-        assertEquals("getMeasure does not work", 100.0, trial.getMeasure());
+        assertEquals("getMeasure does not work", 100.0, trial.getValue());
     }
 
     /**
@@ -25,6 +25,6 @@ public class TrialMeasurementTest extends TestCase {
         Profile profile = new Profile("foo1", "foo2", "foo3");
         this.trial = new TrialMeasurement(1, location, profile, 100.0);
         trial.setMeasure(396.45555);
-        assertEquals("setMeasure does not work", 396.45555, trial.getMeasure());
+        assertEquals("setMeasure does not work", 396.45555, trial.getValue());
     }
 }

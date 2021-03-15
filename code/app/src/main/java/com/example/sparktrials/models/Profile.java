@@ -1,5 +1,7 @@
 package com.example.sparktrials.models;
 
+import java.util.ArrayList;
+
 /**
  * This class keeps track of each user profile with an id, their username and contact info
  */
@@ -7,7 +9,7 @@ public class Profile {
     String id;
     String username;
     String contact;
-
+    ArrayList<String> subscriptions;
     /**
      * This constructor creates a default Profile with no attributes
      */
@@ -15,6 +17,7 @@ public class Profile {
         this.id = null;
         this.username = null;
         this.contact = null;
+        this.subscriptions = new ArrayList<>();
     }
 
     /**
@@ -26,11 +29,13 @@ public class Profile {
     public Profile(String id){
         this.id = id;
         this.username = "user"+id;
+        this.contact = null;
+        this.subscriptions = new ArrayList<>();
+
     }
 
     /**
      * This constructor fills out a profile
-     * TO BE USED WHEN DOWNLOADING A PRE-EXISTING profile
      * @param id
      *    A unique id used to identify this profile
      * @param username
@@ -42,6 +47,25 @@ public class Profile {
         this.id = id;
         this.username = username;
         this.contact = contact;
+    }
+
+    /**
+     * This constructor fills out a profile
+     * TO BE USED WHEN DOWNLOADING A PRE-EXISTING profile
+     * @param id
+     *    A unique id used to identify this profile
+     * @param username
+     *    The username of the person
+     * @param contact
+     *    The contact info of the person
+     * @param subscriptions
+     *    A list of experiments that the profile is subscribed to
+     */
+    public Profile(String id, String username, String contact, ArrayList<String> subscriptions){
+        this.id = id;
+        this.username = username;
+        this.contact = contact;
+        this.subscriptions = subscriptions;
     }
 
     /**
@@ -129,5 +153,76 @@ public class Profile {
      */
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    /**
+     * This method gets the subscriptions that a profile has
+     * @return
+     *    A list containing the ids of every experiment that the user is subscribed to
+     */
+    public ArrayList<String> getSubscriptions() {
+        return subscriptions;
+    }
+
+    /**
+     * Replaces subscription list
+     * Should not really be used except to create a Profile
+     * @param subscriptions
+     *    A list of experiment ids
+     */
+    public void setSubscriptions(ArrayList<String> subscriptions) {
+        this.subscriptions = subscriptions;
+    }
+
+    /**
+     * Adds an experiment id to the list of subscriptions
+     * Only add it if it doesn't already exist inside it
+     * @param expId
+     *    And experiment's id
+     */
+    public void addSubscription(String expId) {
+        if (!this.isSubscribed(expId)) {
+            this.subscriptions.add(expId);
+        }
+    }
+
+    /**
+     * Delete an experiment id in the list of subscriptions
+     * @param expId
+     *    The experiment id to delete
+     */
+    public void delSubscription(String expId) {
+        this.subscriptions.remove(expId);
+    }
+
+    /**
+     * Adds a list of experiment ids to the list of subscriptions
+     * @param expIds
+     *    A list of experiment ids
+     */
+    public void addSubscriptions(ArrayList<String> expIds){
+        for (int i=0; i<expIds.size(); i++){
+            this.addSubscription(expIds.get(i));
+        }
+    }
+
+    /**
+     * Delete a group of experiment ids from the last of subscriptions
+     * @param expIds
+     *   A list of experiment ids
+     */
+    public void delSubscriptions(ArrayList<String> expIds){
+        this.subscriptions.removeAll(expIds);
+    }
+
+    /**
+     * Checks if an experiment's id is in this profile's subscribed experiments
+     * @param expId
+     *    The experiment id to check for
+     * @return
+     *    returns true if experiment id is in subscriptions
+     */
+    public boolean isSubscribed(String expId) {
+        return this.subscriptions.contains(expId);
     }
 }

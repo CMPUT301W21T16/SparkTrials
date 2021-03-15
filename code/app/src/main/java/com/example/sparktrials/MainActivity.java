@@ -73,9 +73,7 @@ public class MainActivity extends AppCompatActivity {
 //        setSupportActionBar(myToolbar);
         NavigationUI.setupWithNavController(navView, navController);
 
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final CollectionReference collectionReference = db.collection("users");
+        FirebaseManager firebaseManager = new FirebaseManager();
 
         String userId = IdManager.getUserId(this);
         Log.d("USER ID",userId);
@@ -86,32 +84,13 @@ public class MainActivity extends AppCompatActivity {
         user_test.put("contact","123456890");
 
         // Add a test document to users collection.
-        collectionReference.document(userId).set(user_test).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.d("ADD USER","Success");
-                } else {
-                    Log.d("ADD USER","Something wrong.", task.getException());
-                }
-            }
-        });
+        firebaseManager.set("users", userId, user_test);
 
         // Retrieve and log user information from Firestore.
-        DocumentReference user = collectionReference.document(userId);
-        user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firebaseManager.get("users", "726c77d8-54c7-41a1-a149-afe608892add", new Callback() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("DB USER INFO", "DocumentSnapshot data: " + document.getData());
-                    } else {
-                        Log.d("DB USER INFO", "No such document");
-                    }
-                } else {
-                    Log.d("DB USER INFO", "get failed with ", task.getException());
-                }
+            public void onCallback(DocumentSnapshot document) {
+                Log.d("USER INFO", "DocumentSnapshot data: " + document.getData());
             }
         });
     }

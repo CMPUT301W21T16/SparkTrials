@@ -1,8 +1,10 @@
 package com.example.sparktrials.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * An experiment class that has an owner, multiple specs that define the experiment, and trials
@@ -447,5 +449,164 @@ public class Experiment {
      */
     public boolean isBlacklisted(String proId) {
         return this.blacklist.contains(proId);
+    }
+
+
+    /**
+     * Sorts the trials of an experiment in ascending order this comes in handy for calculating descriptive stats
+     * @return
+     * A sorted list of trials
+     */
+    public ArrayList<Double> trialsValuesSorted(){
+        ArrayList <Double>  values = new ArrayList<>();
+        for(int i = 0; i<this.trials.size(); i++){
+            values.add( (Double) ( this.trials.get(i).getValue()));
+        }
+        Collections.sort(values);
+        return values;
+    }
+
+    /**
+     * Removes duplicate values of trials necessary for calculating frequencies at which trials occur
+     * @return
+     * A sorted list with no duplicates
+     */
+    public Double[] removeDupes(){
+        Double[] cleanArray ;
+        HashSet<Double> noDupes = new HashSet<Double>(trialsValuesSorted());
+        cleanArray = new Double[noDupes.size()];
+        noDupes.toArray(cleanArray);
+        return cleanArray;
+    }
+
+    /**
+     * Calculates the x-axis values for the histogram/plot in the stats tab
+     * @return
+     * A sorted list of type string
+     */
+    public String [] getXaxis(){
+        int size = removeDupes().length;
+        String[] str = new String[size];
+        for (int i=0 ; i<size; i++){
+            str[i] = removeDupes()[i].toString();
+        }
+        return str ;
+    }
+
+    /**
+     * Calculates the so called frequencies or Y values for the histogram
+     * @return
+     * An integer list of frequencies which matches the the index of the getXAxis list
+     */
+    public int [] frequencies(){
+        int []frequencies = new int [getXaxis().length];
+        for (int i = 0 ; i < getXaxis().length ; i++){
+            for (int j = 0; j< trialsValuesSorted().size(); j++){
+                if (Double.parseDouble(getXaxis()[i]) == trialsValuesSorted().get(j)){
+                    frequencies[i]+=1;
+                }
+            }
+        }
+        return frequencies;
+    }
+
+    /**
+     * Calculates the Median value for the experiment
+     * @return
+     * Median of type string
+     */
+    public String getMedian(){
+        double median;
+        int num = trialsValuesSorted().size();
+        if (num  % 2 == 0){
+            median = ((double)(trialsValuesSorted().get(num/2) + trialsValuesSorted().get(num/2 - 1)));
+        }else{
+            median = ((double) trialsValuesSorted().get(num/2));
+        }
+        return ""+ median;
+    }
+
+    /**
+     * Calculates the Q1 (quartile 1) for the experiment
+     * @return
+     * Q1 of type string
+     */
+    public String getQ1(){
+        double quartile;
+        int num = trialsValuesSorted().size();
+        int length = num +1;
+        float newArraySize = (length * ((float) (1) * 25 / 100)) - 1;
+        if (newArraySize % 1 == 0) {
+            quartile =  trialsValuesSorted().get((int) newArraySize);
+        } else {
+            int newArraySize1 = (int) (newArraySize);
+            quartile = (trialsValuesSorted().get(newArraySize1) + trialsValuesSorted().get(newArraySize1+1)) / 2;
+        }
+        return String.format("%.2f", quartile);
+    }
+
+    /**
+     * Calculates the Q3 (quartile 3) for the experiment
+     * @return
+     * Q3 of type string
+     */
+    public String getQ3(){
+        double quartile;
+        int num = trialsValuesSorted().size();
+        int length = num +1;
+        float newArraySize = (length * ((float) (3) * 25 / 100)) - 1;
+        if (newArraySize % 1 == 0) {
+            quartile =  trialsValuesSorted().get((int) newArraySize);
+        } else {
+            int newArraySize1 = (int) (newArraySize);
+            quartile = (trialsValuesSorted().get(newArraySize1) + trialsValuesSorted().get(newArraySize1+1)) / 2;
+        }
+        return String.format("%.2f", quartile);
+    }
+
+    /**
+     * Finds the total number of trials in an experiment
+     * @return
+     * Number of trials of type string
+     */
+    public String getNumTrials(){
+        return "" +this.trials.size();
+    }
+
+    /**
+     * Calculates the standard deviation for the experiment
+     * @return
+     * Standard deviation of type string
+     */
+    public String getStd(){
+        int sum =0 ;
+        double mean;
+        int num = this.trials.size();
+        double std= 0;
+        for (int i=0 ; i<num;  i++){
+            sum+= this.trials.get(i).getValue();
+        }
+        mean = ((double) sum) / ((double) num);
+        for (int i = 0 ; i<num; i++){
+            std+= Math.pow(this.trials.get(i).getValue()- mean, 2);
+        }
+        std = Math.sqrt(std/num);
+        return String.format("%.2f", std);
+    }
+
+    /**
+     * Calculates the mean (average) for an experiment
+     * @return
+     * Mean of type String
+     */
+    public String getMean(){
+        int sum =0 ;
+        double mean;
+        int num = this.trials.size();
+        for (int i=0 ; i<num;  i++){
+            sum+= this.trials.get(i).getValue();
+        }
+        mean = ((double) sum) / ((double) num);
+        return String.format("%.2f", mean);
     }
 }

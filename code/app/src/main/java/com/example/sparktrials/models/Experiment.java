@@ -18,6 +18,7 @@ import java.util.HashSet;
  */
 public class Experiment {
     private String id;
+    private String type;
     private Profile owner;
     private ArrayList<Trial> trials;
     private String title;
@@ -34,6 +35,7 @@ public class Experiment {
      */
     public Experiment(String id){
         this.id = id;
+        this.type = null;
         this.owner = null;
         this.trials = new ArrayList<>();
         this.title = "N/A";
@@ -59,8 +61,9 @@ public class Experiment {
      * @param minNTrials
      *    The minimum number of trials that a user has to commit before their trials are counted
      */
-    public Experiment(String id, Profile owner, String title, String desc, GeoLocation region, Integer minNTrials){
+    public Experiment(String id, String type, Profile owner, String title, String desc, GeoLocation region, Integer minNTrials){
         this.id = id;
+        this.type = type.toLowerCase();
         this.owner = owner;
         this.trials = new ArrayList<>();
         this.title = title;
@@ -92,9 +95,10 @@ public class Experiment {
      * @param date
      *    The date that the experiment was created on
      */
-    public Experiment(String id, Profile owner, ArrayList<Trial> trials, String title, String desc,
+    public Experiment(String id, String type, Profile owner, ArrayList<Trial> trials, String title, String desc,
                       GeoLocation region, Integer minNTrials, Boolean open, Date date, ArrayList<String> blacklist){
         this.id = id;
+        this.type = type.toLowerCase();
         this.owner = owner;
         this.trials = trials;
         this.title = title;
@@ -113,6 +117,29 @@ public class Experiment {
      */
     public String getId() {
         return id;
+    }
+
+    /**
+     * Fetches the type of the experiment
+     * @return
+     *    The type of the experiment as a string.
+     *    Either binomial, count, integercount, or measure
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets the type of the experiment to a new value
+     * SHOULD NOT BE USED UNLESS CHANGING FROM NULL!
+     * @param type
+     *    The type that the experiment will be
+     *    Should be either binomial, count, intergcount, or measure
+     */
+    public void setType(String type) {
+        if (this.type==null) {
+            this.type = type.toLowerCase();
+        }
     }
 
     /**

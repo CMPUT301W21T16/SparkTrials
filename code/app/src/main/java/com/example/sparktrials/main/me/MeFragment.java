@@ -37,9 +37,9 @@ public class MeFragment extends Fragment {
 
     EditText et_name, etContact;
     Button updateButton;
-    String name, cellphone;
+
     TextView tvUserID, tvName, tvContact;
-    IdManager idManager = new IdManager();
+
     String userID;
 
     /**
@@ -65,36 +65,35 @@ public class MeFragment extends Fragment {
 
         FirebaseManager firebaseManager = new FirebaseManager();
 
+        IdManager idManager = new IdManager(this.getContext());
+        userID=  idManager.getUserId();
 
-        userID=  idManager.getUserId(this.getActivity());
+
         firebaseManager.get("users", userID, new Callback() {
             @Override
             public void onCallback(DocumentSnapshot document) {
 
-            }
-        } {
-            @Override
-            public void onCallback(DocumentSnapshot document) {
+                String name, contact;
+                name = (String) document.get("name");
+                contact = (String) document.get("contact");
 
-            }
-        } {
-            @Override
-            public void onCallback(DocumentSnapshot document) {
+
+                // Set user id text view
+                tvUserID= getView().findViewById(R.id.user_id);
+                tvUserID.setText(userID);
+
+                // Set username
+                tvName = getView().findViewById(R.id.tv_name);
+                tvName.setText(name);
+                // Set contact
+                tvContact = getView().findViewById(R.id.tvContact);
+                tvContact.setText(contact);
+
+                // initialize update button
 
             }
         });
-        // Set user id text view
-        tvUserID= getView().findViewById(R.id.user_id);
-        tvUserID.setText(userID);
 
-        // Set username
-        tvName = getView().findViewById(R.id.tv_name);
-        tvName.setText(name);
-        // Set contact
-        tvContact = getView().findViewById(R.id.tvContact);
-        tvContact.setText(cellphone);
-
-        // initialize update button
         updateButton = getView().findViewById(R.id.btn_ep);
 
 
@@ -132,7 +131,8 @@ public class MeFragment extends Fragment {
      * Checks to make sure data is input and then updates data to the database
      */
     public void updateProfile() {
-        userID=  idManager.getUserId(this.getActivity());
+        IdManager idManager = new IdManager(this.getContext());
+        userID=  idManager.getUserId();
         FirebaseManager firebaseManager = new FirebaseManager();
         String nameInput = et_name.getText().toString();
         String contactInput = etContact.getText().toString();

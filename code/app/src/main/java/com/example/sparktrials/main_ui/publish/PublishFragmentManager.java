@@ -1,13 +1,19 @@
 package com.example.sparktrials.main_ui.publish;
 
 import android.util.Log;
+
+import com.example.sparktrials.FirebaseManager;
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.Profile;
+import com.example.sparktrials.models.Trial;
+import com.example.sparktrials.models.TrialCount;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -38,7 +44,7 @@ public class PublishFragmentManager {
      * @param lonString
      * String containing the longitude
      */
-    public PublishFragmentManager(String userID,String desc, String title, String MinNTrialsString,String latString, String lonString){
+    public PublishFragmentManager(String userID,String desc, String title, String MinNTrialsString,String latString, String lonString,String experimentType){
         try {
             minNTrials = Integer.parseInt(MinNTrialsString);
         }catch(NumberFormatException e){
@@ -61,30 +67,11 @@ public class PublishFragmentManager {
                         String cellphone = (String) document.get("cellphone");
                         String experimentID= UUID.randomUUID().toString();
                         profile = new Profile(userID,name,cellphone);
-                        experiment= new Experiment(experimentID,profile,title,desc,geoLocation,minNTrials);
+                        experiment= new Experiment(experimentID,experimentType,profile,title,desc,geoLocation,minNTrials);
                         Log.d("Data", document.getId() + " => " + document.getData());
-                        uploadExperiment(experiment,geoLocation,profile);
+                        FirebaseManager manager = new FirebaseManager();
+                        manager.uploadExperiment(experiment,geoLocation,profile);
                     }
                 });
     }
-
-    /**
-     * Recieves experiment and geolocations object and uploads the data to firebase
-     * @param experiment
-     * @param geoLocation
-     */
-    public void uploadExperiment(Experiment experiment, GeoLocation geoLocation, Profile profile){
-        Map<String,Object> data = new HashMap<>();
-        DocumentReference dRef = FirebaseFirestore.getInstance().collection("experiments").document(experiment.getId());
-        data.put("Title",experiment.getTitle());
-        data.put("Description",experiment.getDesc());
-        data.put("Latitude",geoLocation.getLat());
-        data.put("Longitude",geoLocation.getLon());
-        data.put("MinNTrials",experiment.getMinNTrials());
-        data.put("profileID",profile.getId());
-        data.put("Date",experiment.getDate());
-        data.put("Open",experiment.getOpen());
-        dRef.set(data);
-    }
-
 }

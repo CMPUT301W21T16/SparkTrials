@@ -48,5 +48,17 @@
         android:hint="Longitude"
         android:textSize="20sp"
         />
+    <TextView
+        android:id="@+id/select_experiment_type_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="Select Experiment Type"
+        android:textSize="20sp"
+        />
+    <Spinner
+        android:id="@+id/experiment_type_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </GridLayout>

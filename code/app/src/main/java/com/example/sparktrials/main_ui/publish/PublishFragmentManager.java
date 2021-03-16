@@ -38,7 +38,7 @@ public class PublishFragmentManager {
      * @param lonString
      * String containing the longitude
      */
-    public PublishFragmentManager(String userID,String desc, String title, String MinNTrialsString,String latString, String lonString){
+    public PublishFragmentManager(String userID,String desc, String title, String MinNTrialsString,String latString, String lonString,String experimentType){
         try {
             minNTrials = Integer.parseInt(MinNTrialsString);
         }catch(NumberFormatException e){
@@ -61,7 +61,7 @@ public class PublishFragmentManager {
                         String cellphone = (String) document.get("cellphone");
                         String experimentID= UUID.randomUUID().toString();
                         profile = new Profile(userID,name,cellphone);
-                        experiment= new Experiment(experimentID,profile,title,desc,geoLocation,minNTrials);
+                        experiment= new Experiment(experimentID,experimentType,profile,title,desc,geoLocation,minNTrials);
                         Log.d("Data", document.getId() + " => " + document.getData());
                         uploadExperiment(experiment,geoLocation,profile);
                     }
@@ -84,6 +84,7 @@ public class PublishFragmentManager {
         data.put("profileID",profile.getId());
         data.put("Date",experiment.getDate());
         data.put("Open",experiment.getOpen());
+        data.put("Type",experiment.getType());
         dRef.set(data);
     }
 

@@ -3,4 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
     <string name="title_me">Me</string>
+    <string name="button_subscribe">Subscribe</string>
+    <string name="button_back">Back</string>
 </resources>

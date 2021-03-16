@@ -18,9 +18,9 @@ public class TrialCountTest extends TestCase {
         GeoLocation location = new GeoLocation(30.0, 40.0);
         Profile profile = new Profile("foo1", "foo2", "foo3");
         this.trial = new TrialCount(1, location, profile);
-        assertEquals("get/setCount does not work", 0, (int)trial.getCount());
+        assertEquals("get/setCount does not work", 0, (int)trial.getValue());
         this.trial.setCount(100);
-        assertEquals("get/setCount does not work", 100, (int)trial.getCount());
+        assertEquals("get/setCount does not work", 100, (int)trial.getValue());
     }
 
     /**
@@ -31,11 +31,11 @@ public class TrialCountTest extends TestCase {
         Profile profile = new Profile("foo1", "foo2", "foo3");
         this.trial = new TrialCount(1, location, profile);
         trial.addCount();
-        assertEquals("addCount does not work", 1, (int)trial.getCount());
+        assertEquals("addCount does not work", 1, (int)trial.getValue());
         trial.addCount();
         trial.addCount();
         trial.addCount();
-        assertEquals("addCount does not work", 4, (int)trial.getCount());
+        assertEquals("addCount does not work", 4, (int)trial.getValue());
 
     }
 }

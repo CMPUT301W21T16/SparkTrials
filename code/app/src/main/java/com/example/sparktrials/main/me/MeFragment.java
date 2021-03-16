@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.sparktrials.Callback;
 import com.example.sparktrials.FirebaseManager;
 import com.example.sparktrials.IdManager;
 import com.example.sparktrials.R;
@@ -62,8 +63,26 @@ public class MeFragment extends Fragment {
      */
     public void onViewCreated(View view , Bundle savedInstanceState){
 
-        userID=  idManager.getUserId(this.getActivity());
+        FirebaseManager firebaseManager = new FirebaseManager();
 
+
+        userID=  idManager.getUserId(this.getActivity());
+        firebaseManager.get("users", userID, new Callback() {
+            @Override
+            public void onCallback(DocumentSnapshot document) {
+
+            }
+        } {
+            @Override
+            public void onCallback(DocumentSnapshot document) {
+
+            }
+        } {
+            @Override
+            public void onCallback(DocumentSnapshot document) {
+
+            }
+        });
         // Set user id text view
         tvUserID= getView().findViewById(R.id.user_id);
         tvUserID.setText(userID);

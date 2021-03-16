@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.top_app_bar_publish_experiment:
                         Log.d("BUTTON", "publishClicked");
-                        new PublishFragment("726c77d8-54c7-41a1-a149-afe608892add").show(getSupportFragmentManager(),"Add Experiment");
+                        new PublishFragment().show(getSupportFragmentManager(),"Add Experiment");
                         break;
                     default:
                         Log.d("BUTTON", "something wrong");

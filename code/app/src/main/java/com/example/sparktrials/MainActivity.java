@@ -74,20 +74,19 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         FirebaseManager firebaseManager = new FirebaseManager();
-
-        String userId = IdManager.getUserId(this);
-        Log.d("USER ID",userId);
+        IdManager idManager = new IdManager(this);
+        Log.d("USER ID",idManager.getUserId());
 
         Map<String, Object> user_test = new HashMap<>();
-        user_test.put("uid",userId);
+        user_test.put("uid",idManager.getUserId());
         user_test.put("name", "Test");
         user_test.put("contact","123456890");
 
         // Add a test document to users collection.
-        firebaseManager.set("users", userId, user_test);
+        firebaseManager.set("users",idManager.getUserId(), user_test);
 
         // Retrieve and log user information from Firestore.
-        firebaseManager.get("users", "726c77d8-54c7-41a1-a149-afe608892add", new Callback() {
+        firebaseManager.get("users", idManager.getUserId(), new Callback() {
             @Override
             public void onCallback(DocumentSnapshot document) {
                 Log.d("USER INFO", "DocumentSnapshot data: " + document.getData());

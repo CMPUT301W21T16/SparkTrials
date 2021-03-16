@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.sparktrials.IdManager;
 import com.example.sparktrials.models.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -53,9 +54,6 @@ public class PublishFragment extends DialogFragment {
     private EditText expLon;
     private Experiment experiment;
     private String userID;
-    public PublishFragment(String id) {
-        this.userID=id;
-    }
 
     /**
      * onCreate Dialog which prompts the user to enter a title, description, minimum number of trials and a lat long pair.
@@ -81,7 +79,8 @@ public class PublishFragment extends DialogFragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,items);
         spinner.setAdapter(adapter);
         //experiment=this.experiment;
-        String id = this.userID;
+        IdManager idManager = new IdManager(getActivity());
+        String id = idManager.getUserId();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setView(view)

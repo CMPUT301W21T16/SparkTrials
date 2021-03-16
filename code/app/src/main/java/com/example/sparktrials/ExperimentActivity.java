@@ -2,6 +2,7 @@ package com.example.sparktrials;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,13 +14,13 @@ import com.example.sparktrials.exp.admin.AdminFragment;
 import com.example.sparktrials.exp.forum.ForumFragment;
 import com.example.sparktrials.exp.location.LocationFragment;
 import com.example.sparktrials.exp.stats.StatsFragment;
+import com.example.sparktrials.models.Experiment;
+import com.example.sparktrials.models.Profile;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 public class ExperimentActivity extends AppCompatActivity {
 
-    private String userID;
-    private String experimentID;
     private TextView title;
     private TextView open;
     private TextView description;
@@ -27,12 +28,16 @@ public class ExperimentActivity extends AppCompatActivity {
     private TextView date;
     private TextView region;
     private TextView minTrials;
-    FloatingActionButton backToMain;
 
+    private String userId;
+    private String experimentId;
+    private Button backToMain;
     private TabLayout tablayout;
     private ViewPager viewPager;
-    private TextView title_text;
-    private TextView desc_text;
+    private TextView titleText;
+    private TextView descText;
+
+    private Experiment experiment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,25 +45,37 @@ public class ExperimentActivity extends AppCompatActivity {
         setContentView(R.layout.experiment_main);
 
         //NEW
+
+        experimentId = getIntent().getStringExtra("EXPERIMENT_ID");
+        IdManager idManager = new IdManager(this);
+        ExperimentManager manager = new ExperimentManager(idManager.getUserId(), experimentId);
         //SETUP fields
         backToMain = findViewById(R.id.back_button);
-        title_text = findViewById(R.id.text_title);
-        desc_text = findViewById(R.id.text_desc);
+        titleText = findViewById(R.id.text_title);
+        descText = findViewById(R.id.text_desc);
+
+        experiment = manager.getExperiment();
+        titleText.setText(experiment.getTitle());
+        descText.setText(experiment.getDesc());
         //Setup tabs
         tablayout = (TabLayout) findViewById(R.id.tablayout_id);
         viewPager = (ViewPager) findViewById(R.id.viewpager_id);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         //Add fragments
         //TO MODIFY THE FRAGMENTS THEMSELVES GO TO i.e. com.example.sparktrials.action.ActionFragment
-        adapter.addFragment(new ActionFragment(), "Action");
-        adapter.addFragment(new StatsFragment(), "Stats");
-        adapter.addFragment(new ForumFragment(), "Forum");
-        adapter.addFragment(new LocationFragment(), "Map");
-        adapter.addFragment(new AdminFragment(), "Admin");
+        adapter.addFragment(new ActionFragment(experiment), "Action");
+        adapter.addFragment(new StatsFragment(experiment), "Stats");
+        adapter.addFragment(new ForumFragment(experiment), "Forum");
+        adapter.addFragment(new LocationFragment(experiment), "Map");
+        if (experiment.getType()==null) {
+            adapter.addFragment(new AdminFragment(experiment), "Admin");
+        }
         //Adapter Setup
         viewPager.setAdapter(adapter);
         tablayout.setupWithViewPager(viewPager);
         //END NEW
+
+
 
 //        //BottomNavigationView navView = findViewById(R.id.nav_view_exp);
 //        title = (TextView) findViewById(R.id.experiment_title);

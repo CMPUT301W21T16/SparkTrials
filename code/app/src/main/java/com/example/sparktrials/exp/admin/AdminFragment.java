@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sparktrials.R;
+import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.Trial;
 
@@ -26,6 +27,12 @@ public class AdminFragment extends Fragment {
 
     private Button endButton;
     private Button unpublishButton;
+
+    Experiment experiment;
+
+    public AdminFragment(Experiment experiment){
+        this.experiment = experiment;
+    }
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_admin, container, false);

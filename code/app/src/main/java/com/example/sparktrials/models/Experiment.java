@@ -121,7 +121,6 @@ public class Experiment {
      * Fetches the type of the experiment
      * @return
      *    The type of the experiment as a string.
-     *    Either binomial, count, integercount, or measure
      */
     public String getType() {
         return type;

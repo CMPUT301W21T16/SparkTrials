@@ -9,11 +9,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.sparktrials.R;
+import com.example.sparktrials.models.Experiment;
 
 public class LocationFragment extends Fragment {
     View view;
-    public LocationFragment(){
-
+    Experiment experiment;
+    public LocationFragment(Experiment experiment){
+        this.experiment = experiment;
     }
 
     @Nullable

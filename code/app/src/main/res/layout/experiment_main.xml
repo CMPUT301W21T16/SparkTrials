@@ -14,27 +14,36 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <Button
             android:id="@+id/back_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="top|start"
-            android:layout_marginLeft="5dp"
+            android:layout_weight="13"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:clickable="true"
             android:focusable="true"
             android:visibility="visible"
-            android:text="Back" />
+            android:text="@string/button_back" />
+
+        <Space
+            android:layout_weight="13"
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+        </Space>
 
         <Button
             android:id="@+id/button_subscribe"
+            android:layout_weight="8"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginRight="20dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="visible"
             android:text="@string/button_subscribe" />
     </LinearLayout>
 
@@ -77,7 +86,7 @@
     <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="160dp"
+        android:layout_marginBottom="180dp"
         android:id="@+id/viewpager_id"/>
 
 </GridLayout>

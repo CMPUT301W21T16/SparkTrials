@@ -26,10 +26,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-interface Callback {
-    void onCallback(DocumentSnapshot document);
-}
-
 public class FirebaseManager {
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private final String LOG_TAG = "Firebase ";

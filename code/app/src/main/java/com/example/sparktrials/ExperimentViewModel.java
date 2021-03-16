@@ -72,4 +72,7 @@ public class ExperimentViewModel extends ViewModel {
         });
     }
 
+    public void subscribe(String proId){
+    }
+
 }

@@ -28,6 +28,7 @@ public class Experiment {
     private Boolean open;
     private Date date;
     private ArrayList<String> blacklist;
+    private ArrayList<String> subscribers;
 
     /**
      * Initiates an empty experiment that will be filled out later
@@ -449,7 +450,6 @@ public class Experiment {
     public boolean isBlacklisted(String proId) {
         return this.blacklist.contains(proId);
     }
-
 
     /**
      * Sorts the trials of an experiment in ascending order this comes in handy for calculating descriptive stats

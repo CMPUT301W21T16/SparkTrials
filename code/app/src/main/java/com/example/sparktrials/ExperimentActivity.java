@@ -2,6 +2,7 @@ package com.example.sparktrials;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -70,7 +71,7 @@ public class ExperimentActivity extends AppCompatActivity {
                 adapter.addFragment(new StatsFragment(experiment), "Stats");
                 adapter.addFragment(new ForumFragment(experiment), "Forum");
                 adapter.addFragment(new LocationFragment(experiment), "Map");
-                if (experiment.getType()==null) {
+                if (experiment.getOwner().getId().equals(userId)) {
                     adapter.addFragment(new AdminFragment(experiment), "Admin");
                 }
                 viewPager.setAdapter(adapter);

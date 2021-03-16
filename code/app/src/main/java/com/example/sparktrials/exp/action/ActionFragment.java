@@ -26,7 +26,7 @@ public class ActionFragment extends Fragment {
     public ActionFragment(Experiment experiment){
         Profile profile = new Profile("lol");
         GeoLocation geoLocation = new GeoLocation(1.1,1.1);
-        Experiment experiment = new Experiment("aaaa","Binomial Trials",profile,"lol","aaaa",geoLocation,43);
+        this.experiment = new Experiment("aaaa","Binomial Trials",profile,"lol","aaaa",geoLocation,43);
         Log.d("TYPE=",experiment.getType());
         this.experiment = experiment;
     }

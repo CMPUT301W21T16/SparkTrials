@@ -12,6 +12,10 @@ public class AdminViewModel extends ViewModel {
     private ArrayList<Trial> trialList = new ArrayList<>();
     private ArrayList<Profile> userList = new ArrayList<>();
 
+
+    /**
+     * Public Constructor for the AdminViewModel, currently creates it's own trial data for testing
+     */
     public AdminViewModel() {
         Trial testTrial1 = new TrialBinomial(true);
         testTrial1.setId(1);
@@ -38,10 +42,20 @@ public class AdminViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Returns the list of trials for this experiment
+     * @return
+     *  The list of trials uploaded to this experiment
+     */
     public ArrayList<Trial> getTrialList(){
         return trialList;
     }
 
+    /**
+     * Returns the list of users who have uploaded trials to this experiment
+     * @return
+     *  The list of users
+     */
     public ArrayList<Profile> getUserList(){
         return userList;
     }

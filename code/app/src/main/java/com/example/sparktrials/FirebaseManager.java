@@ -6,12 +6,18 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.sparktrials.models.Experiment;
+import com.example.sparktrials.models.GeoLocation;
+import com.example.sparktrials.models.Profile;
+import com.example.sparktrials.models.Trial;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -139,10 +145,29 @@ public class FirebaseManager {
             }
         });
     }
-
-
-
-
+    /**
+     * Recieves experiment and geolocations object and uploads the data to firebase
+     * @param experiment
+     * @param geoLocation
+     */
+    public void uploadExperiment(Experiment experiment, GeoLocation geoLocation, Profile profile){
+        Map<String,Object> data = new HashMap<>();
+        DocumentReference dRef = firestore.collection("experiments").document(experiment.getId());
+        data.put("Title",experiment.getTitle());
+        data.put("Description",experiment.getDesc());
+        data.put("Latitude",geoLocation.getLat());
+        data.put("Longitude",geoLocation.getLon());
+        data.put("MinNTrials",experiment.getMinNTrials());
+        data.put("profileID",profile.getId());
+        data.put("Date",experiment.getDate());
+        data.put("Open",experiment.getOpen());
+        data.put("Type",experiment.getType());
+        ArrayList<Trial> trials = new ArrayList<>();
+        ArrayList<String> blacklist = new ArrayList<>();
+        data.put("Trials",trials);
+        data.put("Blacklist",blacklist);
+        dRef.set(data);
+    }
 
 
 }

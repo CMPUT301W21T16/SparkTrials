@@ -17,26 +17,27 @@ import java.util.ArrayList;
 public class ActionFragmentManager {
     String expType;
     Experiment experiment;
-    ArrayList<Trial> trials = new ArrayList<>();
+    int originalNTrials;
     public ActionFragmentManager(Experiment experiment) {
         this.experiment=experiment;
         this.expType=expType;
+        this.originalNTrials=Integer.parseInt(experiment.getNumTrials());
     }
     public void addBinomialTrial(Boolean result){
         TrialBinomial trial = new TrialBinomial(result);
-        trials.add(trial);
+        experiment.addTrial(trial);
     }
     public void addNonNegIntTrial(Integer result){
         TrialIntCount trial = new TrialIntCount(result);
-        trials.add(trial);
+        experiment.addTrial(trial);
     }
     public void addMeasurmentTrial(Double result){
         TrialMeasurement trial = new TrialMeasurement(result);
-        trials.add(trial);
+        experiment.addTrial(trial);
     }
     public void addCountTrial(){
         TrialCount trial = new TrialCount();
-        trials.add(trial);
+        experiment.addTrial(trial);
     }
 
     public String getNTrials(){
@@ -50,5 +51,12 @@ public class ActionFragmentManager {
     }
 
     public void uploadTrial(){};
+
+    public void deleteTrial(){
+        int elementsToRemove=(Integer.parseInt(experiment.getNumTrials()) - originalNTrials);
+        for (int i=0;i<elementsToRemove;i++){
+            //Waiting for pop attribute in experiment.
+        }
+    }
 
 }

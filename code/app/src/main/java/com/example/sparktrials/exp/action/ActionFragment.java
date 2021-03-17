@@ -43,13 +43,7 @@ public class ActionFragment extends Fragment {
         Button deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
         EditText valueEditText = view.findViewById(R.id.countvalue_editText);
         Button incrementCount = view.findViewById(R.id.action_bar_incrementCount);
-        int trials=Integer.parseInt(manager.getNTrials());
-        int minimumNumberTrials = manager.getMinNTrials();
-        trialsNumber=view.findViewById(R.id.trials_completed);
-        if (minimumNumberTrials>0)
-            trialsNumber.setText("Trials completed: "+trials+"/"+minimumNumberTrials);
-        else
-            trialsNumber.setText("Trials completed: "+trials);
+        updateView();
         if (manager.getType().equals("binomial trials".toLowerCase())){
             leftButton.setVisibility(View.VISIBLE);
             rightButton.setVisibility(View.VISIBLE);
@@ -57,12 +51,14 @@ public class ActionFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     manager.addBinomialTrial(true);
+                    updateView();
                 }
             });
             rightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     manager.addBinomialTrial(false);
+                    updateView();
                 }
             });
         }
@@ -77,6 +73,7 @@ public class ActionFragment extends Fragment {
                     try{
                         result= Integer.parseInt(valueString);
                         manager.addNonNegIntTrial(result);
+                        updateView();
                     }catch (NumberFormatException e) {
                         AlertDialog builder = new AlertDialog.Builder(getContext())
                                 .setTitle("ERROR")
@@ -101,6 +98,7 @@ public class ActionFragment extends Fragment {
                     try{
                         result= Double.parseDouble(valueString);
                         manager.addMeasurmentTrial(result);
+                        updateView();
                     }catch (NumberFormatException e) {
                         AlertDialog builder = new AlertDialog.Builder(getContext())
                                 .setTitle("ERROR")
@@ -117,6 +115,7 @@ public class ActionFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     manager.addCountTrial();
+                    updateView();
                 }
             });
         }
@@ -139,5 +138,14 @@ public class ActionFragment extends Fragment {
             }
         });
         return view;
+    }
+    public void updateView(){
+        int trials=Integer.parseInt(manager.getNTrials());
+        int minimumNumberTrials = manager.getMinNTrials();
+        trialsNumber=view.findViewById(R.id.trials_completed);
+        if (minimumNumberTrials>0)
+            trialsNumber.setText("Trials completed: "+trials+"/"+minimumNumberTrials);
+        else
+            trialsNumber.setText("Trials completed: "+trials);
     }
 }

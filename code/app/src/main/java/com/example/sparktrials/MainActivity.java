@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.sparktrials.main_ui.publish.PublishFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.top_app_bar_draft:
                         Log.d("BUTTON", "draftClicked");
+                        Toast.makeText(getApplicationContext(), "Welcome back.", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.top_app_bar_scan_qr_code:
                         Log.d("BUTTON", "scanClicked");
@@ -73,27 +75,9 @@ public class MainActivity extends AppCompatActivity {
         });
 //        setSupportActionBar(myToolbar);
         NavigationUI.setupWithNavController(navView, navController);
-
-        FirebaseManager firebaseManager = new FirebaseManager();
         IdManager idManager = new IdManager(this);
-        Log.d("USER ID",idManager.getUserId());
+        idManager.login();
 
-        Map<String, Object> user_test = new HashMap<>();
-        ArrayList<String> subscriptions = new ArrayList<>();
-        user_test.put("uid",idManager.getUserId());
-        user_test.put("name", "Test");
-        user_test.put("contact","123456890");
-        user_test.put("subscriptions",subscriptions);
 
-        // Add a test document to users collection.
-        firebaseManager.set("users",idManager.getUserId(), user_test);
-
-        // Retrieve and log user information from Firestore.
-        firebaseManager.get("users", idManager.getUserId(), new Callback() {
-            @Override
-            public void onCallback(DocumentSnapshot document) {
-                Log.d("USER INFO", "DocumentSnapshot data: " + document.getData());
-            }
-        });
     }
 }

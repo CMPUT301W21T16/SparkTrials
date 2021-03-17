@@ -3,6 +3,7 @@ package com.example.sparktrials;
 
 import android.telecom.Call;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -50,11 +51,11 @@ public class FirebaseManager {
                 String task_path = collection + "/" + document;
                 if (task.isSuccessful()) {
                     DocumentSnapshot result = task.getResult();
-                    if (result.exists()) {
-                        callback.onCallback(result);
+                    callback.onCallback(result);
+                    if (result.exists())
                         Log.d(LOG_TAG + "[Retrieve]", "Succeed: " + task_path);
-                    } else
-                        Log.d(LOG_TAG + "[Retrieve]", "Failed (result empty): " + task_path);
+                    else
+                        Log.d(LOG_TAG + "[Retrieve]", "Succeed (result empty): " + task_path);
                 } else {
                     Log.d(LOG_TAG + "[Retrieve]", "Failed: " + task_path);
                 }
@@ -143,6 +144,23 @@ public class FirebaseManager {
             }
         });
     }
+
+
+    /**
+     * Create a default user profile in Firestore.
+     * @param userId
+     */
+    public void createUserProfile(String userId) {
+        Map<String, Object> profile = new HashMap<>();
+        ArrayList<String> subscribers = new ArrayList<>();
+        profile.put("uid",userId);
+        profile.put("name", "User");
+        profile.put("contact","None");
+        profile.put("subscribers",subscribers);
+        set("users", userId, profile);
+    }
+
+
     /**
      * Recieves experiment and geolocations object and uploads the data to firebase
      * @param experiment

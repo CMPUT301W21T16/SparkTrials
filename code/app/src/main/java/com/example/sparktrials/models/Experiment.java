@@ -232,6 +232,26 @@ public class Experiment {
     }
 
     /**
+     * Deletes a trial from the trial list
+     * @param trial
+     *    The trial to delete
+     */
+    public void delTrial(Trial trial){
+        this.trials.remove(trial);
+    }
+
+    /**
+     * Deletes a trial from the trial list
+     * @param id
+     *    The id of the trial to delete
+     */
+    public void delTrial(Integer id){
+        Trial trial = this.trials.get(id);
+        this.delTrial(trial);
+
+    }
+
+    /**
      * Retrieves every single trial from a specified user
      * @param id
      *    The id of the user that you want the trials from

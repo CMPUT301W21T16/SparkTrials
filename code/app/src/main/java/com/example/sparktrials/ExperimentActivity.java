@@ -110,7 +110,7 @@ public class ExperimentActivity extends AppCompatActivity {
                 //Experiment requires locations and user is not currently subscribed
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("This experiment requires your location to be submitted");
-                builder.setMessage("Would you like to proceed?");
+                builder.setMessage("Are you sure you want to subscribe?");
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //subscribe

@@ -46,13 +46,34 @@ public class AdminFragment extends Fragment {
 
         manager = new ViewModelProvider(this).get(AdminViewModel.class);
 
-        ArrayList<Trial> trialList = manager.getTrialList();
-        ArrayList<Profile> userList = manager.getUserList();
+        ArrayList<Trial> trialList = experiment.getAllTrials();
+        ArrayList<Profile> userList = manager.getUserList(trialList);
 
-        userTrialListAdapter = new AuditLog(getContext(), trialList, userList);
+        userTrialListAdapter = new AuditLog(getContext(), experiment, trialList, userList);
         userTrialListView.setAdapter(userTrialListAdapter);
 
         endButton = getView().findViewById(R.id.end_experiment_button);
+        if(experiment.getOpen()){
+            endButton.setText("END EXPERIMENT");
+        } else {
+            endButton.setText("OPEN EXPERIMENT");
+        }
         unpublishButton = getView().findViewById(R.id.unpublish_experiment_button);
+
+        endButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manager.toggleExpOpen(experiment);
+            }
+        });
+
+        // I WANT THIS TO OPEN A DIALOG TO CONFIRM THE DELETION, CURRENTLY IT JUST DELETES
+        // AS SOON AS YOU CLICK IT BE CAREFUL
+        unpublishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manager.deleteExperiment(experiment.getId());
+            }
+        });
     }
 }

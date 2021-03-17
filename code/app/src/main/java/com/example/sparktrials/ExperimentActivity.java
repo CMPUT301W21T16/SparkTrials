@@ -2,6 +2,8 @@ package com.example.sparktrials;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -31,9 +33,12 @@ public class ExperimentActivity extends AppCompatActivity {
     private ExperimentViewModel expManager;
     private String userId;
     private String experimentId;
-    private Button backToMain;
+
     private TabLayout tablayout;
     private ViewPager viewPager;
+
+    private Button subscribe;
+    private Button backToMain;
     private TextView titleText;
     private TextView descText;
 
@@ -43,11 +48,12 @@ public class ExperimentActivity extends AppCompatActivity {
         setContentView(R.layout.experiment_main);
 
         experimentId = getIntent().getStringExtra("EXPERIMENT_ID");
+        expManager = new ViewModelProvider(this).get(ExperimentViewModel.class);
+        expManager.init(experimentId);
         IdManager idManager = new IdManager(this);
         userId = idManager.getUserId();
 
-
-        //NEW
+        subscribe = findViewById(R.id.button_subscribe);
         backToMain = findViewById(R.id.back_button);
         titleText = findViewById(R.id.text_title);
         descText = findViewById(R.id.text_desc);
@@ -55,9 +61,6 @@ public class ExperimentActivity extends AppCompatActivity {
         tablayout = (TabLayout) findViewById(R.id.tablayout_id);
         viewPager = (ViewPager) findViewById(R.id.viewpager_id);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        expManager = new ViewModelProvider(this).get(ExperimentViewModel.class);
-        expManager.init(experimentId);
 
         // This will allow the experiment to be displayed when the activity is launched
         final Observer<Experiment> nameObserver = new Observer<Experiment>() {
@@ -70,7 +73,7 @@ public class ExperimentActivity extends AppCompatActivity {
                 adapter.addFragment(new StatsFragment(experiment), "Stats");
                 adapter.addFragment(new ForumFragment(experiment), "Forum");
                 adapter.addFragment(new LocationFragment(experiment), "Map");
-                if (experiment.getType()==null) {
+                if (experiment.getOwner().getId().equals(userId)) {
                     adapter.addFragment(new AdminFragment(experiment), "Admin");
                 }
                 viewPager.setAdapter(adapter);
@@ -78,6 +81,10 @@ public class ExperimentActivity extends AppCompatActivity {
             }
         };
         expManager.getExperiment().observe(this, nameObserver);
+
+        subscribe.setOnClickListener((v) -> {
+            expManager.subscribe(userId);
+        });
 
         backToMain.setOnClickListener((v) -> {
             Intent intent = new Intent(getBaseContext(), MainActivity.class);

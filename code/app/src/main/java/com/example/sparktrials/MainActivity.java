@@ -29,6 +29,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,9 +79,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d("USER ID",idManager.getUserId());
 
         Map<String, Object> user_test = new HashMap<>();
+        ArrayList<String> subscribers = new ArrayList<>();
         user_test.put("uid",idManager.getUserId());
         user_test.put("name", "Test");
         user_test.put("contact","123456890");
+        user_test.put("subscribers",subscribers);
 
         // Add a test document to users collection.
         firebaseManager.set("users",idManager.getUserId(), user_test);

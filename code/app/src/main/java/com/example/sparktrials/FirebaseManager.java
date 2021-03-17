@@ -162,6 +162,7 @@ public class FirebaseManager {
         data.put("Type",experiment.getType());
         ArrayList<Trial> trials = new ArrayList<>();
         ArrayList<String> blacklist = new ArrayList<>();
+        ArrayList<String> subscribers = new ArrayList<>();
         data.put("Trials",trials);
         data.put("Blacklist",blacklist);
         dRef.set(data);
@@ -222,7 +223,6 @@ public class FirebaseManager {
                         Log.d("Retrieving Profile", proData.getId() + " => " + proData.getData());
                         profile.setUsername((String) proData.getData().get("name"));
                         profile.setContact((String) proData.getData().get("contact"));
-                        profile.setSubscriptions((ArrayList<String>) proData.getData().get("subscriptions"));
 
                     } else {
                         Log.d("Retrieving Profile", "Document does not exists");

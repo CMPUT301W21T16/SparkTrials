@@ -56,7 +56,7 @@ public class ActionFragmentManager {
         int elementsToRemove=(Integer.parseInt(experiment.getNumTrials()) - originalNTrials);
         for (int i=0;i<elementsToRemove;i++){
             //Waiting for pop attribute in experiment
-            experiment.removeLastTrial()
+            //experiment.delTrial
         }
     }
 

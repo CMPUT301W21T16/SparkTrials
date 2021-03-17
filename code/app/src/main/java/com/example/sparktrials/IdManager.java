@@ -3,6 +3,8 @@ package com.example.sparktrials;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -46,18 +48,21 @@ public class IdManager {
         return UUID.randomUUID().toString();
     }
 
+    public void login() {
+        FirebaseManager firebaseManager = new FirebaseManager();
+        firebaseManager.get("users", getUserId(), new Callback() {
+            @Override
+            public void onCallback(DocumentSnapshot document) {
+                if (document.exists()) {
+                    Toast.makeText(context.getApplicationContext(), "Welcome back, " + document.getData().get("name"), Toast.LENGTH_SHORT).show();
+                    Log.d("USER INFO", "DocumentSnapshot data: " + document.getData());
+                } else {
+                    firebaseManager.createUserProfile(getUserId());
+                    Toast.makeText(context.getApplicationContext(), "New user profile created", Toast.LENGTH_SHORT).show();
+                }
 
-//    public String generateRandomId(String collection_to_check) {
-//        String id = generateRandomId();
-//        FirebaseManager firebaseManager = new FirebaseManager();
-//        firebaseManager.get(collection_to_check, id, new Callback() {
-//            @Override
-//            public void onCallback(DocumentSnapshot document) {
-//                if (document.exists())
-//                    generateRandomId(collection_to_check);
-//            }
-//        });
-//
-//    }
+            }
+        });
+    }
 
 }

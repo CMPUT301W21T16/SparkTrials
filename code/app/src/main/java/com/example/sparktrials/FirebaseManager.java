@@ -146,7 +146,6 @@ public class FirebaseManager {
     /**
      * Recieves experiment and geolocations object and uploads the data to firebase
      * @param experiment
-     * @param geoLocation
      */
     public void uploadExperiment(Experiment experiment){
         Map<String,Object> data = new HashMap<>();

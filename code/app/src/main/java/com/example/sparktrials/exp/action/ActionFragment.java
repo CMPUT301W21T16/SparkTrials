@@ -1,11 +1,13 @@
 package com.example.sparktrials.exp.action;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -20,42 +22,83 @@ import com.example.sparktrials.models.Profile;
 public class ActionFragment extends Fragment {
     View view;
     TextView trialsNumber;
-    private Experiment experiment;
+    private ActionFragmentManager manager;
     int numPasses;
     int numFailures;
     public ActionFragment(Experiment experiment){
-        Profile profile = new Profile("lol");
-        GeoLocation geoLocation = new GeoLocation(1.1,1.1);
-        Experiment experiment = new Experiment("aaaa","Binomial Trials",profile,"lol","aaaa",geoLocation,43);
         Log.d("TYPE=",experiment.getType());
-        this.experiment = experiment;
+        this.manager= new ActionFragmentManager(experiment);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_action, container, false);
-        Button passButton = view.findViewById(R.id.action_bar_pass);
-        Button failButton = view.findViewById(R.id.action_bar_fail);
-        if (experiment.getType().equals("binomial trials".toLowerCase())){
-            passButton.setVisibility(View.VISIBLE);
-            failButton.setVisibility(View.VISIBLE);
-            trialsNumber=view.findViewById(R.id.trials_completed);
-            String trials=experiment.getNumTrials();
-            trialsNumber.setText("Trials completed:"+trials+"/"+experiment.getMinNTrials().toString());
-            passButton.setOnClickListener(new View.OnClickListener() {
+        Button leftButton = view.findViewById(R.id.action_bar_pass);
+        Button rightButton = view.findViewById(R.id.action_bar_fail);
+        Button uploadButton = view.findViewById(R.id.action_bar_upload_trials);
+        Button recordNumButton = view.findViewById(R.id.action_bar_recordnum);
+        Button generateQR = view.findViewById(R.id.action_bar_generateQR);
+        Button deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
+        EditText valueEditText = view.findViewById(R.id.countvalue_editText);
+        String trials=manager.getNTrials();
+        int minimumNumberTrials = manager.getMinNTrials();
+        trialsNumber=view.findViewById(R.id.trials_completed);
+        if (minimumNumberTrials>0)
+            trialsNumber.setText("Trials completed: "+trials+"/"+minimumNumberTrials);
+        else
+            trialsNumber.setText("Trials completed: "+trials);
+        if (manager.getType().equals("binomial trials".toLowerCase())){
+            leftButton.setVisibility(View.VISIBLE);
+            rightButton.setVisibility(View.VISIBLE);
+            leftButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    numPasses+=1;
+                    manager.addBinomialTrial(true);
                 }
             });
-            failButton.setOnClickListener(new View.OnClickListener() {
+            rightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    numFailures+=1;
+                    manager.addBinomialTrial(false);
                 }
             });
         }
+        else if(manager.getType().equals("Non-Negative Integer Counts".toLowerCase())){
+            recordNumButton.setVisibility(View.VISIBLE);
+            valueEditText.setVisibility(View.VISIBLE);
+        }
+        else if(manager.getType().equals("Measurement Trials".toLowerCase())){
+            recordNumButton.setVisibility(View.VISIBLE);
+            valueEditText.setVisibility(View.VISIBLE);
+            valueEditText.setInputType(InputType.TYPE_CLASS_NUMBER |
+                    InputType.TYPE_NUMBER_FLAG_DECIMAL |
+                    InputType.TYPE_NUMBER_FLAG_SIGNED);
+        }
+        else if(manager.getType().equals("Counts".toLowerCase())){
+            recordNumButton.setVisibility(View.VISIBLE);
+            valueEditText.setVisibility(View.VISIBLE);
+            valueEditText.setInputType(InputType.TYPE_CLASS_NUMBER |
+                    InputType.TYPE_NUMBER_FLAG_SIGNED);
+        }
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        generateQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        deleteTrials.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         return view;
     }
 }

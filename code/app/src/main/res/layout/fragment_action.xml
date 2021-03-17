@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Trials Completed:"
         android:textSize="20dp">
     </TextView>
     <LinearLayout
@@ -51,6 +50,30 @@
             android:layout_height="match_parent"
             android:layout_weight="20">
         </Space>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/LinearLayout03"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/countvalue_editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Enter Count"
+            android:inputType="number"
+            android:textSize="20sp"
+            android:visibility="invisible"
+            />
+        <Button
+            android:id="@+id/action_bar_recordnum"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Record Number"
+            android:visibility="invisible"/>
     </LinearLayout>
     <Space
         android:layout_width="match_parent"

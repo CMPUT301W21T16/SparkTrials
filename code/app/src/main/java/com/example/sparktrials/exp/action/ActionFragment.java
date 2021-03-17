@@ -1,5 +1,6 @@
 package com.example.sparktrials.exp.action;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -42,7 +43,7 @@ public class ActionFragment extends Fragment {
         Button deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
         EditText valueEditText = view.findViewById(R.id.countvalue_editText);
         Button incrementCount = view.findViewById(R.id.action_bar_incrementCount);
-        String trials=manager.getNTrials();
+        int trials=Integer.parseInt(manager.getNTrials());
         int minimumNumberTrials = manager.getMinNTrials();
         trialsNumber=view.findViewById(R.id.trials_completed);
         if (minimumNumberTrials>0)
@@ -68,6 +69,23 @@ public class ActionFragment extends Fragment {
         else if(manager.getType().equals("Non-Negative Integer Counts".toLowerCase())){
             recordNumButton.setVisibility(View.VISIBLE);
             valueEditText.setVisibility(View.VISIBLE);
+            recordNumButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String valueString = valueEditText.getText().toString();
+                    Integer result;
+                    try{
+                        result= Integer.parseInt(valueString);
+                        manager.addNonNegIntTrial(result);
+                    }catch (NumberFormatException e) {
+                        AlertDialog builder = new AlertDialog.Builder(getContext())
+                                .setTitle("ERROR")
+                                .setMessage("You must enter a number")
+                                .setPositiveButton("OK",null)
+                                .show();
+                    }
+                }
+            });
         }
         else if(manager.getType().equals("Measurement Trials".toLowerCase())){
             recordNumButton.setVisibility(View.VISIBLE);
@@ -75,9 +93,32 @@ public class ActionFragment extends Fragment {
             valueEditText.setInputType(InputType.TYPE_CLASS_NUMBER |
                     InputType.TYPE_NUMBER_FLAG_DECIMAL |
                     InputType.TYPE_NUMBER_FLAG_SIGNED);
+            recordNumButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    double result;
+                    String valueString = valueEditText.getText().toString();
+                    try{
+                        result= Double.parseDouble(valueString);
+                        manager.addMeasurmentTrial(result);
+                    }catch (NumberFormatException e) {
+                        AlertDialog builder = new AlertDialog.Builder(getContext())
+                                .setTitle("ERROR")
+                                .setMessage("You must enter a number")
+                                .setPositiveButton("OK",null)
+                                .show();
+                    }
+                }
+            });
         }
         else if(manager.getType().equals("Counts".toLowerCase())){
             incrementCount.setVisibility(View.VISIBLE);
+            incrementCount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    manager.addCountTrial();
+                }
+            });
         }
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override

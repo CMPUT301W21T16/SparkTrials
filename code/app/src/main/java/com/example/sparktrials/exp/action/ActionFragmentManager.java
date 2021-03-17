@@ -2,6 +2,7 @@ package com.example.sparktrials.exp.action;
 
 
 import com.example.sparktrials.models.Experiment;
+import com.example.sparktrials.models.Trial;
 import com.example.sparktrials.models.TrialBinomial;
 import com.example.sparktrials.models.TrialCount;
 import com.example.sparktrials.models.TrialIntCount;
@@ -16,17 +17,28 @@ import java.util.ArrayList;
 public class ActionFragmentManager {
     String expType;
     Experiment experiment;
-    ArrayList<TrialBinomial> binomialTrials = new ArrayList<>();
+    ArrayList<Trial> trials = new ArrayList<>();
     public ActionFragmentManager(Experiment experiment) {
         this.experiment=experiment;
-        if (experiment.getType().equals("binomial trials".toLowerCase())){
-            this.expType=expType;
-        }
+        this.expType=expType;
     }
     public void addBinomialTrial(Boolean result){
         TrialBinomial trial = new TrialBinomial(result);
-        binomialTrials.add(trial);
+        trials.add(trial);
     }
+    public void addNonNegIntTrial(Integer result){
+        TrialIntCount trial = new TrialIntCount(result);
+        trials.add(trial);
+    }
+    public void addMeasurmentTrial(Double result){
+        TrialMeasurement trial = new TrialMeasurement(result);
+        trials.add(trial);
+    }
+    public void addCountTrial(){
+        TrialCount trial = new TrialCount();
+        trials.add(trial);
+    }
+
     public String getNTrials(){
         return experiment.getNumTrials();
     }
@@ -36,4 +48,7 @@ public class ActionFragmentManager {
     public String getType(){
         return experiment.getType();
     }
+
+    public void uploadTrial(){};
+
 }

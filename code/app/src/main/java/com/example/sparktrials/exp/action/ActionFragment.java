@@ -24,8 +24,6 @@ public class ActionFragment extends Fragment {
     View view;
     TextView trialsNumber;
     private ActionFragmentManager manager;
-    int numPasses;
-    int numFailures;
     public ActionFragment(Experiment experiment){
         Log.d("TYPE=",experiment.getType());
         this.manager= new ActionFragmentManager(experiment);
@@ -134,7 +132,8 @@ public class ActionFragment extends Fragment {
         deleteTrials.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                manager.deleteTrials();
+                updateView();
             }
         });
         return view;

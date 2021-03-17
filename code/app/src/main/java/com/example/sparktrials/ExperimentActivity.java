@@ -28,6 +28,10 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
+/**
+ * A class with tabs for each ability of an experiment
+ * Displays the title and description of the experiment, also the subscribe button persistently
+ */
 public class ExperimentActivity extends AppCompatActivity {
 
     private ExperimentViewModel expManager;
@@ -42,16 +46,18 @@ public class ExperimentActivity extends AppCompatActivity {
     private TextView titleText;
     private TextView descText;
 
+    private String textSubscribe = "Subscribe";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.experiment_main);
 
         experimentId = getIntent().getStringExtra("EXPERIMENT_ID");
-        expManager = new ViewModelProvider(this).get(ExperimentViewModel.class);
-        expManager.init(experimentId);
         IdManager idManager = new IdManager(this);
         userId = idManager.getUserId();
+        expManager = new ViewModelProvider(this).get(ExperimentViewModel.class);
+        expManager.init(experimentId, userId);
 
         subscribe = findViewById(R.id.button_subscribe);
         backToMain = findViewById(R.id.back_button);
@@ -62,8 +68,21 @@ public class ExperimentActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager_id);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+        // This will allow the subscription button to dynamically update
+        final Observer<Profile> name1Observer = new Observer<Profile>() {
+            @Override
+            public void onChanged(Profile profile) {
+                if (profile.getSubscriptions().contains(experimentId)){
+                    subscribe.setText("Unsubscribe");
+                } else {
+                    subscribe.setText("Subscribe");
+                }
+            }
+        };
+        expManager.getProfile().observe(this, name1Observer);
+        expManager.subscribe().observe(this, name1Observer);
         // This will allow the experiment to be displayed when the activity is launched
-        final Observer<Experiment> nameObserver = new Observer<Experiment>() {
+        final Observer<Experiment> name2Observer = new Observer<Experiment>() {
             @Override
             public void onChanged(Experiment experiment) {
                 titleText.setText(experiment.getTitle());
@@ -80,10 +99,10 @@ public class ExperimentActivity extends AppCompatActivity {
                 tablayout.setupWithViewPager(viewPager);
             }
         };
-        expManager.getExperiment().observe(this, nameObserver);
+        expManager.getExperiment().observe(this, name2Observer);
 
         subscribe.setOnClickListener((v) -> {
-            expManager.subscribe(userId);
+            expManager.subscribe();
         });
 
         backToMain.setOnClickListener((v) -> {
@@ -92,5 +111,14 @@ public class ExperimentActivity extends AppCompatActivity {
             startActivity(intent);
             this.finish();
         });
+    }
+
+    /**
+     * When this activity is over, update the subscribe attribute
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        expManager.updateSubscribe();
     }
 }

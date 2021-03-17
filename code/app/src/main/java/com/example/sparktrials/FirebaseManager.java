@@ -180,52 +180,9 @@ public class FirebaseManager {
         data.put("Type",experiment.getType());
         ArrayList<Trial> trials = new ArrayList<>();
         ArrayList<String> blacklist = new ArrayList<>();
-        ArrayList<String> subscribers = new ArrayList<>();
         data.put("Trials",trials);
         data.put("Blacklist",blacklist);
         dRef.set(data);
-    }
-
-    public Experiment downloadExperiment(String id){
-        Experiment experiment = new Experiment(id);
-
-        DocumentReference exp = this.firestore.collection("experiments").document(id);
-        exp.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot expData = task.getResult();
-                    // at the time of writing, experiments are not connected to users in the database yet
-                    // so there is no setting of the experiments owner Profile yet. on the experiment
-                    // activity a placeholder owner name "Owner McOwnerface" is used.
-                    if (expData.exists()) {
-                        Log.d("Launching Experiment", expData.getId() + " => " + expData.getData());
-                        experiment.setTitle((String) expData.getData().get("Title"));
-                        experiment.setDesc((String) expData.getData().get("Description"));
-                        GeoLocation region = new GeoLocation();
-                        region.setLat((Double) expData.getData().get("Latitude"));
-                        region.setLon((Double) expData.getData().get("Longitude"));
-                        experiment.setRegion(region);
-                        experiment.setMinNTrials(((Long) expData.getData().get("MinNTrials")).intValue());
-                        Timestamp date = (Timestamp) expData.getData().get("Date");
-                        experiment.setDate(date.toDate());
-                        experiment.setOpen((Boolean) expData.getData().get("Open"));
-                        experiment.setType((String) expData.getData().get("Type"));
-                        String uId = (String) expData.getData().get("profileID");
-                        experiment.setOwner(downloadProfile(uId));
-                        experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
-                        experiment.setBlacklist((ArrayList<String>) expData.getData().get("Blacklist"));
-                    } else {
-                        Log.d("Launching Experiment", "Document does not exists");
-                    }
-                } else {
-                    Log.d("Launching Experiment", "get failed with ", task.getException());
-                }
-            }
-        });
-
-        return experiment;
-
     }
 
     public Profile downloadProfile(String id){

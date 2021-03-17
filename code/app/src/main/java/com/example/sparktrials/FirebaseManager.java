@@ -152,11 +152,11 @@ public class FirebaseManager {
      */
     public void createUserProfile(String userId) {
         Map<String, Object> profile = new HashMap<>();
-        ArrayList<String> subscribers = new ArrayList<>();
+        ArrayList<String> subscriptions = new ArrayList<>();
         profile.put("uid",userId);
         profile.put("name", "User");
         profile.put("contact","None");
-        profile.put("subscribers",subscribers);
+        profile.put("subscriptions",subscriptions);
         set("users", userId, profile);
     }
 

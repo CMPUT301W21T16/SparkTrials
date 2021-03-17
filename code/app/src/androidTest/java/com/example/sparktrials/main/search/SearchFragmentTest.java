@@ -64,10 +64,11 @@ public class SearchFragmentTest {
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
         solo.clickOnView(solo.getView(R.id.navigation_search));
 
-        // We have 1 experiment in the list in Firestore, with title "Tomas".
+        // We have 1 experiment in the list in Firestore, with title <as defined below>.
         // Waiting for text instead of just searching as getting experiments from Firestore is
         // asynchronous.
-        assertTrue(solo.waitForText("Tomas", 1, 2000));
+        String experimentTitle = "SearchFragmentTest";
+        assertTrue(solo.waitForText(experimentTitle, 1, 2000));
     }
 
     /**
@@ -80,7 +81,7 @@ public class SearchFragmentTest {
         solo.clickOnView(solo.getView(R.id.navigation_search));
 
         // At time of testing, there exists no experiments in Firestore that should match the
-        // word "qwertyuiop"
+        // following word
         String wordDoesNotExist = "qwertyuiop";
         solo.enterText((EditText) solo.getView(R.id.search_bar), wordDoesNotExist);
 
@@ -88,8 +89,8 @@ public class SearchFragmentTest {
         assertFalse(solo.waitForText(wordDoesNotExist, 1, 1000));
 
         // At time of testing, there exists an experiment in Firestore that should match the
-        // word "Tomas"
-        String wordExists = "Tomas";
+        // following word
+        String wordExists = "SearchFragmentTest";
         // Changing to lower case as search should match fields even if they're in lower case
         solo.enterText((EditText) solo.getView(R.id.search_bar), wordExists.toLowerCase());
         solo.clickOnView(solo.getView(R.id.search_button));
@@ -104,7 +105,7 @@ public class SearchFragmentTest {
 
         // At time of testing, there exists an experiment in Firestore that should match the
         // word "Tomas"
-        String experimentTitle = "Tomas'";
+        String experimentTitle = "SearchFragmentTest";
         solo.enterText((EditText) solo.getView(R.id.search_bar), experimentTitle);
         solo.clickOnView(solo.getView(R.id.search_button));
         solo.clearEditText((EditText) solo.getView(R.id.search_bar));

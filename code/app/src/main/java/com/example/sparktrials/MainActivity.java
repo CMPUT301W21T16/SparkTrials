@@ -79,11 +79,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d("USER ID",idManager.getUserId());
 
         Map<String, Object> user_test = new HashMap<>();
-        ArrayList<String> subscribers = new ArrayList<>();
+        ArrayList<String> subscriptions = new ArrayList<>();
         user_test.put("uid",idManager.getUserId());
         user_test.put("name", "Test");
         user_test.put("contact","123456890");
-        user_test.put("subscribers",subscribers);
+        user_test.put("subscriptions",subscriptions);
 
         // Add a test document to users collection.
         firebaseManager.set("users",idManager.getUserId(), user_test);

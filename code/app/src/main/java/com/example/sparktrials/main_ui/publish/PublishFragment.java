@@ -54,6 +54,7 @@ public class PublishFragment extends DialogFragment {
     private EditText expLon;
     private Experiment experiment;
     private String userID;
+    private TextView reqLocation;
 
     /**
      * onCreate Dialog which prompts the user to enter a title, description, minimum number of trials and a lat long pair.
@@ -68,6 +69,7 @@ public class PublishFragment extends DialogFragment {
         expMinNTrials = view.findViewById(R.id.expMinNTrials_editText);
         expLat = view.findViewById(R.id.expLat_editText);
         expLon = view.findViewById(R.id.expLon_editText);
+        reqLocation=view.findViewById(R.id.request_experiment_location);
         expLat.setInputType(InputType.TYPE_CLASS_NUMBER |
                 InputType.TYPE_NUMBER_FLAG_DECIMAL |
                 InputType.TYPE_NUMBER_FLAG_SIGNED);
@@ -75,9 +77,14 @@ public class PublishFragment extends DialogFragment {
                 InputType.TYPE_NUMBER_FLAG_DECIMAL |
                 InputType.TYPE_NUMBER_FLAG_SIGNED);
         Spinner spinner = view.findViewById(R.id.experiment_type_spinner);
+        Spinner spinner2 = view.findViewById(R.id.experiment_location_spinner);
         String[] items = new String[]{"Binomial Trials", "Counts", "Non-Negative Integer Counts","Measurement Trials"};
+        String[] locationOptions = new String[]{"True","False"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,items);
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,locationOptions);
         spinner.setAdapter(adapter);
+        spinner2.setAdapter(adapter2);
+
         //experiment=this.experiment;
         IdManager idManager = new IdManager(getActivity());
         String id = idManager.getUserId();
@@ -95,8 +102,9 @@ public class PublishFragment extends DialogFragment {
                         String latString = expLat.getText().toString();
                         String lonString = expLon.getText().toString();
                         String experimentType = spinner.getSelectedItem().toString();
+                        Boolean reqLocation = Boolean.parseBoolean(spinner2.getSelectedItem().toString());
                         Log.d("Type",experimentType);
-                        PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,latString,lonString,experimentType);
+                        PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,latString,lonString,experimentType,reqLocation);
                     }
                 })
                 .create();

@@ -148,18 +148,19 @@ public class FirebaseManager {
      * @param experiment
      * @param geoLocation
      */
-    public void uploadExperiment(Experiment experiment, GeoLocation geoLocation, Profile profile){
+    public void uploadExperiment(Experiment experiment){
         Map<String,Object> data = new HashMap<>();
         DocumentReference dRef = firestore.collection("experiments").document(experiment.getId());
         data.put("Title",experiment.getTitle());
         data.put("Description",experiment.getDesc());
-        data.put("Latitude",geoLocation.getLat());
-        data.put("Longitude",geoLocation.getLon());
+        data.put("Latitude",experiment.getRegion().getLat());
+        data.put("Longitude",experiment.getRegion().getLon());
         data.put("MinNTrials",experiment.getMinNTrials());
-        data.put("profileID",profile.getId());
+        data.put("profileID",experiment.getOwner().getId());
         data.put("Date",experiment.getDate());
         data.put("Open",experiment.getOpen());
         data.put("Type",experiment.getType());
+        data.put("ReqLocation",experiment.getReqLocation());
         ArrayList<Trial> trials = new ArrayList<>();
         ArrayList<String> blacklist = new ArrayList<>();
         data.put("Trials",trials);

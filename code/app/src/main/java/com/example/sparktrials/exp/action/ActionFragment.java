@@ -41,6 +41,7 @@ public class ActionFragment extends Fragment {
         Button generateQR = view.findViewById(R.id.action_bar_generateQR);
         Button deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
         EditText valueEditText = view.findViewById(R.id.countvalue_editText);
+        Button incrementCount = view.findViewById(R.id.action_bar_incrementCount);
         String trials=manager.getNTrials();
         int minimumNumberTrials = manager.getMinNTrials();
         trialsNumber=view.findViewById(R.id.trials_completed);
@@ -76,10 +77,7 @@ public class ActionFragment extends Fragment {
                     InputType.TYPE_NUMBER_FLAG_SIGNED);
         }
         else if(manager.getType().equals("Counts".toLowerCase())){
-            recordNumButton.setVisibility(View.VISIBLE);
-            valueEditText.setVisibility(View.VISIBLE);
-            valueEditText.setInputType(InputType.TYPE_CLASS_NUMBER |
-                    InputType.TYPE_NUMBER_FLAG_SIGNED);
+            incrementCount.setVisibility(View.VISIBLE);
         }
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override

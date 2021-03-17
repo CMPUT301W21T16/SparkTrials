@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 public class IdManager {
     private Context context;
+    private static boolean logged_in = false;
 
     public IdManager(Context context) {
         this.context = context;
@@ -49,18 +51,26 @@ public class IdManager {
     }
 
     public void login() {
+        if (logged_in)
+            return;
+
         FirebaseManager firebaseManager = new FirebaseManager();
         firebaseManager.get("users", getUserId(), new Callback() {
             @Override
             public void onCallback(DocumentSnapshot document) {
+                Toast toast = new Toast(context);
+                toast.setDuration(Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.TOP,0,0);
                 if (document.exists()) {
-                    Toast.makeText(context.getApplicationContext(), "Welcome back, " + document.getData().get("name"), Toast.LENGTH_SHORT).show();
+                    toast.setText("Welcome back, " + document.getData().get("name"));
+                    toast.show();
                     Log.d("USER INFO", "DocumentSnapshot data: " + document.getData());
                 } else {
                     firebaseManager.createUserProfile(getUserId());
-                    Toast.makeText(context.getApplicationContext(), "New user profile created", Toast.LENGTH_SHORT).show();
+                    toast.setText("New user profile created");
+                    toast.show();
                 }
-
+                logged_in = true;
             }
         });
     }

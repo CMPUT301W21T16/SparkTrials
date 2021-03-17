@@ -67,7 +67,7 @@ public class PublishFragmentManager {
                         String cellphone = (String) document.get("cellphone");
                         String experimentID= UUID.randomUUID().toString();
                         profile = new Profile(userID,name,cellphone);
-                        experiment= new Experiment(experimentID,experimentType,profile,title,desc,geoLocation,minNTrials);
+                        experiment= new Experiment(experimentID,experimentType,profile,title,desc,geoLocation,false,minNTrials);
                         Log.d("Data", document.getId() + " => " + document.getData());
                         FirebaseManager manager = new FirebaseManager();
                         manager.uploadExperiment(experiment,geoLocation,profile);

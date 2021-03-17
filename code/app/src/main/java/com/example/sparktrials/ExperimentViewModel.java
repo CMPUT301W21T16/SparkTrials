@@ -136,6 +136,7 @@ public class ExperimentViewModel extends ViewModel {
             region.setLat((Double) expData.getData().get("Latitude"));
             region.setLon((Double) expData.getData().get("Longitude"));
             experiment.setRegion(region);
+            experiment.setReqLocation((Boolean) expData.getData().get("ReqLocation"));
             experiment.setMinNTrials(((Long) expData.getData().get("MinNTrials")).intValue());
             Timestamp date = (Timestamp) expData.getData().get("Date");
             experiment.setDate(date.toDate());

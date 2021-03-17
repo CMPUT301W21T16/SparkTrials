@@ -1,5 +1,6 @@
 package com.example.sparktrials;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -102,7 +104,35 @@ public class ExperimentActivity extends AppCompatActivity {
         expManager.getExperiment().observe(this, name2Observer);
 
         subscribe.setOnClickListener((v) -> {
-            expManager.subscribe();
+            //NEW
+            if (expManager.getExperiment().getValue().getReqLocation() &&
+                !expManager.getProfile().getValue().getSubscriptions().contains(experimentId)) {
+                //Experiment requires locations and user is not currently subscribed
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("This experiment requires your location to be submitted");
+                builder.setMessage("Would you like to proceed?");
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //subscribe
+                        expManager.subscribe();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                //Experiment doesn't require locations or user is already subscribed
+                //unsubscribe
+                expManager.subscribe();
+            }
         });
 
         backToMain.setOnClickListener((v) -> {
@@ -111,6 +141,7 @@ public class ExperimentActivity extends AppCompatActivity {
             startActivity(intent);
             this.finish();
         });
+
     }
 
     /**

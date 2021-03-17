@@ -24,11 +24,11 @@ public class Experiment {
     private String title;
     private String desc;
     private GeoLocation region;
+    private Boolean reqLocation;
     private Integer minNTrials;
     private Boolean open;
     private Date date;
     private ArrayList<String> blacklist;
-    private ArrayList<String> subscribers;
 
     /**
      * Initiates an empty experiment that will be filled out later
@@ -42,6 +42,7 @@ public class Experiment {
         this.title = "N/A";
         this.desc = "N/A";
         this.region = null;
+        this.reqLocation = false;
         this.minNTrials = 0;
         this.open = true;
         this.date = new Date();
@@ -62,7 +63,7 @@ public class Experiment {
      * @param minNTrials
      *    The minimum number of trials that a user has to commit before their trials are counted
      */
-    public Experiment(String id, String type, Profile owner, String title, String desc, GeoLocation region, Integer minNTrials){
+    public Experiment(String id, String type, Profile owner, String title, String desc, GeoLocation region, Boolean reqLocation, Integer minNTrials){
         this.id = id;
         this.type = type.toLowerCase();
         this.owner = owner;
@@ -70,6 +71,7 @@ public class Experiment {
         this.title = title;
         this.desc = desc;
         this.region = region;
+        this.reqLocation = reqLocation;
         this.minNTrials = minNTrials;
         this.open = true;
         this.date = new Date();
@@ -97,7 +99,7 @@ public class Experiment {
      *    The date that the experiment was created on
      */
     public Experiment(String id, String type, Profile owner, ArrayList<Trial> trials, String title, String desc,
-                      GeoLocation region, Integer minNTrials, Boolean open, Date date, ArrayList<String> blacklist){
+                      GeoLocation region, Boolean reqLocation, Integer minNTrials, Boolean open, Date date, ArrayList<String> blacklist){
         this.id = id;
         this.type = type.toLowerCase();
         this.owner = owner;
@@ -105,10 +107,11 @@ public class Experiment {
         this.title = title;
         this.desc = desc;
         this.region = region;
+        this.reqLocation = reqLocation;
         this.minNTrials = minNTrials;
         this.open = open;
         this.date = date;
-        this.blacklist = new ArrayList<>();
+        this.blacklist = blacklist;
     }
 
     /**
@@ -309,6 +312,24 @@ public class Experiment {
      */
     public void setRegion(GeoLocation region) {
         this.region = region;
+    }
+
+    /**
+     * Gets whether the experiment requires locations or not
+     * @return
+     *    Returns a boolean true=requires locations, false=doesn't require locations
+     */
+    public Boolean getReqLocation() {
+        return reqLocation;
+    }
+
+    /**
+     * Sets whether the experiment is required or not
+     * @param reqLocation
+     *    A boolean true/false
+     */
+    public void setReqLocation(Boolean reqLocation) {
+        this.reqLocation = reqLocation;
     }
 
     /**

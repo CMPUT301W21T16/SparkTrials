@@ -17,14 +17,18 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sparktrials.CustomList;
 import com.example.sparktrials.ExperimentActivity;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class SearchFragment extends Fragment {
@@ -48,24 +52,34 @@ public class SearchFragment extends Fragment {
         super.onStart();
         searchListView = getView().findViewById(R.id.search_list);
 
-        searchManager = new SearchViewModel();
+        searchManager = new ViewModelProvider(this).get(SearchViewModel.class);
 
-        searchListAdapter = new CustomList(getActivity(), searchManager.getExperiments());
-        searchListView.setAdapter(searchListAdapter);
+        // This will allow the list of experiments to be displayed when the search fragment
+        // is launched
+        final Observer<ArrayList<Experiment>> nameObserver = new Observer<ArrayList<Experiment>>() {
+            @Override
+            public void onChanged(@Nullable final ArrayList<Experiment> newList) {
+                searchListAdapter = new CustomList(getContext(), newList);
+                searchListView.setAdapter(searchListAdapter);
+            }
+        };
+        searchManager.getExperiments().observe(this, nameObserver);
 
         searchBar = getView().findViewById(R.id.search_bar);
         searchButton = getView().findViewById(R.id.search_button);
 
+        // Handle clicking the "SEARCH" button
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Hide the keyboard from the current screen
                 hideKeyboardFrom();
-
+                // Display search results on the ListView
                 updateAdapter();
             }
         });
 
+        // Launches an ExperimentActivity when an item in a ListView is pressed
         searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -102,8 +116,12 @@ public class SearchFragment extends Fragment {
         // Trim to remove meaningless trailing and leading whitespace.
         // Lowercase because we want to get matching experiments, regardless of case.
         String searchString = searchBar.getText().toString().trim().toLowerCase();
-        String[] keywords = searchString.split(" ");
-
+        String[] keywords;
+        if (searchString.equals("")) {
+            keywords = new String[0];
+        } else {
+            keywords = searchString.split(" ");
+        }
         return keywords;
     }
 
@@ -114,11 +132,13 @@ public class SearchFragment extends Fragment {
     private void updateAdapter() {
         String[] keywords = getKeywords();
 
-        ArrayList<Experiment> searchResults = searchManager.search(keywords);
+        if (keywords.length > 0) {
+            ArrayList<Experiment> searchResults = searchManager.search(keywords);
 
-        searchListAdapter = new CustomList(getContext(), searchResults);
+            searchListAdapter = new CustomList(getContext(), searchResults);
 
-        searchListView.setAdapter(searchListAdapter);
+            searchListView.setAdapter(searchListAdapter);
+        }
     }
 
     /**
@@ -131,8 +151,7 @@ public class SearchFragment extends Fragment {
     }
 
     /**
-     * Starts an ExperimentActivity when an item on the ListView is clicked to display its
-     * information
+     * Starts an ExperimentActivity.
      * @param experimentId
      *      This is the ID of the experiment whose information we want displayed, namely the
      *      experiment that the user chose after clicking on its corresponding ListView element
@@ -145,5 +164,4 @@ public class SearchFragment extends Fragment {
         intent.putExtra("USER_ID", ownerId);
         startActivity(intent);
     }
-
 }

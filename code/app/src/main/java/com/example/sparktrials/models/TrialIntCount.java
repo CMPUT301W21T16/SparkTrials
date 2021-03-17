@@ -4,7 +4,6 @@ package com.example.sparktrials.models;
  * This class extends the basic trial class. This type of trial has a set count
  */
 public class TrialIntCount extends Trial {
-    Integer count;
 
     /**
      * Initializes a blank trial with a set count
@@ -12,10 +11,10 @@ public class TrialIntCount extends Trial {
      *    The count that this trial will hold
      */
     public TrialIntCount(Integer count){
-        if (count>=0) {
-            this.count = count;
+        if (count>=0.0) {
+            this.value = (double)count;
         } else {
-            this.count = 0;
+            this.value = 0.0;
         }
     }
     /**
@@ -31,21 +30,13 @@ public class TrialIntCount extends Trial {
      */
     public TrialIntCount(Integer id, GeoLocation location, Profile profile, Integer count){
         super(id, location, profile);
-        if (count>=0) {
-            this.count = count;
+        if (count>=0.0) {
+            this.value = (double)count;
         } else {
-            this.count = 0;
+            this.value = 0.0;
         }
     }
 
-    /**
-     * Retrieves the count that this trial holds
-     * @return
-     *    Returns the count of this trial
-     */
-    public Integer getCount() {
-        return count;
-    }
 
     /**
      * Updates the count of this trial
@@ -54,7 +45,7 @@ public class TrialIntCount extends Trial {
      */
     public void setCount(Integer count) {
         if (count>0){
-            this.count = count;
+            this.value = (double)count;
         }
     }
 }

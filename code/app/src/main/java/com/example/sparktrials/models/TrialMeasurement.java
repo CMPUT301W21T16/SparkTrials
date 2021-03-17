@@ -5,7 +5,6 @@ package com.example.sparktrials.models;
  * used to represent some kind of measurement
  */
 public class TrialMeasurement extends Trial{
-    Double measure;
 
     /**
      * Initializes a blank trial and sets the measure attribute to measure
@@ -13,7 +12,7 @@ public class TrialMeasurement extends Trial{
      *    The measure that this trial will initially hold
      */
     public TrialMeasurement(Double measure){
-        this.measure = measure;
+        this.value = measure;
     }
     /**
      * This constructor initializes a filled trial with a given measurement
@@ -28,16 +27,7 @@ public class TrialMeasurement extends Trial{
      */
     public TrialMeasurement(Integer id, GeoLocation location, Profile profile, Double measure){
         super(id, location, profile);
-        this.measure = measure;
-    }
-
-    /**
-     * Gets the measure of this trial
-     * @return
-     *    Returns the measure attribute that this trial holds
-     */
-    public Double getMeasure() {
-        return measure;
+        this.value = measure;
     }
 
     /**
@@ -46,6 +36,6 @@ public class TrialMeasurement extends Trial{
      *    The new measure that this trial will hold
      */
     public void setMeasure(Double measure) {
-        this.measure = measure;
+        this.value = measure;
     }
 }

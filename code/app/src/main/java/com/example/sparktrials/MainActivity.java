@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.sparktrials.main_ui.publish.PublishFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +30,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,13 +57,14 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.top_app_bar_draft:
                         Log.d("BUTTON", "draftClicked");
+                        Toast.makeText(getApplicationContext(), "Welcome back.", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.top_app_bar_scan_qr_code:
                         Log.d("BUTTON", "scanClicked");
                         break;
                     case R.id.top_app_bar_publish_experiment:
                         Log.d("BUTTON", "publishClicked");
-                        new PublishFragment("726c77d8-54c7-41a1-a149-afe608892add").show(getSupportFragmentManager(),"Add Experiment");
+                        new PublishFragment().show(getSupportFragmentManager(),"Add Experiment");
                         break;
                     default:
                         Log.d("BUTTON", "something wrong");
@@ -71,47 +74,9 @@ public class MainActivity extends AppCompatActivity {
         });
 //        setSupportActionBar(myToolbar);
         NavigationUI.setupWithNavController(navView, navController);
+        IdManager idManager = new IdManager(this);
+        idManager.login();
 
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final CollectionReference collectionReference = db.collection("users");
-
-        String userId = IdManager.getUserId(this);
-        Log.d("USER ID",userId);
-
-        Map<String, Object> user_test = new HashMap<>();
-        user_test.put("uid",userId);
-        user_test.put("name", "Test");
-        user_test.put("contact","123456890");
-
-        // Add a test document to users collection.
-        collectionReference.document(userId).set(user_test).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.d("ADD USER","Success");
-                } else {
-                    Log.d("ADD USER","Something wrong.", task.getException());
-                }
-            }
-        });
-
-        // Retrieve and log user information from Firestore.
-        DocumentReference user = collectionReference.document(userId);
-        user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("DB USER INFO", "DocumentSnapshot data: " + document.getData());
-                    } else {
-                        Log.d("DB USER INFO", "No such document");
-                    }
-                } else {
-                    Log.d("DB USER INFO", "get failed with ", task.getException());
-                }
-            }
-        });
     }
 }

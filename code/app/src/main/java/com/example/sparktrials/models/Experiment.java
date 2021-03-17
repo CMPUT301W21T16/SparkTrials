@@ -1,8 +1,10 @@
 package com.example.sparktrials.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * An experiment class that has an owner, multiple specs that define the experiment, and trials
@@ -16,15 +18,17 @@ import java.util.HashMap;
  */
 public class Experiment {
     private String id;
+    private String type;
     private Profile owner;
-    private String experimentID;
     private ArrayList<Trial> trials;
     private String title;
     private String desc;
     private GeoLocation region;
+    private Boolean reqLocation;
     private Integer minNTrials;
     private Boolean open;
     private Date date;
+    private ArrayList<String> blacklist;
 
     /**
      * Initiates an empty experiment that will be filled out later
@@ -32,18 +36,22 @@ public class Experiment {
      */
     public Experiment(String id){
         this.id = id;
+        this.type = null;
         this.owner = null;
         this.trials = new ArrayList<>();
         this.title = "N/A";
         this.desc = "N/A";
         this.region = null;
+        this.reqLocation = false;
         this.minNTrials = 0;
         this.open = true;
         this.date = new Date();
+        this.blacklist = new ArrayList<>();
     }
 
     /**
      * Initiates a new experiment with the given values
+     * USED FOR CREATING NEW EXPERIMENTS
      * @param owner
      *    The user who created this experiment
      * @param title
@@ -55,16 +63,19 @@ public class Experiment {
      * @param minNTrials
      *    The minimum number of trials that a user has to commit before their trials are counted
      */
-    public Experiment(String id, Profile owner, String title, String desc, GeoLocation region, Integer minNTrials){
+    public Experiment(String id, String type, Profile owner, String title, String desc, GeoLocation region, Boolean reqLocation, Integer minNTrials){
         this.id = id;
+        this.type = type.toLowerCase();
         this.owner = owner;
         this.trials = new ArrayList<>();
         this.title = title;
         this.desc = desc;
         this.region = region;
+        this.reqLocation = reqLocation;
         this.minNTrials = minNTrials;
         this.open = true;
         this.date = new Date();
+        this.blacklist = new ArrayList<>();
     }
 
     /**
@@ -87,17 +98,20 @@ public class Experiment {
      * @param date
      *    The date that the experiment was created on
      */
-    public Experiment(String id, Profile owner, ArrayList<Trial> trials, String title, String desc,
-                      GeoLocation region, Integer minNTrials, Boolean open, Date date){
+    public Experiment(String id, String type, Profile owner, ArrayList<Trial> trials, String title, String desc,
+                      GeoLocation region, Boolean reqLocation, Integer minNTrials, Boolean open, Date date, ArrayList<String> blacklist){
         this.id = id;
+        this.type = type.toLowerCase();
         this.owner = owner;
         this.trials = trials;
         this.title = title;
         this.desc = desc;
         this.region = region;
+        this.reqLocation = reqLocation;
         this.minNTrials = minNTrials;
         this.open = open;
         this.date = date;
+        this.blacklist = blacklist;
     }
 
     /**
@@ -107,6 +121,28 @@ public class Experiment {
      */
     public String getId() {
         return id;
+    }
+
+    /**
+     * Fetches the type of the experiment
+     * @return
+     *    The type of the experiment as a string.
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets the type of the experiment to a new value
+     * SHOULD NOT BE USED UNLESS CHANGING FROM NULL!
+     * @param type
+     *    The type that the experiment will be
+     *    Should be either binomial, count, intergcount, or measure
+     */
+    public void setType(String type) {
+        if (this.type==null) {
+            this.type = type.toLowerCase();
+        }
     }
 
     /**
@@ -279,6 +315,24 @@ public class Experiment {
     }
 
     /**
+     * Gets whether the experiment requires locations or not
+     * @return
+     *    Returns a boolean true=requires locations, false=doesn't require locations
+     */
+    public Boolean getReqLocation() {
+        return reqLocation;
+    }
+
+    /**
+     * Sets whether the experiment is required or not
+     * @param reqLocation
+     *    A boolean true/false
+     */
+    public void setReqLocation(Boolean reqLocation) {
+        this.reqLocation = reqLocation;
+    }
+
+    /**
      * Gets the minimum number of trials needed for a user's trials to get counted
      * @return
      *    Returns an integer for the number of trials needed
@@ -345,5 +399,234 @@ public class Experiment {
      */
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    /**
+     * This method gets the blacklist that a profile has
+     * @return
+     *    A list containing the ids of every experiment that the user is subscribed to
+     */
+    public ArrayList<String> getBlacklist() {
+        return this.blacklist;
+    }
+
+    /**
+     * Replace the blacklist list
+     * Should not really be used except to create a Profile
+     * @param blacklist
+     *    A list of profile ids
+     */
+    public void setBlacklist(ArrayList<String> blacklist) {
+        this.blacklist = blacklist;
+    }
+
+    /**
+     * Adds an profile id to the list of blacklist
+     * Only add it if it doesn't already exist inside it
+     * @param proId
+     *    And profile's id
+     */
+    public void addToBlacklist(String proId) {
+        if (!this.isBlacklisted(proId)) {
+            this.blacklist.add(proId);
+        }
+    }
+
+    /**
+     * Delete an profile id in the list of blacklist
+     * @param proId
+     *    The profile id to delete
+     */
+    public void delFromBlacklist(String proId) {
+        this.blacklist.remove(proId);
+    }
+
+    /**
+     * Adds a list of profile ids to the list of blacklist
+     * @param proIds
+     *    A list of profile ids
+     */
+    public void addManyBlacklist(ArrayList<String> proIds){
+        for (int i=0; i<proIds.size(); i++){
+            this.addToBlacklist(proIds.get(i));
+        }
+    }
+
+    /**
+     * Delete a group of profile ids from the last of blacklist
+     * @param proIds
+     *   A list of profile ids
+     */
+    public void delManyBlacklist(ArrayList<String> proIds){
+        this.blacklist.removeAll(proIds);
+    }
+
+    /**
+     * Checks if an profile's id is in this profile's subscribed profiles
+     * @param proId
+     *    The profile id to check for
+     * @return
+     *    returns true if profile id is in blacklist
+     */
+    public boolean isBlacklisted(String proId) {
+        return this.blacklist.contains(proId);
+    }
+
+    /**
+     * Sorts the trials of an experiment in ascending order this comes in handy for calculating descriptive stats
+     * @return
+     * A sorted list of trials
+     */
+    public ArrayList<Double> trialsValuesSorted(){
+        ArrayList <Double>  values = new ArrayList<>();
+        for(int i = 0; i<this.trials.size(); i++){
+            values.add( (Double) ( this.trials.get(i).getValue()));
+        }
+        Collections.sort(values);
+        return values;
+    }
+
+    /**
+     * Removes duplicate values of trials necessary for calculating frequencies at which trials occur
+     * @return
+     * A sorted list with no duplicates
+     */
+    public Double[] removeDupes(){
+        Double[] cleanArray ;
+        HashSet<Double> noDupes = new HashSet<Double>(trialsValuesSorted());
+        cleanArray = new Double[noDupes.size()];
+        noDupes.toArray(cleanArray);
+        return cleanArray;
+    }
+
+    /**
+     * Calculates the x-axis values for the histogram/plot in the stats tab
+     * @return
+     * A sorted list of type string
+     */
+    public String [] getXaxis(){
+        int size = removeDupes().length;
+        String[] str = new String[size];
+        for (int i=0 ; i<size; i++){
+            str[i] = removeDupes()[i].toString();
+        }
+        return str ;
+    }
+
+    /**
+     * Calculates the so called frequencies or Y values for the histogram
+     * @return
+     * An integer list of frequencies which matches the the index of the getXAxis list
+     */
+    public int [] frequencies(){
+        int []frequencies = new int [getXaxis().length];
+        for (int i = 0 ; i < getXaxis().length ; i++){
+            for (int j = 0; j< trialsValuesSorted().size(); j++){
+                if (Double.parseDouble(getXaxis()[i]) == trialsValuesSorted().get(j)){
+                    frequencies[i]+=1;
+                }
+            }
+        }
+        return frequencies;
+    }
+
+    /**
+     * Calculates the Median value for the experiment
+     * @return
+     * Median of type string
+     */
+    public String getMedian(){
+        double median;
+        int num = trialsValuesSorted().size();
+        if (num  % 2 == 0){
+            median = ((double)(trialsValuesSorted().get(num/2) + trialsValuesSorted().get(num/2 - 1)));
+        }else{
+            median = ((double) trialsValuesSorted().get(num/2));
+        }
+        return ""+ median;
+    }
+
+    /**
+     * Calculates the Q1 (quartile 1) for the experiment
+     * @return
+     * Q1 of type string
+     */
+    public String getQ1(){
+        double quartile;
+        int num = trialsValuesSorted().size();
+        int length = num +1;
+        float newArraySize = (length * ((float) (1) * 25 / 100)) - 1;
+        if (newArraySize % 1 == 0) {
+            quartile =  trialsValuesSorted().get((int) newArraySize);
+        } else {
+            int newArraySize1 = (int) (newArraySize);
+            quartile = (trialsValuesSorted().get(newArraySize1) + trialsValuesSorted().get(newArraySize1+1)) / 2;
+        }
+        return String.format("%.2f", quartile);
+    }
+
+    /**
+     * Calculates the Q3 (quartile 3) for the experiment
+     * @return
+     * Q3 of type string
+     */
+    public String getQ3(){
+        double quartile;
+        int num = trialsValuesSorted().size();
+        int length = num +1;
+        float newArraySize = (length * ((float) (3) * 25 / 100)) - 1;
+        if (newArraySize % 1 == 0) {
+            quartile =  trialsValuesSorted().get((int) newArraySize);
+        } else {
+            int newArraySize1 = (int) (newArraySize);
+            quartile = (trialsValuesSorted().get(newArraySize1) + trialsValuesSorted().get(newArraySize1+1)) / 2;
+        }
+        return String.format("%.2f", quartile);
+    }
+
+    /**
+     * Finds the total number of trials in an experiment
+     * @return
+     * Number of trials of type string
+     */
+    public String getNumTrials(){
+        return "" +this.trials.size();
+    }
+
+    /**
+     * Calculates the standard deviation for the experiment
+     * @return
+     * Standard deviation of type string
+     */
+    public String getStd(){
+        int sum =0 ;
+        double mean;
+        int num = this.trials.size();
+        double std= 0;
+        for (int i=0 ; i<num;  i++){
+            sum+= this.trials.get(i).getValue();
+        }
+        mean = ((double) sum) / ((double) num);
+        for (int i = 0 ; i<num; i++){
+            std+= Math.pow(this.trials.get(i).getValue()- mean, 2);
+        }
+        std = Math.sqrt(std/num);
+        return String.format("%.2f", std);
+    }
+
+    /**
+     * Calculates the mean (average) for an experiment
+     * @return
+     * Mean of type String
+     */
+    public String getMean(){
+        int sum =0 ;
+        double mean;
+        int num = this.trials.size();
+        for (int i=0 ; i<num;  i++){
+            sum+= this.trials.get(i).getValue();
+        }
+        mean = ((double) sum) / ((double) num);
+        return String.format("%.2f", mean);
     }
 }

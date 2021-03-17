@@ -205,4 +205,40 @@ public class ExperimentTest extends TestCase {
 
         return trials;
     }
+
+    /**
+     * Tests blacklist methods by adding, bulk adding, deleting, bulk deleting
+     * and then verifying that everything is as it should be afterwards
+     */
+    public void testBlacklist(){
+        this.exp = new Experiment("foo");
+        assertEquals("Wrong size blacklist", 0, this.exp.getBlacklist().size());
+        ArrayList<String> mid_array = new ArrayList<>();
+        ArrayList<String> temp_array;
+        for (int i=0; i<30; i++){
+            this.exp.addToBlacklist(""+i);
+            if (i == 20){
+                temp_array = this.exp.getBlacklist();
+                for (int j=0; j<temp_array.size(); j++){
+                    mid_array.add(temp_array.get(j));
+                }
+                assertEquals("getblacklist broken", 21, mid_array.size());
+                assertEquals("Wrong size blacklist", 21, this.exp.getBlacklist().size());
+                assertEquals("blacklist IN broken", true, this.exp.isBlacklisted("3"));
+                this.exp.delFromBlacklist("3");
+                this.exp.delFromBlacklist("4");
+                assertEquals("del blacklist broken", 19, this.exp.getBlacklist().size());
+                assertEquals("blacklist IN broken", false, this.exp.isBlacklisted("3"));
+                this.exp.addManyBlacklist(mid_array);
+                assertEquals("Add blacklist broken", 21, this.exp.getBlacklist().size());
+
+            }
+        }
+        this.exp.addToBlacklist("31");
+        assertEquals("add blacklist broken", 31, this.exp.getBlacklist().size());
+        this.exp.delManyBlacklist(mid_array);
+        assertEquals("del blacklists broken", 10, this.exp.getBlacklist().size());
+
+    }
+
 }

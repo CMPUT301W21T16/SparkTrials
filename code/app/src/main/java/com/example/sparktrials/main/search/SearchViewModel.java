@@ -151,11 +151,11 @@ public class SearchViewModel extends ViewModel {
     private boolean experimentMatches(String keyword, Experiment experiment) {
         String experimentTitle = experiment.getTitle().toLowerCase();
         String experimentDescription = experiment.getDesc().toLowerCase();
-        String experimentOwnerUsername = experiment.getOwner().getUsername().toLowerCase();
+        //String experimentOwnerUsername = experiment.getOwner().getUsername().toLowerCase();
 
         return (experimentTitle.contains(keyword)
-                    || experimentDescription.contains(keyword)
-                    || experimentOwnerUsername.contains(keyword));
+                    || experimentDescription.contains(keyword));
+                    //|| experimentOwnerUsername.contains(keyword));
     }
 
 }

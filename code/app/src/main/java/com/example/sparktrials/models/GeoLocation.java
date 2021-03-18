@@ -8,8 +8,8 @@ import java.util.ArrayList;
  * Lon is the longitude of the point
  */
 public class GeoLocation {
-    Double lat;
-    Double lon;
+    private double lat;
+    private double lon;
 
     public GeoLocation(){
         this.lat = 1000.0;

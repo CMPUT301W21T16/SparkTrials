@@ -119,9 +119,9 @@ public class AuditLog extends ArrayAdapter<Profile> {
             }
 
             ratioOrMean = result / trials;
-            userTrials.setText(String.format("%0.f", trials));
+            userTrials.setText(String.format("%.0f", trials));
             results.setText("Mean");
-            userResults.setText(String.format("%0.2f", ratioOrMean));
+            userResults.setText(String.format("%.2f", ratioOrMean));
             ratio.setText("");
             userRatio.setText("");
             userName.setText(user.getUsername());

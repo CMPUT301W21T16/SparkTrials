@@ -1,5 +1,7 @@
 package com.example.sparktrials.models;
 
+import java.util.Date;
+
 /**
  * Outlines the general elements that any trial for an experiment will have
  * This abstract class is to be extended by different variations on a trial
@@ -12,6 +14,7 @@ public abstract class Trial {
     GeoLocation location;
     Profile profile;
     Double value;
+    Date date;
 
     /**
      * This constructor creates a blank trial to be filled out
@@ -21,6 +24,7 @@ public abstract class Trial {
         this.id = null;
         this.profile = null;
         this.location = null;
+        this.date = new Date();
     }
 
     /**
@@ -37,6 +41,7 @@ public abstract class Trial {
         this.id = id;
         this.location = location;
         this.profile = profile;
+        this.date = new Date();
     }
 
     /**
@@ -113,5 +118,23 @@ public abstract class Trial {
     public void overwriteProfile(Profile profile) {
         this.profile = profile;
 
+    }
+
+    /**
+     * Gets the date that this trial was created
+     * @return
+     *    The date object containing the date
+     */
+    public Date getDate(){
+        return this.date;
+    }
+
+    /**
+     * Sets the date attribute for this trial
+     * @param date
+     *    The new date that the trial will take
+     */
+    public void setDate(Date date){
+        this.date = date;
     }
 }

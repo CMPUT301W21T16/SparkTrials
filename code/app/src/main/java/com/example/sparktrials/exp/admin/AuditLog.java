@@ -10,28 +10,41 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.sparktrials.FirebaseManager;
 import com.example.sparktrials.R;
+import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.Trial;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AuditLog extends ArrayAdapter<Profile> {
     private ArrayList<Trial> trialList;
     private ArrayList<Profile> userList;
+    private Experiment experiment;
+
+    FirebaseManager dbManager = new FirebaseManager();
 
     private Context context;
 
     private TextView userTrials;
+    private TextView results;
     private TextView userResults;
+    private TextView ratio;
     private TextView userRatio;
     private TextView userName;
     private Button ignoreButton;
 
-    public AuditLog(@NonNull Context context, ArrayList<Trial> trials, ArrayList<Profile> userList) {
+    public AuditLog(@NonNull Context context, Experiment experiment, ArrayList<Trial> trials, ArrayList<Profile> userList) {
         super(context, 0, userList);
         this.context = context;
+        this.experiment = experiment;
         trialList = trials;
         this.userList = userList;
     }
@@ -45,19 +58,23 @@ public class AuditLog extends ArrayAdapter<Profile> {
         }
 
         userTrials = view.findViewById(R.id.user_trials);
+        results = view.findViewById(R.id.results_text);
         userResults = view.findViewById(R.id.user_results);
+        ratio = view.findViewById(R.id.ratio_text);
         userRatio = view.findViewById(R.id.user_ratio);
         userName = view.findViewById(R.id.user_name);
         ignoreButton = view.findViewById(R.id.ignore_button);
 
-//        // let people know i'm overriding the equals() method for profile so that .contains() works
-//        for(Trial trial: trialList){
-//            if(userList.contains(trial.getProfile())){
-//                continue;
-//            } else {
-//                userList.add(trial.getProfile());
-//            }
-//        }
+        ignoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                ArrayList<String> blacklist = experiment.getBlacklist();
+                blacklist.add(userList.get(position).getId());
+                Map<String, Object> map = new HashMap<>();
+                map.put("Blacklist", blacklist);
+                dbManager.update("experiments", experiment.getId(), map);
+            }
+        });
 
         setFields(position);
 
@@ -71,27 +88,51 @@ public class AuditLog extends ArrayAdapter<Profile> {
      * @param index
      * the index in the userList
      */
-    public void setFields(int index){
+    public void setFields(int index) {
         Profile user = userList.get(index);
         double trials = 0;
         double result = 0;
-        Double ratio;
+        double ratioOrMean;
 
-        for(Trial trial: trialList){
-            if(trial.getProfile().equals(user)){
-                trials++;
-                if(trial.getValue() > 0){
-                    result++;
+        if (experiment.getType().equals("binomial trials")) {
+            for (Trial trial : trialList) {
+                if (trial.getProfile().equals(user)) {
+                    trials++;
+                    if (trial.getValue() > 0) {
+                        result++;
+                    }
                 }
             }
+            ratioOrMean = result / trials;
+
+            userTrials.setText(String.format("%.0f", trials));
+            userResults.setText(String.format("%.0f/%.0f", result, trials));
+            userRatio.setText(String.format("%.0f", ratioOrMean * 100));
+            userName.setText(user.getUsername());
+
+        } else {
+            for (Trial trial : trialList) {
+                if (trial.getProfile().equals(user)) {
+                    trials++;
+                    result = result + trial.getValue();
+                }
+            }
+
+            ratioOrMean = result / trials;
+            userTrials.setText(String.format("%0.f", trials));
+            results.setText("Mean");
+            userResults.setText(String.format("%0.2f", ratioOrMean));
+            ratio.setText("");
+            userRatio.setText("");
+            userName.setText(user.getUsername());
+
         }
-        ratio = result/trials;
 
-        userTrials.setText(String.format("%.0f", trials));
-        userResults.setText(String.format("%.0f/%.0f", result, trials));
-        userRatio.setText(String.format("%.0f", ratio*100));
-        userName.setText(user.getUsername());
+        if(experiment.getBlacklist().contains(user.getId())){
+            ignoreButton.setText("Ignored");
+        } else {
+            ignoreButton.setText("Ignore");
+        }
+
     }
-
-
 }

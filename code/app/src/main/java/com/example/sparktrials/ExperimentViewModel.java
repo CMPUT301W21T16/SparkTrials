@@ -9,9 +9,14 @@ import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.Trial;
+import com.example.sparktrials.models.TrialBinomial;
+import com.example.sparktrials.models.TrialCount;
+import com.example.sparktrials.models.TrialIntCount;
+import com.example.sparktrials.models.TrialMeasurement;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -144,7 +149,42 @@ public class ExperimentViewModel extends ViewModel {
             experiment.setType((String) expData.getData().get("Type"));
             String uId = (String) expData.getData().get("profileID");
             experiment.setOwner(new Profile(uId));
-            experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
+            //experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
+            ArrayList<HashMap> trialsHash = (ArrayList<HashMap>) expData.getData().get("Trials");
+            ArrayList<Trial> trials = new ArrayList<>();
+            for(HashMap<String, Object> map: trialsHash){
+                Trial trial;
+                String type = experiment.getType();
+                if(type.equals("binomial trials")){
+                    if((Double) map.get("value") == 0.0){
+                        trial = new TrialBinomial(false);
+                    } else {
+                        trial = new TrialBinomial(true);
+                    }
+
+                } else if(type.equals("non-negative integer counts")) {
+                    trial = new TrialIntCount((Integer) map.get("value"));
+                } else if(type.equals("measurement trials")){
+                    trial = new TrialMeasurement((Double) map.get("value"));
+                } else {
+                    trial = new TrialCount();
+                }
+                Profile experimenter = new Profile();
+                try{
+                    experimenter = manager.downloadProfile((String) map.get("profile"));
+                } catch(Exception e){
+                    experimenter.setUsername("No user Existed");
+                    experimenter.setId("No user existed");
+                    experimenter.setContact("No user existed");
+                }
+                trial.setProfile(experimenter);
+                trial.setId((String) map.get("id"));
+                Timestamp trialDate = (Timestamp) map.get("date");
+                trial.setDate(trialDate.toDate());
+                //trial.setLocation((GeoLocation) map.get("location"));
+                trials.add(trial);
+            }
+            experiment.setTrials(trials);
             experiment.setBlacklist((ArrayList<String>) expData.getData().get("Blacklist"));
             Log.d(TAG, expData.getId() + " => " + expData.getData());
 

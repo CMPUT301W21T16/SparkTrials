@@ -12,6 +12,7 @@ public class TrialMeasurement extends Trial{
      *    The measure that this trial will initially hold
      */
     public TrialMeasurement(Double measure){
+        super();
         this.value = measure;
     }
     /**

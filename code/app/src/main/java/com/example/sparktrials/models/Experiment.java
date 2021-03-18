@@ -223,7 +223,7 @@ public class Experiment {
      */
     public Trial getTrial(Integer id) {
         for (int i=0; i < this.trials.size(); i++){
-            if (this.trials.get(i).getId()==id){
+            if (this.trials.get(i).getId().equals(id)){
                 return this.trials.get(i);
             }
         }

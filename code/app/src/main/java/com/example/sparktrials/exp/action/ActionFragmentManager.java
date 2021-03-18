@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.sparktrials.FirebaseManager;
+import com.example.sparktrials.IdManager;
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.Trial;
@@ -19,19 +20,18 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * When a user decides to upload a trial or generate a qr code or delete a trial action
  * fragment manager deals with that
  */
 public class ActionFragmentManager {
-    String expType;
     Experiment experiment;
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     int originalNTrials;
     public ActionFragmentManager(Experiment experiment) {
         this.experiment=experiment;
-        this.expType=expType;
         this.originalNTrials=Integer.parseInt(experiment.getNumTrials());
     }
 
@@ -41,6 +41,7 @@ public class ActionFragmentManager {
      */
     public void addBinomialTrial(Boolean result){
         TrialBinomial trial = new TrialBinomial(result);
+        trial.setId(UUID.randomUUID().toString());
         experiment.addTrial(trial);
     }
 
@@ -50,6 +51,7 @@ public class ActionFragmentManager {
      */
     public void addNonNegIntTrial(Integer result){
         TrialIntCount trial = new TrialIntCount(result);
+        trial.setId(UUID.randomUUID().toString());
         experiment.addTrial(trial);
     }
 
@@ -59,6 +61,7 @@ public class ActionFragmentManager {
      */
     public void addMeasurmentTrial(Double result){
         TrialMeasurement trial = new TrialMeasurement(result);
+        trial.setId(UUID.randomUUID().toString());
         experiment.addTrial(trial);
     }
 
@@ -68,6 +71,7 @@ public class ActionFragmentManager {
     public void addCountTrial(Integer count){
         TrialCount trial = new TrialCount();
         trial.setCount(count);
+        trial.setId(UUID.randomUUID().toString());
         experiment.addTrial(trial);
     }
 

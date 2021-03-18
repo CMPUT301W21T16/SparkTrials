@@ -67,10 +67,10 @@ public class StatsFragment extends Fragment {
         // This is Testing data
         Experiment thisExp = new Experiment("testingAlex");
         ArrayList<Trial> trial= new ArrayList<>();
-        TrialBinomial newBinomial = new TrialBinomial(1, new GeoLocation(), new Profile("1234"), true) ;
-        TrialBinomial newBinomial2 = new TrialBinomial(2, new GeoLocation(), new Profile("1234"), false) ;
-        TrialBinomial newBinomial3 = new TrialBinomial(3, new GeoLocation(), new Profile("1234"), false) ;
-        TrialBinomial newBinomial4 = new TrialBinomial(4, new GeoLocation(), new Profile("1234"), true) ;
+        TrialBinomial newBinomial = new TrialBinomial("1", new GeoLocation(), new Profile("1234"), true) ;
+        TrialBinomial newBinomial2 = new TrialBinomial("2", new GeoLocation(), new Profile("1234"), false) ;
+        TrialBinomial newBinomial3 = new TrialBinomial("3", new GeoLocation(), new Profile("1234"), false) ;
+        TrialBinomial newBinomial4 = new TrialBinomial("4", new GeoLocation(), new Profile("1234"), true) ;
         trial.add(newBinomial);
         trial.add(newBinomial2);
         trial.add(newBinomial3);

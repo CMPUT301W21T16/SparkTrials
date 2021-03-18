@@ -90,6 +90,8 @@ public class ActionFragmentManager {
      */
     public void uploadTrials(){};
 
+
+
     /**
      * Removes all trials inserted by the user from the experiment object
      */
@@ -99,4 +101,5 @@ public class ActionFragmentManager {
             experiment.delTrial(experiment.getAllTrials().size()-1);
         }
     }
+
 }

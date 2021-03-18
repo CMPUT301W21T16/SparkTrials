@@ -114,6 +114,14 @@ public class Experiment {
         this.blacklist = blacklist;
     }
 
+    public Experiment() {
+
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     /**
      * Fetches the id of the experiment
      * @return

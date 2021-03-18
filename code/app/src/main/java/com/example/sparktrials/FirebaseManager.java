@@ -240,5 +240,18 @@ public class FirebaseManager {
 
     }
 
-
+    public void uploadTrials(Experiment experiment){
+        CollectionReference ref = firestore.collection("experiments");
+        ref.document(experiment.getId()).update("Trials", experiment.getAllTrials()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                String task_path = "experiment" + "/" + experiment.getId();
+                if (task.isSuccessful()) {
+                    Log.d("Success" + "[Update]", "Succeed: " + task_path);
+                } else {
+                    Log.d("LOG_TAG" + "[Update]", "Failed: " + task_path);
+                }
+            }
+        });
+    }
 }

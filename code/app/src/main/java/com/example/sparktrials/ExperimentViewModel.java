@@ -163,11 +163,12 @@ public class ExperimentViewModel extends ViewModel {
                     }
 
                 } else if(type.equals("non-negative integer counts")) {
-                    trial = new TrialIntCount((Integer) map.get("value"));
+                    trial = new TrialIntCount(((Double) map.get("value")).intValue());
                 } else if(type.equals("measurement trials")){
                     trial = new TrialMeasurement((Double) map.get("value"));
                 } else {
                     trial = new TrialCount();
+                    ((TrialCount) trial).setCount(((Double) map.get("value")).intValue());
                 }
                 Profile experimenter = new Profile();
                 try{

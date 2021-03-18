@@ -44,15 +44,13 @@ public class PublishFragmentManager {
      * @param lonString
      * String containing the longitude
      */
-    public PublishFragmentManager(String userID,String desc, String title, String MinNTrialsString,String latString, String lonString,String experimentType,Boolean reqLocation){
+    public PublishFragmentManager(String userID,String desc, String title, String MinNTrialsString, double lat, double lon,String experimentType,Boolean reqLocation){
         try {
             minNTrials = Integer.parseInt(MinNTrialsString);
         }catch(NumberFormatException e){
             minNTrials = 0;
         }
         try{
-            double lat = Double.parseDouble(latString);
-            double lon = Double.parseDouble(lonString);
             geoLocation= new GeoLocation(lat,lon);
         }catch (NumberFormatException e){
             geoLocation = new GeoLocation();

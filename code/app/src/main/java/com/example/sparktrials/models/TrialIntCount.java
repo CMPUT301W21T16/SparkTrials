@@ -11,6 +11,7 @@ public class TrialIntCount extends Trial {
      *    The count that this trial will hold
      */
     public TrialIntCount(Integer count){
+        super();
         if (count>=0.0) {
             this.value = (double)count;
         } else {

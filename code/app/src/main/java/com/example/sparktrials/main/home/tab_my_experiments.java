@@ -1,6 +1,7 @@
 package com.example.sparktrials.main.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -10,11 +11,14 @@ import androidx.lifecycle.Observer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.sparktrials.CustomList;
+import com.example.sparktrials.ExperimentActivity;
 import com.example.sparktrials.IdManager;
 import com.example.sparktrials.R;
+import com.example.sparktrials.main.search.SearchFragment;
 import com.example.sparktrials.models.Experiment;
 
 import java.util.ArrayList;
@@ -59,6 +63,14 @@ public class tab_my_experiments extends Fragment {
             }
         };
         homeViewModel.getMyExpList().observe(getViewLifecycleOwner(), nameObserver);
+        myExperiments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Experiment experiment = myExperiment_adapter.getItem(position);
+                startExperimentActivity(experiment.getId());
+
+            }
+        });
     }
 
     /**
@@ -87,5 +99,12 @@ public class tab_my_experiments extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_tab_my_experiments, container, false);
+    }
+
+    private void startExperimentActivity(String experimentID){
+        Intent intent = new Intent(this.getActivity(), ExperimentActivity.class);
+        intent.putExtra("EXPERIMENT_ID", experimentID);
+        startActivity(intent);
+
     }
 }

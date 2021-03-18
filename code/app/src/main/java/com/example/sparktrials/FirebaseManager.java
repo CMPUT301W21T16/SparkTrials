@@ -12,6 +12,8 @@ import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.Trial;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
@@ -145,6 +147,32 @@ public class FirebaseManager {
         });
     }
 
+    /**
+     * Delete a document from a collection in the database
+     * @param collection
+     *  The collection to delete from
+     * @param document
+     *  The Document to delete
+     */
+    public void delete(String collection, String document){
+        CollectionReference ref = firestore.collection(collection);
+        String task_path = collection + "/" + document;
+        ref.document(document)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(LOG_TAG + "[Delete]", "Succeed: " + task_path);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(LOG_TAG + "[Delete]", "Failure: " + task_path);
+                    }
+                });
+    }
+
 
     /**
      * Create a default user profile in Firestore.
@@ -152,11 +180,11 @@ public class FirebaseManager {
      */
     public void createUserProfile(String userId) {
         Map<String, Object> profile = new HashMap<>();
-        ArrayList<String> subscribers = new ArrayList<>();
+        ArrayList<String> subscriptions = new ArrayList<>();
         profile.put("uid",userId);
         profile.put("name", "User");
         profile.put("contact","None");
-        profile.put("subscribers",subscribers);
+        profile.put("subscriptions",subscriptions);
         set("users", userId, profile);
     }
 

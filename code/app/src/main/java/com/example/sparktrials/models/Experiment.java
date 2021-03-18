@@ -188,6 +188,9 @@ public class Experiment {
         String user_id;
         for (int i=0; i < this.trials.size(); i++){
             trial = this.trials.get(i);
+            if (this.blacklist.contains(trial.getProfile().getId())){
+                break;
+            }
             user_id = trial.getProfile().getId();
             if (user_trials.get(user_id) == null){
                 ArrayList<Trial> arr_list = new ArrayList<>();
@@ -237,6 +240,26 @@ public class Experiment {
         if (this.open){
             this.trials.add(trial);
         }
+    }
+
+    /**
+     * Deletes a trial from the trial list
+     * @param trial
+     *    The trial to delete
+     */
+    public void delTrial(Trial trial){
+        this.trials.remove(trial);
+    }
+
+    /**
+     * Deletes a trial from the trial list
+     * @param id
+     *    The id of the trial to delete
+     */
+    public void delTrial(Integer id){
+        Trial trial = this.trials.get(id);
+        this.delTrial(trial);
+
     }
 
     /**

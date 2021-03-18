@@ -19,10 +19,13 @@ import com.example.sparktrials.models.Experiment;
 
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.Profile;
+import com.example.sparktrials.models.Trial;
 
 public class ActionFragment extends Fragment {
     View view;
     TextView trialsNumber;
+    TextView trialsCount;
+    int count;
     private ActionFragmentManager manager;
     public ActionFragment(Experiment experiment){
         Log.d("TYPE=",experiment.getType());
@@ -40,7 +43,6 @@ public class ActionFragment extends Fragment {
         Button generateQR = view.findViewById(R.id.action_bar_generateQR);
         Button deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
         EditText valueEditText = view.findViewById(R.id.countvalue_editText);
-        Button incrementCount = view.findViewById(R.id.action_bar_incrementCount);
         updateView();
         if (manager.getType().equals("binomial trials".toLowerCase())){
             leftButton.setVisibility(View.VISIBLE);
@@ -108,11 +110,22 @@ public class ActionFragment extends Fragment {
             });
         }
         else if(manager.getType().equals("Counts".toLowerCase())){
-            incrementCount.setVisibility(View.VISIBLE);
-            incrementCount.setOnClickListener(new View.OnClickListener() {
+            leftButton.setVisibility(View.VISIBLE);
+            rightButton.setVisibility(View.VISIBLE);
+            leftButton.setText("Add Count");
+            rightButton.setText("Commit Trial");
+            leftButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    manager.addCountTrial();
+                    count+=1;
+                    updateView();
+                }
+            });
+            rightButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    manager.addCountTrial(count);
+                    count=0;
                     updateView();
                 }
             });
@@ -120,7 +133,7 @@ public class ActionFragment extends Fragment {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                manager.uploadTrials();
             }
         });
         generateQR.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +155,10 @@ public class ActionFragment extends Fragment {
         int trials=Integer.parseInt(manager.getNTrials());
         int minimumNumberTrials = manager.getMinNTrials();
         trialsNumber=view.findViewById(R.id.trials_completed);
+        trialsCount=view.findViewById(R.id.trials_count);
+        if(manager.getType().equals("Counts".toLowerCase())){
+            trialsCount.setText("Trial count: "+count);
+        }
         if (minimumNumberTrials>0)
             trialsNumber.setText("Trials completed: "+trials+"/"+minimumNumberTrials);
         else

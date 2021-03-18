@@ -3,12 +3,20 @@ package com.example.sparktrials.exp.action;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.example.sparktrials.FirebaseManager;
 import com.example.sparktrials.models.Experiment;
+import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.Trial;
 import com.example.sparktrials.models.TrialBinomial;
 import com.example.sparktrials.models.TrialCount;
 import com.example.sparktrials.models.TrialIntCount;
 import com.example.sparktrials.models.TrialMeasurement;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -19,6 +27,7 @@ import java.util.ArrayList;
 public class ActionFragmentManager {
     String expType;
     Experiment experiment;
+    private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     int originalNTrials;
     public ActionFragmentManager(Experiment experiment) {
         this.experiment=experiment;
@@ -56,8 +65,9 @@ public class ActionFragmentManager {
     /**
      * Adds a count trial to the experiment
      */
-    public void addCountTrial(){
+    public void addCountTrial(Integer count){
         TrialCount trial = new TrialCount();
+        trial.setCount(count);
         experiment.addTrial(trial);
     }
 
@@ -88,9 +98,20 @@ public class ActionFragmentManager {
     /**
      * TO DO: Uploads the trials to firbase
      */
-    public void uploadTrials(){};
-
-
+    public void uploadTrials(){
+        CollectionReference ref = firestore.collection("experiments");
+        ref.document(experiment.getId()).update("Trials", experiment.getAllTrials()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                String task_path = "experiment" + "/" + experiment.getId();
+                if (task.isSuccessful()) {
+                    Log.d("Success" + "[Update]", "Succeed: " + task_path);
+                } else {
+                    Log.d("LOG_TAG" + "[Update]", "Failed: " + task_path);
+                }
+            }
+        });
+    }
 
     /**
      * Removes all trials inserted by the user from the experiment object

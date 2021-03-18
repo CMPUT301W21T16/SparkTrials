@@ -1,14 +1,23 @@
 package com.example.sparktrials.main.home;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
+import com.example.sparktrials.CustomList;
+import com.example.sparktrials.IdManager;
 import com.example.sparktrials.R;
+import com.example.sparktrials.models.Experiment;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +25,10 @@ import com.example.sparktrials.R;
  * create an instance of this fragment.
  */
 public class tab_subscribed extends Fragment {
+    private ListView subExperiments;
+    private CustomList subExperiment_adapter;
+    private Context context;
+    private HomeViewModel homeViewModel;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -40,6 +53,24 @@ public class tab_subscribed extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static tab_subscribed newInstance() {
         return new tab_subscribed();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        subExperiments = getView().findViewById(R.id.subscribed_list);
+        context = requireActivity().getApplicationContext();
+        IdManager idManager = new IdManager(context);
+        homeViewModel = new HomeViewModel(idManager.getUserId());
+
+        final Observer<ArrayList<Experiment>> nameObserver = new Observer<ArrayList<Experiment>>() {
+            @Override
+            public void onChanged(@Nullable final ArrayList<Experiment> newList) {
+                subExperiment_adapter = new CustomList(context, newList);
+                subExperiments.setAdapter(subExperiment_adapter);
+            }
+        };
+        homeViewModel.getMyExpList().observe(getViewLifecycleOwner(), nameObserver);
     }
 
     @Override

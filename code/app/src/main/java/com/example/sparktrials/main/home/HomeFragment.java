@@ -1,9 +1,11 @@
 package com.example.sparktrials.main.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,25 +16,30 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.sparktrials.CustomList;
+import com.example.sparktrials.IdManager;
 import com.example.sparktrials.R;
+import com.example.sparktrials.models.Experiment;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
     private ViewPager2 viewPager2;
     private TabLayout tabLayout;
     private FragmentPagerAdapter pagerAdapter;
+
     @Override
     public void onStart() {
         super.onStart();
+
 
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         return root;
@@ -68,5 +75,7 @@ public class HomeFragment extends Fragment {
                 tabLayout.selectTab(tabLayout.getTabAt(position));
             }
         });
+
+
     }
 }

@@ -28,9 +28,9 @@ public class GeoMap implements OnMapReadyCallback {
 
 
         if (isEditable) {
-            map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                 @Override
-                public void onMapClick(LatLng latLng) {
+                public void onMapLongClick(LatLng latLng) {
 
                     map.clear();
 

@@ -172,7 +172,7 @@ public class ExperimentViewModel extends ViewModel {
                 }
                 Profile experimenter = new Profile();
                 try{
-                    experimenter = manager.downloadProfile((String) map.get("profile"));
+                    experimenter = (Profile) map.get("profile");
                 } catch(Exception e){
                     experimenter.setUsername("No user Existed");
                     experimenter.setId("No user existed");

@@ -1,5 +1,8 @@
 package com.example.sparktrials.exp.admin;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.sparktrials.MainActivity;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.Profile;
@@ -69,11 +73,31 @@ public class AdminFragment extends Fragment {
 
         // I WANT THIS TO OPEN A DIALOG TO CONFIRM THE DELETION, CURRENTLY IT JUST DELETES
         // AS SOON AS YOU CLICK IT BE CAREFUL
-        unpublishButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.deleteExperiment(experiment.getId());
-            }
+        unpublishButton.setOnClickListener((v) -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Are you sure you want to unpublish this experiment?");
+            builder.setMessage("This cannot be reversed.");
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    manager.deleteExperiment(experiment.getId());
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    dialog.dismiss();
+                    getActivity().finish();
+                }
+            });
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+
         });
     }
 }

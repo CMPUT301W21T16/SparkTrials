@@ -89,8 +89,8 @@ public class ActionFragmentManager {
      * Returns the number of trials in the experiment
      * @return
      */
-    public String getNTrials(){
-        return experiment.getNumTrials();
+    public Integer getNTrials(){
+        return experiment.getUserTrials(profile.getId()).size();
     }
 
     /**

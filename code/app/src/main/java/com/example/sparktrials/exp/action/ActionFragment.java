@@ -167,7 +167,8 @@ public class ActionFragment extends Fragment {
         return view;
     }
     public void updateView(){
-        int trials=Integer.parseInt(manager.getNTrials());
+        int trials=manager.getNTrials();
+        Log.d("NUM Is", String.valueOf(trials));
         int minimumNumberTrials = manager.getMinNTrials();
         trialsNumber=view.findViewById(R.id.trials_completed);
         trialsCount=view.findViewById(R.id.trials_count);

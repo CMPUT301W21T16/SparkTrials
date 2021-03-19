@@ -272,7 +272,7 @@ public class Experiment {
     public ArrayList<Trial> getUserTrials(String id){
         ArrayList<Trial> chosenTrials = new ArrayList<>();
         for (int i=0; i < this.trials.size(); i++){
-            if (this.trials.get(i).getProfile().getId()==id){
+            if (this.trials.get(i).getProfile().getId().equals(id)){
                 chosenTrials.add(this.trials.get(i));
             }
         }

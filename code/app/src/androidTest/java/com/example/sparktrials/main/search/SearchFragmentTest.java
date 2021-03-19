@@ -25,6 +25,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This class runs IntentTests to test the functionality of SearchFragmentTest.
+ */
+
 @RunWith(AndroidJUnit4.class)
 public class SearchFragmentTest {
 

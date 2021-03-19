@@ -21,6 +21,7 @@ public class GeoMap implements OnMapReadyCallback {
 
     private boolean isEditable;
     private boolean markerSet;
+    private boolean hasLocationSet;
 
     /**
      * Constructor of GeoMap that is called when we want to set a region to an experiment.
@@ -32,6 +33,7 @@ public class GeoMap implements OnMapReadyCallback {
         this.isEditable = isEditable;
         geoLocation = new GeoLocation();
         markerSet = false;
+        hasLocationSet = false;
     }
 
     /**
@@ -44,6 +46,7 @@ public class GeoMap implements OnMapReadyCallback {
         this.isEditable = isEditable;
         this.geoLocation = experiment.getRegion();
         markerSet = true;
+        hasLocationSet = experiment.getReqLocation();
     }
 
     @Override
@@ -71,15 +74,32 @@ public class GeoMap implements OnMapReadyCallback {
                 }
             });
         } else {
-            LatLng center = new LatLng(geoLocation.getLat(), geoLocation.getLon());
+            if (hasLocationSet) {
+                LatLng center = new LatLng(geoLocation.getLat(), geoLocation.getLon());
 
-            map.addMarker(new MarkerOptions()
-                    .position(center));
+                map.addMarker(new MarkerOptions()
+                        .position(center));
 
-            displayCircle(center, geoLocation.getRadius());
+                displayCircle(center, geoLocation.getRadius());
 
-            float zoomLevel = 13.0f;
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, zoomLevel));
+                float zoomLevel = 13.0f;
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, zoomLevel));
+
+            } else {
+                // The default region will be set to Edmonton, AB. I got the following values after
+                // a couple simple google searches.
+                LatLng defaultCenter = new LatLng(53.5439, -113.4923);
+                // Land area of Edmonton is 767.85 km^2 = pi*r^2/1000000 m^2
+                double radius = 15634;
+
+                map.addMarker(new MarkerOptions()
+                        .position(defaultCenter));
+
+                displayCircle(defaultCenter, radius);
+
+                float zoomLevel = 10.0f;
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultCenter, zoomLevel));
+            }
         }
     }
 

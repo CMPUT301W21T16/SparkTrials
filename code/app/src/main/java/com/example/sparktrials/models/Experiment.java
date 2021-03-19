@@ -117,6 +117,7 @@ public class Experiment {
     }
 
     public Experiment() {
+        this.date = new Date();
 
     }
 
@@ -422,7 +423,7 @@ public class Experiment {
      *    Returns the date that the experiment started
      */
     public Date getDate() {
-        return date;
+        return this.date;
     }
 
     public String getDay(){

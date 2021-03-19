@@ -69,10 +69,12 @@ public class AuditLog extends ArrayAdapter<Profile> {
             @Override
             public void onClick(View v){
                 ArrayList<String> blacklist = experiment.getBlacklist();
-                blacklist.add(userList.get(position).getId());
-                Map<String, Object> map = new HashMap<>();
-                map.put("Blacklist", blacklist);
-                dbManager.update("experiments", experiment.getId(), map);
+                if(!blacklist.contains(userList.get(position).getId())){
+                    blacklist.add(userList.get(position).getId());
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("Blacklist", blacklist);
+                    dbManager.update("experiments", experiment.getId(), map);
+                }
             }
         });
 

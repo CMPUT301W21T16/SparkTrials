@@ -151,7 +151,7 @@ public class ExperimentViewModel extends ViewModel {
             experiment.setType((String) expData.getData().get("Type"));
             String uId = (String) expData.getData().get("profileID");
             experiment.setOwner(new Profile(uId));
-            //experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
+//            experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
             ArrayList<HashMap> trialsHash = (ArrayList<HashMap>) expData.getData().get("Trials");
             ArrayList<Trial> trials = new ArrayList<>();
             for(HashMap<String, Object> map: trialsHash){
@@ -173,13 +173,11 @@ public class ExperimentViewModel extends ViewModel {
                     ((TrialCount) trial).setCount(((Double) map.get("value")).intValue());
                 }
                 Profile experimenter = new Profile();
-                try{
-                    experimenter = manager.downloadProfile((String) map.get("profile"));
-                } catch(Exception e){
-                    experimenter.setUsername("No user Existed");
-                    experimenter.setId("No user existed");
-                    experimenter.setContact("No user existed");
-                }
+                HashMap<String, Object> profile = (HashMap<String, Object>) map.get("profile");
+                experimenter.setContact((String) profile.get("contact"));
+                experimenter.setUsername((String) profile.get("username"));
+                experimenter.setId((String) profile.get("id"));
+                experimenter.setSubscriptions((ArrayList<String>) profile.get("subscriptions"));
                 trial.setProfile(experimenter);
                 trial.setId((String) map.get("id"));
                 Timestamp trialDate = (Timestamp) map.get("date");

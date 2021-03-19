@@ -17,6 +17,10 @@ import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.GeoMap;
 import com.google.android.gms.maps.SupportMapFragment;
 
+/**
+ * This class represents an activity that allows the user to pick a region for an experiment before
+ * publishing it. It is meant to be called from PublishExperimentFragment.
+ */
 public class MapsActivity extends AppCompatActivity {
 
     private GeoMap map;
@@ -29,7 +33,7 @@ public class MapsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        displayBackButton();
+        displayUpButton();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -60,7 +64,10 @@ public class MapsActivity extends AppCompatActivity {
 
     }
 
-    private void displayBackButton() {
+    /**
+     * Displays the "Up" button in the toolbar of the activity.
+     */
+    private void displayUpButton() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.map_activity_toolbar);
         setSupportActionBar(toolbar);
 
@@ -70,6 +77,7 @@ public class MapsActivity extends AppCompatActivity {
         }
     }
 
+    // Sets the "Up" button to act as if a the "Back" button was pressed
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -80,12 +88,19 @@ public class MapsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // If the "Back" button is pressed, then no region has been selected.
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         sendBackCoords(false);
     }
 
+    /**
+     * Sends back the coordinates of the center and the radius of the region back to the UI
+     * element that called it.
+     * @param hasPickedLocation
+     *      Indicates whether a region has been chosen.
+     */
     private void sendBackCoords(boolean hasPickedLocation) {
         //Intent goBackToPublishFragment = new Intent(this, MainActivity.class);
         if (hasPickedLocation) {

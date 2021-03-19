@@ -37,16 +37,19 @@
 
 
     </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="My Profile"
-        android:textSize="40sp"
-        android:textAlignment="center"
-        android:gravity="center_horizontal"
+        android:layout_marginTop="1dp"
         android:layout_marginBottom="30dp"
+        android:background="#FFFFFF"
+        android:gravity="center"
         android:paddingTop="20dp"
-        android:layout_marginTop="1dp"/>
+        android:text="My Profile"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="40sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -110,7 +113,8 @@
 
         android:text="Edit Profile"
         android:textColor="@android:color/white"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        app:backgroundTint="#009688" />
 
 
 

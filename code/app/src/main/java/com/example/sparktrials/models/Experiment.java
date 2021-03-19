@@ -1,5 +1,7 @@
 package com.example.sparktrials.models;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -423,6 +425,14 @@ public class Experiment {
         return date;
     }
 
+    public String getDay(){
+        String pattern = "EEE MMM MM HH:mm:ss z yyyy";
+        DateFormat df = new SimpleDateFormat(pattern);
+        String strDate = df.format(date);
+        strDate = strDate.substring(4,10);
+        return strDate;
+
+    }
     /**
      * Sets a new start date of the experiment. You really should not use this to *change* the date
      * @param date
@@ -510,11 +520,27 @@ public class Experiment {
      */
     public ArrayList<Double> trialsValuesSorted(){
         ArrayList <Double>  values = new ArrayList<>();
-        for(int i = 0; i<this.trials.size(); i++){
-            values.add( (Double) ( this.trials.get(i).getValue()));
+        for(int i = 0; i<getValidTrials().size(); i++){
+            values.add( (Double) ( getValidTrials().get(i).getValue()));
         }
         Collections.sort(values);
         return values;
+    }
+
+    public ArrayList<String> daysOfTrials(){
+
+        ArrayList<String> days = new ArrayList<>();
+        for (int i = 0 ; i < getValidTrials().size(); i++){
+
+
+            this.getDay();
+            if (!days.contains(getValidTrials().get(i).getDay())){
+                 days.add(getValidTrials().get(i).getDay());
+
+            }
+        }
+
+        return  days;
     }
 
     /**
@@ -561,13 +587,18 @@ public class Experiment {
         return frequencies;
     }
 
+
+
     /**
      * Calculates the Median value for the experiment
      * @return
      * Median of type string
      */
     public String getMedian(){
-        double median;
+        double median =0;
+        if (trialsValuesSorted().isEmpty() ){
+            return "N/A";
+        }
         int num = trialsValuesSorted().size();
         if (num  % 2 == 0){
             median = ((double)(trialsValuesSorted().get(num/2) + trialsValuesSorted().get(num/2 - 1)));
@@ -584,6 +615,9 @@ public class Experiment {
      */
     public String getQ1(){
         double quartile;
+        if (trialsValuesSorted().isEmpty() ){
+            return "N/A";
+        }
         int num = trialsValuesSorted().size();
         int length = num +1;
         float newArraySize = (length * ((float) (1) * 25 / 100)) - 1;
@@ -602,6 +636,9 @@ public class Experiment {
      * Q3 of type string
      */
     public String getQ3(){
+        if (trialsValuesSorted().isEmpty() ){
+            return "N/A";
+        }
         double quartile;
         int num = trialsValuesSorted().size();
         int length = num +1;
@@ -621,7 +658,7 @@ public class Experiment {
      * Number of trials of type string
      */
     public String getNumTrials(){
-        return "" +this.trials.size();
+        return "" +getValidTrials().size();
     }
 
     /**
@@ -630,16 +667,19 @@ public class Experiment {
      * Standard deviation of type string
      */
     public String getStd(){
+        if (trialsValuesSorted().isEmpty() ){
+            return "N/A";
+        }
         int sum =0 ;
         double mean;
-        int num = this.trials.size();
+        int num = getValidTrials().size();
         double std= 0;
         for (int i=0 ; i<num;  i++){
-            sum+= this.trials.get(i).getValue();
+            sum+= getValidTrials().get(i).getValue();
         }
         mean = ((double) sum) / ((double) num);
         for (int i = 0 ; i<num; i++){
-            std+= Math.pow(this.trials.get(i).getValue()- mean, 2);
+            std+= Math.pow(getValidTrials().get(i).getValue()- mean, 2);
         }
         std = Math.sqrt(std/num);
         return String.format("%.2f", std);
@@ -651,11 +691,14 @@ public class Experiment {
      * Mean of type String
      */
     public String getMean(){
+        if (trialsValuesSorted().isEmpty() ){
+            return "N/A";
+        }
         int sum =0 ;
         double mean;
-        int num = this.trials.size();
+        int num = getValidTrials().size();
         for (int i=0 ; i<num;  i++){
-            sum+= this.trials.get(i).getValue();
+            sum+= getValidTrials().get(i).getValue();
         }
         mean = ((double) sum) / ((double) num);
         return String.format("%.2f", mean);

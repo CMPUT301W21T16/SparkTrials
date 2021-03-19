@@ -1,5 +1,7 @@
 package com.example.sparktrials.models;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -137,4 +139,15 @@ public abstract class Trial {
     public void setDate(Date date){
         this.date = date;
     }
+
+    public String getDay(){
+        String pattern = "EEE MMM MM HH:mm:ss z yyyy";
+        DateFormat df = new SimpleDateFormat(pattern);
+        String strDate = df.format(date);
+        strDate = strDate.substring(4,10);
+        return strDate;
+
+    }
 }
+
+

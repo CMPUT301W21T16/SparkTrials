@@ -1,20 +1,18 @@
-package com.example.sparktrials;
+package com.example.sparktrials.main_ui.publish;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import com.example.sparktrials.main_ui.publish.PublishFragment;
+import com.example.sparktrials.MainActivity;
+import com.example.sparktrials.R;
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.GeoMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -23,7 +21,8 @@ public class MapsActivity extends AppCompatActivity {
 
     private GeoMap map;
 
-    private Button applyLocation;
+    private Button confirmLocation;
+    private Button chooseRadius;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +39,22 @@ public class MapsActivity extends AppCompatActivity {
 
         mapFragment.getMapAsync(map);
 
-        applyLocation = findViewById(R.id.choose_location_button);
-        applyLocation.setOnClickListener(new View.OnClickListener() {
+        confirmLocation = findViewById(R.id.confirm_region_button);
+        chooseRadius = findViewById(R.id.choose_radius_button);
+
+        confirmLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendBackCoords(true);
+            }
+        });
+
+        chooseRadius.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (map.isMarkerSet()) {
+                    new ChooseRadiusFragment(map).show(getSupportFragmentManager(), "Choose Region Fragment");
+                }
             }
         });
 
@@ -83,6 +93,7 @@ public class MapsActivity extends AppCompatActivity {
             GeoLocation markedLocation = map.getGeoLocation();
             sendLocationBack.putExtra("Latitude", markedLocation.getLat());
             sendLocationBack.putExtra("Longitude", markedLocation.getLon());
+            sendLocationBack.putExtra("Radius", map.getGeoLocation().getRadius());
 
             int didPickLocation = (int) getIntent().getExtras().get("LOCATION_PICKED");
             setResult(didPickLocation, sendLocationBack);

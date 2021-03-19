@@ -1,4 +1,4 @@
-package com.example.sparktrials.exp;
+package com.example.sparktrials.exp.location;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

@@ -43,6 +43,7 @@ public class SearchFragmentTest {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
     }
 
+
     /**
      * Gets the Activity
      *

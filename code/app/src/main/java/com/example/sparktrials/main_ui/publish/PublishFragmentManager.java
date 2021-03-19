@@ -39,21 +39,21 @@ public class PublishFragmentManager {
      * The experiment title
      * @param MinNTrialsString
      * The string containing an integer describing the minimum number of trials
-     * @param latString
-     * String containing the latitude
-     * @param lonString
-     * String containing the longitude
+     * @param lat
+     * The latitude
+     * @param lon
+     * The longitude
+     * @param radius
+     * The radius of the region.
      */
-    public PublishFragmentManager(String userID,String desc, String title, String MinNTrialsString,String latString, String lonString,String experimentType,Boolean reqLocation){
+    public PublishFragmentManager(String userID,String desc, String title, String MinNTrialsString, double lat, double lon, double radius, String experimentType,Boolean reqLocation){
         try {
             minNTrials = Integer.parseInt(MinNTrialsString);
         }catch(NumberFormatException e){
             minNTrials = 0;
         }
         try{
-            double lat = Double.parseDouble(latString);
-            double lon = Double.parseDouble(lonString);
-            geoLocation= new GeoLocation(lat,lon);
+            geoLocation= new GeoLocation(lat, lon, radius);
         }catch (NumberFormatException e){
             geoLocation = new GeoLocation();
         }

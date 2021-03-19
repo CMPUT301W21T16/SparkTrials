@@ -31,6 +31,9 @@ import com.example.sparktrials.models.Experiment;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * This class represents the Fragment in which the list of experiments is searched.
+ */
 public class SearchFragment extends Fragment {
 
     private SearchViewModel searchManager;
@@ -132,13 +135,11 @@ public class SearchFragment extends Fragment {
     private void updateAdapter() {
         String[] keywords = getKeywords();
 
-        if (keywords.length > 0) {
-            ArrayList<Experiment> searchResults = searchManager.search(keywords);
+        ArrayList<Experiment> searchResults = searchManager.search(keywords);
 
-            searchListAdapter = new CustomList(getContext(), searchResults);
+        searchListAdapter = new CustomList(getContext(), searchResults);
 
-            searchListView.setAdapter(searchListAdapter);
-        }
+        searchListView.setAdapter(searchListAdapter);
     }
 
     /**

@@ -11,6 +11,7 @@ public class TrialIntCount extends Trial {
      *    The count that this trial will hold
      */
     public TrialIntCount(Integer count){
+        super();
         if (count>=0.0) {
             this.value = (double)count;
         } else {
@@ -28,7 +29,7 @@ public class TrialIntCount extends Trial {
      * @param count
      *    Non-negative integer
      */
-    public TrialIntCount(Integer id, GeoLocation location, Profile profile, Integer count){
+    public TrialIntCount(String id, GeoLocation location, Profile profile, Integer count){
         super(id, location, profile);
         if (count>=0.0) {
             this.value = (double)count;

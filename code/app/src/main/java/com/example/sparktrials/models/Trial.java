@@ -1,5 +1,7 @@
 package com.example.sparktrials.models;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -10,7 +12,7 @@ import java.util.Date;
  * profile is the profile of the user who took this trial
  */
 public abstract class Trial {
-    Integer id;
+    String id;
     GeoLocation location;
     Profile profile;
     Double value;
@@ -37,7 +39,7 @@ public abstract class Trial {
      * @param profile
      *    Sets the profile of the trial to be the user who instantiated the trial
      */
-    public Trial(Integer id, GeoLocation location, Profile profile){
+    public Trial(String id, GeoLocation location, Profile profile){
         this.id = id;
         this.location = location;
         this.profile = profile;
@@ -49,7 +51,7 @@ public abstract class Trial {
      * @return
      *    Returns the id of the trial
      */
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -58,7 +60,7 @@ public abstract class Trial {
      * @param id
      *    The new id that the trial will take
      */
-    public void setId(Integer id) {
+    public void setId(String id) {
         if (this.id == null){
             this.id = id;
         }
@@ -137,4 +139,15 @@ public abstract class Trial {
     public void setDate(Date date){
         this.date = date;
     }
+
+    public String getDay(){
+        String pattern = "EEE MMM MM HH:mm:ss z yyyy";
+        DateFormat df = new SimpleDateFormat(pattern);
+        String strDate = df.format(date);
+        strDate = strDate.substring(4,10);
+        return strDate;
+
+    }
 }
+
+

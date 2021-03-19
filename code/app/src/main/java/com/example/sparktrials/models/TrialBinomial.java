@@ -29,7 +29,7 @@ public class TrialBinomial extends Trial{
      * @param pass
      *    Either a true or false boolean, pass or fail
      */
-    public TrialBinomial(Integer id, GeoLocation location, Profile profile, Boolean pass){
+    public TrialBinomial(String id, GeoLocation location, Profile profile, Boolean pass){
         super(id, location, profile);
         if (pass){
             this.value = 1.0;

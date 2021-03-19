@@ -12,6 +12,7 @@ public class TrialMeasurement extends Trial{
      *    The measure that this trial will initially hold
      */
     public TrialMeasurement(Double measure){
+        super();
         this.value = measure;
     }
     /**
@@ -25,7 +26,7 @@ public class TrialMeasurement extends Trial{
      * @param measure
      *    A measure of something that the measure attribute will take
      */
-    public TrialMeasurement(Integer id, GeoLocation location, Profile profile, Double measure){
+    public TrialMeasurement(String id, GeoLocation location, Profile profile, Double measure){
         super(id, location, profile);
         this.value = measure;
     }

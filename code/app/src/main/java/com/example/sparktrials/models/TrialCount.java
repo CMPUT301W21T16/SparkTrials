@@ -21,7 +21,7 @@ public class TrialCount extends Trial{
      * @param profile
      *    The profile of the user that created the trial
      */
-    public TrialCount (Integer id, GeoLocation location, Profile profile){
+    public TrialCount (String id, GeoLocation location, Profile profile){
         super(id, location, profile);
         this.value = 0.0;
     }

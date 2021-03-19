@@ -2,6 +2,7 @@ package com.example.sparktrials;
 
 import android.util.Log;
 
+import androidx.core.graphics.drawable.WrappedDrawable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -9,9 +10,14 @@ import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.Trial;
+import com.example.sparktrials.models.TrialBinomial;
+import com.example.sparktrials.models.TrialCount;
+import com.example.sparktrials.models.TrialIntCount;
+import com.example.sparktrials.models.TrialMeasurement;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -135,6 +141,7 @@ public class ExperimentViewModel extends ViewModel {
             GeoLocation region = new GeoLocation();
             region.setLat((Double) expData.getData().get("Latitude"));
             region.setLon((Double) expData.getData().get("Longitude"));
+            region.setRadius((Double) expData.getData().get("Radius"));
             experiment.setRegion(region);
             experiment.setReqLocation((Boolean) expData.getData().get("ReqLocation"));
             experiment.setMinNTrials(((Long) expData.getData().get("MinNTrials")).intValue());
@@ -144,7 +151,41 @@ public class ExperimentViewModel extends ViewModel {
             experiment.setType((String) expData.getData().get("Type"));
             String uId = (String) expData.getData().get("profileID");
             experiment.setOwner(new Profile(uId));
-            experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
+//            experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
+            ArrayList<HashMap> trialsHash = (ArrayList<HashMap>) expData.getData().get("Trials");
+            ArrayList<Trial> trials = new ArrayList<>();
+            for(HashMap<String, Object> map: trialsHash){
+                Trial trial;
+                String type = experiment.getType();
+                if(type.equals("binomial trials")){
+                    if((Double) map.get("value") == 0.0){
+                        trial = new TrialBinomial(false);
+                    } else {
+                        trial = new TrialBinomial(true);
+                    }
+
+                } else if(type.equals("non-negative integer counts")) {
+                    trial = new TrialIntCount(((Double) map.get("value")).intValue());
+                } else if(type.equals("measurement trials")){
+                    trial = new TrialMeasurement((Double) map.get("value"));
+                } else {
+                    trial = new TrialCount();
+                    ((TrialCount) trial).setCount(((Double) map.get("value")).intValue());
+                }
+                Profile experimenter = new Profile();
+                HashMap<String, Object> profile = (HashMap<String, Object>) map.get("profile");
+                experimenter.setContact((String) profile.get("contact"));
+                experimenter.setUsername((String) profile.get("username"));
+                experimenter.setId((String) profile.get("id"));
+                experimenter.setSubscriptions((ArrayList<String>) profile.get("subscriptions"));
+                trial.setProfile(experimenter);
+                trial.setId((String) map.get("id"));
+                Timestamp trialDate = (Timestamp) map.get("date");
+                trial.setDate(trialDate.toDate());
+                //trial.setLocation((GeoLocation) map.get("location"));
+                trials.add(trial);
+            }
+            experiment.setTrials(trials);
             experiment.setBlacklist((ArrayList<String>) expData.getData().get("Blacklist"));
             Log.d(TAG, expData.getId() + " => " + expData.getData());
 

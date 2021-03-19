@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class a manager for SearchFragment.
+ * This class acts as a manager for SearchFragment.
  */
 public class SearchViewModel extends ViewModel {
 

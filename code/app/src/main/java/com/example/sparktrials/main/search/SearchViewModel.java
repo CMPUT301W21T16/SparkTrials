@@ -26,6 +26,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This class a manager for SearchFragment.
+ */
 public class SearchViewModel extends ViewModel {
 
     private MutableLiveData<ArrayList<Experiment>> experiments;
@@ -118,25 +121,29 @@ public class SearchViewModel extends ViewModel {
      */
     public ArrayList<Experiment> search(String[] keywords) {
 
-        HashSet<Experiment> resultSet = new HashSet<>();  // To avoid duplicates
-
         ArrayList<Experiment> experimentsInDB = experiments.getValue();
 
-        for (int experimentIndex = 0; experimentIndex < experimentsInDB.size(); experimentIndex++) {
-             for (int keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
-                String currentKeyword = keywords[keywordIndex];
-                Experiment experimentToBeSearched = experimentsInDB.get(experimentIndex);
-                if (experimentMatches(currentKeyword, experimentToBeSearched)) {
-                    // If an experiment matches a keyword
-                    resultSet.add(experimentToBeSearched);
+        if (keywords.length == 0) {
+            return experimentsInDB;
+        } else {
+            HashSet<Experiment> resultSet = new HashSet<>();  // To avoid duplicates
+
+            for (int experimentIndex = 0; experimentIndex < experimentsInDB.size(); experimentIndex++) {
+                for (int keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
+                    String currentKeyword = keywords[keywordIndex];
+                    Experiment experimentToBeSearched = experimentsInDB.get(experimentIndex);
+                    if (experimentMatches(currentKeyword, experimentToBeSearched)) {
+                        // If an experiment matches a keyword
+                        resultSet.add(experimentToBeSearched);
+                    }
                 }
             }
+
+            ArrayList<Experiment> results = new ArrayList<>();
+            results.addAll(resultSet);
+
+            return results;
         }
-
-        ArrayList<Experiment> results = new ArrayList<>();
-        results.addAll(resultSet);
-
-        return results;
     }
 
     /**
@@ -151,11 +158,11 @@ public class SearchViewModel extends ViewModel {
     private boolean experimentMatches(String keyword, Experiment experiment) {
         String experimentTitle = experiment.getTitle().toLowerCase();
         String experimentDescription = experiment.getDesc().toLowerCase();
-        //String experimentOwnerUsername = experiment.getOwner().getUsername().toLowerCase();
+        String experimentOwnerUsername = experiment.getOwner().getUsername().toLowerCase();
 
         return (experimentTitle.contains(keyword)
-                    || experimentDescription.contains(keyword));
-                    //|| experimentOwnerUsername.contains(keyword));
+                    || experimentDescription.contains(keyword)
+                    || experimentOwnerUsername.contains(keyword));
     }
 
 }

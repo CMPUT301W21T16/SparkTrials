@@ -33,6 +33,10 @@ public class SearchFragmentTest {
     public ActivityTestRule<MainActivity> rule =
             new ActivityTestRule<>(MainActivity.class, true, true);
 
+    // At time of testing, there exists an experiment in Firestore that should match the
+    // following word
+    String wordExists = "MapTest";
+
     /**
      * Runs before all tests and creates solo instance.
      *
@@ -68,7 +72,7 @@ public class SearchFragmentTest {
         // We have 1 experiment in the list in Firestore, with title <as defined below>.
         // Waiting for text instead of just searching as getting experiments from Firestore is
         // asynchronous.
-        String experimentTitle = "SearchFragmentTest";
+        String experimentTitle = wordExists;
         assertTrue(solo.waitForText(experimentTitle, 1, 2000));
     }
 
@@ -89,9 +93,6 @@ public class SearchFragmentTest {
         solo.clearEditText((EditText) solo.getView(R.id.search_bar));
         assertFalse(solo.waitForText(wordDoesNotExist, 1, 1000));
 
-        // At time of testing, there exists an experiment in Firestore that should match the
-        // following word
-        String wordExists = "SearchFragmentTest";
         // Changing to lower case as search should match fields even if they're in lower case
         solo.enterText((EditText) solo.getView(R.id.search_bar), wordExists.toLowerCase());
         solo.clickOnView(solo.getView(R.id.search_button));
@@ -99,14 +100,16 @@ public class SearchFragmentTest {
         assertTrue(solo.waitForText(wordExists, 1, 1000));
     }
 
+    /**
+     * Checks that an ExperimentActivity is launched when a search result is clicked on.
+     * @throws Exception
+     */
     @Test
     public void checkLaunchActivity() throws Exception {
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
         solo.clickOnView(solo.getView(R.id.navigation_search));
 
-        // At time of testing, there exists an experiment in Firestore that should match the
-        // word "Tomas"
-        String experimentTitle = "SearchFragmentTest";
+        String experimentTitle = wordExists;
         solo.enterText((EditText) solo.getView(R.id.search_bar), experimentTitle);
         solo.clickOnView(solo.getView(R.id.search_button));
         solo.clearEditText((EditText) solo.getView(R.id.search_bar));

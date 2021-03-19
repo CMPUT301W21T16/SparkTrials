@@ -2,47 +2,25 @@ package com.example.sparktrials.main_ui.publish;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.sparktrials.IdManager;
-import com.example.sparktrials.MapsActivity;
-import com.example.sparktrials.models.Profile;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.DocumentSnapshot;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
-import com.example.sparktrials.models.GeoLocation;
-
-import java.util.Calendar;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * The class containing the UI associated with publishing experiments, handles input and UI
@@ -63,6 +41,7 @@ public class PublishFragment extends DialogFragment {
 
     private double lat;
     private double lon;
+    private double radius;
 
     final private int didNotPickLocation = 0;
     final private int didPickLocation = 1;
@@ -132,7 +111,7 @@ public class PublishFragment extends DialogFragment {
                         String experimentType = spinner.getSelectedItem().toString();
                         Boolean reqLocation = Boolean.parseBoolean(spinner2.getSelectedItem().toString());
                         Log.d("Type",experimentType);
-                        PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,lat,lon,experimentType,reqLocation);
+                        PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,lat,lon,radius,experimentType,reqLocation);
                     }
                 })
                 .create();
@@ -153,8 +132,9 @@ public class PublishFragment extends DialogFragment {
             // Set Location field to False
             spinner2.setSelection(0);
         } else if (resultCode == didPickLocation) {
-            lat = (Double) data.getExtras().get("Latitude");
-            lon = (Double) data.getExtras().get("Longitude");
+            lat = (double) data.getExtras().get("Latitude");
+            lon = (double) data.getExtras().get("Longitude");
+            radius = (double) data.getExtras().get("Radius");
         }
 
     }

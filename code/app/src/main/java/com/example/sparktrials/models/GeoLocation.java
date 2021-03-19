@@ -1,5 +1,7 @@
 package com.example.sparktrials.models;
 
+import androidx.fragment.app.DialogFragment;
+
 import java.util.ArrayList;
 
 /**
@@ -10,6 +12,9 @@ import java.util.ArrayList;
 public class GeoLocation {
     private double lat;
     private double lon;
+
+    // If the radius is 0, then this just a point on the map, otherwise it is a region
+    private double radius;
 
     public GeoLocation(){
         this.lat = 1000.0;
@@ -38,6 +43,12 @@ public class GeoLocation {
         } else {
             this.lon = lon;
         }
+        this.radius = 0;
+    }
+
+    public GeoLocation(Double lat, Double lon, Double radius) {
+        this(lat, lon);
+        this.radius = radius;
     }
 
     /**
@@ -89,6 +100,7 @@ public class GeoLocation {
     /**
      * This edits the latitude of this geolocation. Adjusts for invalid entry
      * @param lon
+     *     Overrides the previously held lon value
      */
     public void setLon(Double lon) {
         if (lon<-180){
@@ -97,6 +109,28 @@ public class GeoLocation {
             this.lon = 180.0;
         } else {
             this.lon = lon;
+        }
+    }
+
+    /**
+     * This returns the radius of a region
+     * @return
+     *     Returns the radius of the region
+     */
+    public Double getRadius() {
+        return this.radius;
+    }
+
+    /**
+     * This edits the radius of this geolocation. Adjusts for invalid entry
+     * @param radius
+     *     Overrides the previously held radius value
+     */
+    public void setRadius(double radius) {
+        if (radius < 0) {
+            this.radius = 0;
+        } else {
+            this.radius = radius;
         }
     }
 }

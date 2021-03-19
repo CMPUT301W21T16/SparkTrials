@@ -13,6 +13,10 @@ import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.GeoMap;
 import com.google.android.gms.maps.SupportMapFragment;
 
+/**
+ * This class represents a Fragment that is meant to display a map that shows the region of an
+ * experiment and the locations of its trials.
+ */
 public class LocationFragment extends Fragment{
     View view;
     SupportMapFragment mapFragment;
@@ -20,6 +24,12 @@ public class LocationFragment extends Fragment{
     Experiment experiment;
     GeoMap map;
 
+    /**
+     * Constructor for LocationFragment
+     * @param experiment
+     *      This is the experiment whose region and locations of trials we want to display ont the
+     *      map.
+     */
     public LocationFragment(Experiment experiment){
         this.experiment = experiment;
     }
@@ -33,6 +43,8 @@ public class LocationFragment extends Fragment{
 
         // A map shown under the "Map" tab of ExperimentActivity is not editable.
         map = new GeoMap(experiment, false);
+
+        // Display the map once it loads
         mapFragment.getMapAsync(map);
 
         return view;

@@ -20,6 +20,10 @@ import android.widget.Spinner;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.GeoMap;
 
+/**
+ * This represents the Fragment (to be displayed in MapsActivity) that allows the user to set the
+ * radius of their region.
+ */
 public class ChooseRadiusFragment extends DialogFragment {
 
     private GeoMap map;
@@ -27,6 +31,11 @@ public class ChooseRadiusFragment extends DialogFragment {
     private EditText radiusEditText;
     private Spinner unitsDropDownMenu;
 
+    /**
+     * Constructor for ChooseRadiusFragment.
+     * @param map
+     *      The map that the region was selected on.
+     */
     public ChooseRadiusFragment(GeoMap map) {
         this.map = map;
     }
@@ -54,6 +63,7 @@ public class ChooseRadiusFragment extends DialogFragment {
                 } else {
                     double radius = Double.parseDouble(radiusString);
                     if (((String) unitsDropDownMenu.getSelectedItem()).equals("km")) {
+                        // If the radius is set in kilometers, convert it to meters
                         map.getGeoLocation().setRadius(1000 * radius);
                     } else {
                         map.getGeoLocation().setRadius(radius);

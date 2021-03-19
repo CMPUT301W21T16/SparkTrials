@@ -112,7 +112,7 @@ public class ActionFragment extends Fragment {
                     String valueString = valueEditText.getText().toString();
                     try{
                         result= Double.parseDouble(valueString);
-                        manager.addMeasurmentTrial(result);
+                        manager.addMeasurementTrial(result);
                         updateView();
                     }catch (NumberFormatException e) {
                         AlertDialog builder = new AlertDialog.Builder(getContext())

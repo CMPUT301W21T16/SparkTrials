@@ -224,7 +224,7 @@ public class Experiment {
      * @return
      *    Returns the requested trial, or a null value
      */
-    public Trial getTrial(Integer id) {
+    public Trial getTrial(String id) {
         for (int i=0; i < this.trials.size(); i++){
             if (this.trials.get(i).getId().equals(id)){
                 return this.trials.get(i);

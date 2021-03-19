@@ -29,8 +29,8 @@ public class ExperimentTest extends TestCase {
         ArrayList<Trial> toSet = this.createTrials();
         exp.setTrials(toSet);
         assertEquals("getAllTrials returns wrong amount", 15, exp.getAllTrials().size());
-        assertEquals("getAllTrials returns wrong trial", 0, (int)exp.getAllTrials().get(0).getId());
-        assertEquals("getAllTrials returns wrong trial", 14, (int)exp.getAllTrials().get(exp.getAllTrials().size()-1).getId());
+        assertEquals("getAllTrials returns wrong trial", "0", exp.getAllTrials().get(0).getId());
+        assertEquals("getAllTrials returns wrong trial", "14", exp.getAllTrials().get(exp.getAllTrials().size()-1).getId());
 
     }
 
@@ -45,8 +45,8 @@ public class ExperimentTest extends TestCase {
         ArrayList<Trial> toSet = this.createTrials();
         exp.setTrials(toSet);
         assertEquals("getValidTrials returns wrong amount", 11, exp.getValidTrials().size());
-        assertEquals("getValidTrials returns wrong trial", 4, (int)exp.getValidTrials().get(0).getId());
-        assertEquals("getValidTrials returns wrong trial", 14, (int)exp.getAllTrials().get(exp.getAllTrials().size()-1).getId());
+        assertEquals("getValidTrials returns wrong trial", "4", exp.getValidTrials().get(0).getId());
+        assertEquals("getValidTrials returns wrong trial", "14", exp.getAllTrials().get(exp.getAllTrials().size()-1).getId());
     }
 
     /**
@@ -57,10 +57,10 @@ public class ExperimentTest extends TestCase {
         exp = new Experiment("10");
         ArrayList<Trial> toSet = this.createTrials();
         exp.setTrials(toSet);
-        assertEquals("getTrial incorrect", "id1", exp.getTrial(1).getProfile().getId());
-        assertEquals("getTrial incorrect", "id2", exp.getTrial(5).getProfile().getId());
-        assertEquals("getTrial incorrect", "id3", exp.getTrial(11).getProfile().getId());
-        assertEquals("getTrial incorrect", null, exp.getTrial(-1));
+        assertEquals("getTrial incorrect", "id1", exp.getTrial("1").getProfile().getId());
+        assertEquals("getTrial incorrect", "id2", exp.getTrial("5").getProfile().getId());
+        assertEquals("getTrial incorrect", "id3", exp.getTrial("11").getProfile().getId());
+        assertEquals("getTrial incorrect", null, exp.getTrial("-1"));
     }
 
     /**
@@ -70,10 +70,10 @@ public class ExperimentTest extends TestCase {
      */
     public void testAddTrial() {
         exp = new Experiment("10");
-        TrialCount trial = new TrialCount(109, new GeoLocation(0.0, 0.0), new Profile());
+        TrialCount trial = new TrialCount("109", new GeoLocation(0.0, 0.0), new Profile());
         exp.addTrial(trial);
-        assertEquals("addTrial does not work", 109, (int)exp.getTrial(109).getId());
-        assertEquals("addTrial does not work", null, exp.getTrial(109).getProfile().getId());
+        assertEquals("addTrial does not work", "109", exp.getTrial("109").getId());
+        assertEquals("addTrial does not work", null, exp.getTrial("109").getProfile().getId());
     }
 
     /**
@@ -84,8 +84,8 @@ public class ExperimentTest extends TestCase {
         exp = new Experiment("10");
         ArrayList<Trial> toSet = this.createTrials();
         exp.setTrials(toSet);
-        assertEquals("getUserTrials does not work", 0, (int)exp.getUserTrials("id1").get(0).getId());
-        assertEquals("getUserTrials does not work", 9, (int)exp.getUserTrials("id2").get(exp.getUserTrials("id2").size()-1).getId());
+        assertEquals("getUserTrials does not work", "0", exp.getUserTrials("id1").get(0).getId());
+        assertEquals("getUserTrials does not work", "9", exp.getUserTrials("id2").get(exp.getUserTrials("id2").size()-1).getId());
     }
 
     /**
@@ -94,15 +94,15 @@ public class ExperimentTest extends TestCase {
      */
     public void testAddTrials() {
         exp = new Experiment("10");
-        TrialCount trial1 = new TrialCount(109, new GeoLocation(0.0, 0.0), new Profile());
-        TrialCount trial2 = new TrialCount(110, new GeoLocation(1.0, 1.0), new Profile());
+        TrialCount trial1 = new TrialCount("109", new GeoLocation(0.0, 0.0), new Profile());
+        TrialCount trial2 = new TrialCount("110", new GeoLocation(1.0, 1.0), new Profile());
         ArrayList<Trial> trials = new ArrayList<>();
         trials.add(trial1);
         trials.add(trial2);
         exp.addTrials(trials);
 
-        assertEquals("addTrials does not work", 109, (int)exp.getTrial(109).getId());
-        assertEquals("AddTrials does not work", 110, (int)exp.getTrial(110).getId());
+        assertEquals("addTrials does not work", "109", exp.getTrial("109").getId());
+        assertEquals("AddTrials does not work", "110", exp.getTrial("110").getId());
     }
 
     /**
@@ -195,11 +195,11 @@ public class ExperimentTest extends TestCase {
 
         for (int i=0; i<15; i++){
             if (i<4){
-                trials.add(new TrialCount(i, uni_loc, profile1));
+                trials.add(new TrialCount(""+i, uni_loc, profile1));
             } else if (i<10){
-                trials.add(new TrialCount(i, uni_loc, profile2));
+                trials.add(new TrialCount(""+i, uni_loc, profile2));
             } else {
-                trials.add(new TrialCount(i, uni_loc, profile3));
+                trials.add(new TrialCount(""+i, uni_loc, profile3));
             }
         }
 

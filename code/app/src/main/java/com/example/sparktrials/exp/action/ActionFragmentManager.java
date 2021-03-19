@@ -67,7 +67,7 @@ public class ActionFragmentManager {
      * Adds a measurement trial to the experiment
      * @param result
      */
-    public void addMeasurmentTrial(Double result){
+    public void addMeasurementTrial(Double result){
         TrialMeasurement trial = new TrialMeasurement(result);
         trial.setId(UUID.randomUUID().toString());
         trial.setProfile(profile);

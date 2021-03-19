@@ -1,6 +1,7 @@
 package com.example.sparktrials.exp.action;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -14,6 +15,9 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.sparktrials.ExperimentActivity;
+import com.example.sparktrials.IdManager;
+import com.example.sparktrials.MainActivity;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
 
@@ -21,15 +25,26 @@ import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.Trial;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ActionFragment extends Fragment {
     View view;
     TextView trialsNumber;
     TextView trialsCount;
     int count;
     private ActionFragmentManager manager;
+    private IdManager idManager;
+    String id;
     public ActionFragment(Experiment experiment){
-        Log.d("TYPE=",experiment.getType());
         this.manager= new ActionFragmentManager(experiment);
+    }
+
+    @Override
+    public void onAttach(@NotNull Context context){
+        super.onAttach(context);
+        idManager= new IdManager(context);
+        id= idManager.getUserId();
+        manager.setProfile(id);
     }
 
     @Nullable

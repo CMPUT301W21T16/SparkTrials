@@ -30,9 +30,15 @@ public class ActionFragmentManager {
     Experiment experiment;
     FirebaseManager firebaseManager = new FirebaseManager();
     int originalNTrials;
+    String id;
+    Profile profile;
     public ActionFragmentManager(Experiment experiment) {
+        this.id=id;
         this.experiment=experiment;
         this.originalNTrials=Integer.parseInt(experiment.getNumTrials());
+    }
+    public void setProfile(String id){
+        profile=firebaseManager.downloadProfile(id);
     }
 
     /**
@@ -42,6 +48,7 @@ public class ActionFragmentManager {
     public void addBinomialTrial(Boolean result){
         TrialBinomial trial = new TrialBinomial(result);
         trial.setId(UUID.randomUUID().toString());
+        trial.setProfile(profile);
         experiment.addTrial(trial);
     }
 
@@ -52,6 +59,7 @@ public class ActionFragmentManager {
     public void addNonNegIntTrial(Integer result){
         TrialIntCount trial = new TrialIntCount(result);
         trial.setId(UUID.randomUUID().toString());
+        trial.setProfile(profile);
         experiment.addTrial(trial);
     }
 
@@ -62,6 +70,7 @@ public class ActionFragmentManager {
     public void addMeasurmentTrial(Double result){
         TrialMeasurement trial = new TrialMeasurement(result);
         trial.setId(UUID.randomUUID().toString());
+        trial.setProfile(profile);
         experiment.addTrial(trial);
     }
 
@@ -72,6 +81,7 @@ public class ActionFragmentManager {
         TrialCount trial = new TrialCount();
         trial.setCount(count);
         trial.setId(UUID.randomUUID().toString());
+        trial.setProfile(profile);
         experiment.addTrial(trial);
     }
 

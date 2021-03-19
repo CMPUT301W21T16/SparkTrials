@@ -22,7 +22,7 @@ public class IdManager {
     private static boolean logged_in = false;
 
     public IdManager(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     /**

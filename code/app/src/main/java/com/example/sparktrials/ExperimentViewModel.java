@@ -2,6 +2,7 @@ package com.example.sparktrials;
 
 import android.util.Log;
 
+import androidx.core.graphics.drawable.WrappedDrawable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -140,6 +141,7 @@ public class ExperimentViewModel extends ViewModel {
             GeoLocation region = new GeoLocation();
             region.setLat((Double) expData.getData().get("Latitude"));
             region.setLon((Double) expData.getData().get("Longitude"));
+            region.setRadius((Double) expData.getData().get("Radius"));
             experiment.setRegion(region);
             experiment.setReqLocation((Boolean) expData.getData().get("ReqLocation"));
             experiment.setMinNTrials(((Long) expData.getData().get("MinNTrials")).intValue());

@@ -1,25 +1,33 @@
 package com.example.sparktrials.models;
 
+import android.graphics.Color;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class GeoMap implements OnMapReadyCallback {
 
-    GoogleMap map;
-    GeoLocation geoLocation;
-    boolean isEditable;
+    private GoogleMap map;
+
+    private GeoLocation geoLocation;
+
+    private boolean isEditable;
+    private boolean markerSet;
 
     public GeoMap(boolean isEditable) {
         this.isEditable = isEditable;
         geoLocation = new GeoLocation();
+        markerSet = false;
     }
 
     public GeoMap(Experiment experiment, boolean isEditable) {
         this.isEditable = isEditable;
         this.geoLocation = experiment.getRegion();
+        markerSet = true;
     }
 
     @Override
@@ -30,29 +38,30 @@ public class GeoMap implements OnMapReadyCallback {
         if (isEditable) {
             map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                 @Override
-                public void onMapLongClick(LatLng latLng) {
-
+                public void onMapLongClick(LatLng center) {
                     map.clear();
 
-                    geoLocation.setLat(latLng.latitude);
-                    geoLocation.setLon(latLng.longitude);
+                    geoLocation.setLat(center.latitude);
+                    geoLocation.setLon(center.longitude);
 
                     map.addMarker(new MarkerOptions()
-                            .position(latLng));
+                            .position(center));
 
-                    map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                    map.moveCamera(CameraUpdateFactory.newLatLng(center));
 
+                    markerSet = true;
                 }
-
             });
         } else {
-            LatLng latLng = new LatLng(geoLocation.getLat(), geoLocation.getLon());
+            LatLng center = new LatLng(geoLocation.getLat(), geoLocation.getLon());
 
             map.addMarker(new MarkerOptions()
-                    .position(latLng));
+                    .position(center));
+
+            displayCircle(center, geoLocation.getRadius());
 
             float zoomLevel = 13.0f;
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, zoomLevel));
         }
     }
 
@@ -60,5 +69,21 @@ public class GeoMap implements OnMapReadyCallback {
         return geoLocation;
     }
 
+    public boolean isMarkerSet() {
+        return markerSet;
+    }
+
+    private void displayCircle(LatLng center, double radius) {
+        CircleOptions circleOptions = new CircleOptions();
+        circleOptions.center(center);
+        circleOptions.radius(radius);
+        circleOptions.strokeWidth(5);
+        circleOptions.strokeColor(Color.BLUE);
+        circleOptions.fillColor(Color.argb(50, 0, 0, 120));
+
+        System.out.println(radius);
+
+        map.addCircle(circleOptions);
+    }
 
 }

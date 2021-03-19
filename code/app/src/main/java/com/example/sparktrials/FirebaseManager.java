@@ -200,6 +200,7 @@ public class FirebaseManager {
         data.put("Description",experiment.getDesc());
         data.put("Latitude",experiment.getRegion().getLat());
         data.put("Longitude",experiment.getRegion().getLon());
+        data.put("Radius",experiment.getRegion().getRadius());
         data.put("MinNTrials",experiment.getMinNTrials());
         data.put("profileID",experiment.getOwner().getId());
         data.put("Date",experiment.getDate());

@@ -46,7 +46,8 @@
             android:id="@+id/list_experiment_owner"
             android:layout_width="8dp"
             android:layout_height="49dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:clickable="true"/>
 
         <TextView
             android:id="@+id/list_experiment_date"

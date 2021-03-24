@@ -7,6 +7,13 @@
     android:orientation="vertical"
     tools:context=".main.me.MeFragment" >
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/profile_activity_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,46 +53,30 @@
         android:background="#FFFFFF"
         android:gravity="center"
         android:paddingTop="20dp"
-        android:text="My Profile"
+        android:text="Profile"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="40sp" />
 
     <TextView
-        android:id="@+id/id1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:paddingLeft="10dp"
-        android:text="User ID: "
-        android:textColor="@color/teal_200"
-        android:textSize="14sp" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/user_id"
-        android:layout_margin="4dp"
-        android:drawablePadding="7dp"
-        android:paddingLeft="10dp"
-        android:textColor="@android:color/darker_gray"/>
-    <TextView
         android:id="@+id/id2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/teal_200"
-        android:textSize="14sp"
-        android:text="Your Name: "
         android:layout_margin="4dp"
-        android:paddingLeft="10dp"/>
+        android:paddingLeft="10dp"
+        android:text="Name: "
+        android:textColor="@color/teal_200"
+        android:textSize="14sp" />
+
     <TextView
+        android:id="@+id/experimenter_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Your Name Here"
-        android:id="@+id/tvName"
         android:layout_margin="4dp"
         android:drawablePadding="7dp"
+        android:hint="Experimenter's Name Here"
         android:paddingLeft="10dp"
-        android:textColor="@android:color/darker_gray"/>
+        android:textColor="@android:color/darker_gray" />
 
     <TextView
         android:id="@+id/id3"
@@ -105,22 +96,6 @@
         android:drawablePadding="7dp"
         android:paddingLeft="10dp"
         android:textColor="@android:color/darker_gray"/>
-
-
-    <Button
-        android:id="@+id/btn_ep"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginTop="20dp"
-
-        android:text="Edit Profile"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        app:backgroundTint="#009688" />
-
-
-
 
 
 </LinearLayout>

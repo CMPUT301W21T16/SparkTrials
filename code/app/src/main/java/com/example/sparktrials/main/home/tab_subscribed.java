@@ -62,7 +62,7 @@ public class tab_subscribed extends Fragment {
     public void onStart() {
         super.onStart();
         subExperiments = getView().findViewById(R.id.subscribed_list);
-        context = requireActivity().getApplicationContext();
+        context = getActivity();
         IdManager idManager = new IdManager(context);
         homeViewModel = new HomeViewModel(idManager.getUserId());
 

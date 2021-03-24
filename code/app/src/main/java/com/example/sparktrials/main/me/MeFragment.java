@@ -1,10 +1,8 @@
 package com.example.sparktrials.main.me;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,21 +14,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sparktrials.Callback;
 import com.example.sparktrials.FirebaseManager;
 import com.example.sparktrials.IdManager;
 import com.example.sparktrials.R;
-import com.example.sparktrials.main_ui.publish.PublishFragmentManager;
-import com.example.sparktrials.models.Profile;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MeFragment extends Fragment {
 
@@ -83,10 +72,10 @@ public class MeFragment extends Fragment {
                 tvUserID.setText(userID);
 
                 // Set username
-                tvName = getView().findViewById(R.id.tv_name);
+                tvName = getView().findViewById(R.id.tvName);
                 tvName.setText(name);
                 // Set contact
-                tvContact = getView().findViewById(R.id.tvContact);
+                tvContact = getView().findViewById(R.id.experimenter_contact);
                 tvContact.setText(contact);
 
                 // initialize update button

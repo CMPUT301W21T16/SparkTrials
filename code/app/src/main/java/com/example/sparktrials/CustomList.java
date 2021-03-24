@@ -1,6 +1,9 @@
 package com.example.sparktrials;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +12,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sparktrials.models.Experiment;
+import com.example.sparktrials.models.ProfileActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +33,8 @@ public class CustomList extends ArrayAdapter<Experiment> {
     private TextView experimentStatus;
     private TextView experimentOwner;
     private TextView experimentDate;
+
+    private View.OnClickListener onOwnerClick;
 
     /**
      * Constructor for a CustomList list adapter, which shows a customized list of experiments,
@@ -61,9 +68,17 @@ public class CustomList extends ArrayAdapter<Experiment> {
 
         setFields(position);
 
+        // Launches a ProfileActivity when the username of an Experiment's Owner is clicked on
+        experimentOwner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Experiment experiment = experimentsList.get(position);
+
+                startProfileActivity(experiment.getOwner().getId());
+            }
+        });
 
         return view;
-
     }
 
     /**
@@ -83,6 +98,18 @@ public class CustomList extends ArrayAdapter<Experiment> {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 
         experimentDate.setText(dateFormat.format(experiment.getDate()));
+    }
+
+    /**
+     * This method starts a ProfileActivity, which displays the information of the owner of an
+     * experiment.
+     * @param ownerId
+     *      The user whose profile we want to display.
+     */
+    private void startProfileActivity(String ownerId) {
+        Intent intent = new Intent(getContext(), ProfileActivity.class);
+        intent.putExtra("USER_ID", ownerId);
+        ((Activity) getContext()).startActivityForResult(intent, 0); // Throwaway requestCode
     }
 
 }

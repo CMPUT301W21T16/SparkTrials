@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,7 @@ import com.example.sparktrials.CustomList;
 import com.example.sparktrials.ExperimentActivity;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
+import com.example.sparktrials.models.ProfileActivity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -159,7 +161,7 @@ public class SearchFragment extends Fragment {
      * @param ownerId
      *      This is the ID of the owner of the experiment
      */
-    public void startExperimentActivity(String experimentId, String ownerId) {
+    private void startExperimentActivity(String experimentId, String ownerId) {
         Intent intent = new Intent(this.getActivity(), ExperimentActivity.class);
         intent.putExtra("EXPERIMENT_ID", experimentId);
         intent.putExtra("USER_ID", ownerId);

@@ -1,13 +1,16 @@
 package com.example.sparktrials.models;
 
+import java.util.Date;
+
 /**
  * An abstract class that embodies questions and answers
  * Used in the forum
  */
 public abstract class Post {
-    String content;
-    String expId;
-    Profile profile;
+    private String content;
+    private String expId;
+    private Profile profile;
+    private Date date;
 
     /**
      * A constructor for post. A post always has a poster, some content, and for what experiment it was posted on
@@ -19,6 +22,7 @@ public abstract class Post {
         this.content = content;
         this.expId = expId;
         this.profile = profile;
+        this.date = new Date();
 
     }
 
@@ -48,5 +52,11 @@ public abstract class Post {
     public String getContent() {
         return content;
     }
+
+    /**
+     * Retrieves the date of the post
+     * @return
+     */
+    public Date getDate(){ return date; }
 
 }

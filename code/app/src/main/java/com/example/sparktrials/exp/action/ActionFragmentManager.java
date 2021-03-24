@@ -102,6 +102,11 @@ public class ActionFragmentManager {
     }
 
     /**
+     * Returns if experiment is open
+     * @return
+     */
+    public Boolean getOpen(){return experiment.getOpen();}
+    /**
      * Returns the experiment type
      * @return
      */

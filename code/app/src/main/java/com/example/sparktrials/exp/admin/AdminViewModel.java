@@ -48,7 +48,10 @@ public class AdminViewModel extends ViewModel {
     public void toggleExpOpen(Experiment exp){
         Map<String, Object> map = new HashMap<>();
         map.put("Open", !exp.getOpen());
-
+        if (exp.getOpen())
+            exp.setOpen(false);
+        else
+            exp.setOpen(true);
         dbManager.update("experiments", exp.getId(), map);
     }
 

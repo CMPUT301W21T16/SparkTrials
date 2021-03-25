@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SparkTrials</string>
+    <string name="app_name"> <font color = '#F8D361'>Spark</font><font color='#1F1F1F'>Trials</font> </string>
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
     <string name="title_me">Me</string>

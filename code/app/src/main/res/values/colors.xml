@@ -9,4 +9,15 @@
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#666666</color>
     <color name="lightgrey">#F5F5F5</color>
+
+    <color name="header">#A9CBE7</color>
+    <color name="backdrop">#FFFEFB</color>
+    <color name="main_text">#225DB0</color>
+    <color name="norm_text">#00050C</color>
+    <color name="spark_text">#F8D361</color>
+
+    <color name="positive">#7FFF5C</color>
+    <color name="neutral">#8E8E8E</color>
+    <color name="negative">#D80000</color>
+
 </resources>

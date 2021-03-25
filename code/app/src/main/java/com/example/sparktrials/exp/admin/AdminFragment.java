@@ -67,7 +67,13 @@ public class AdminFragment extends Fragment {
         endButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 manager.toggleExpOpen(experiment);
+                if (endButton.getText() == "END EXPERIMENT"){
+                    endButton.setText("OPEN EXPERIMENT");
+                } else {
+                    endButton.setText("END EXPERIMENT");
+                }
             }
         });
 

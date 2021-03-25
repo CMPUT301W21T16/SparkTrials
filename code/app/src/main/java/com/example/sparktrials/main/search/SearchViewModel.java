@@ -74,10 +74,12 @@ public class SearchViewModel extends ViewModel {
                                 String id = document.getId();
                                 String title = (String) document.get("Title");
                                 String desc = (String) document.get("Description");
+                                Boolean open = (Boolean) document.get("Open");
 
                                 Experiment experiment = new Experiment(id);
                                 experiment.setTitle(title);
                                 experiment.setDesc(desc);
+                                experiment.setOpen(open);
 
                                 String ownerId = (String) document.get("profileID");
 

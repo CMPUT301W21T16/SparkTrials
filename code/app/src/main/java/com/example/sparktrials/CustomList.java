@@ -4,15 +4,18 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.ProfileActivity;
@@ -33,6 +36,7 @@ public class CustomList extends ArrayAdapter<Experiment> {
     private TextView experimentStatus;
     private TextView experimentOwner;
     private TextView experimentDate;
+    private ImageView ownerIcon;
 
     private View.OnClickListener onOwnerClick;
 
@@ -57,7 +61,7 @@ public class CustomList extends ArrayAdapter<Experiment> {
 
         if (view == null) {
             // Set the layout of list items to be based on list_content.xml
-            view = LayoutInflater.from(context).inflate(R.layout.list_content, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.list_content2, parent, false);
         }
 
         experimentTitle = view.findViewById(R.id.list_experiment_title);
@@ -65,11 +69,22 @@ public class CustomList extends ArrayAdapter<Experiment> {
         experimentStatus = view.findViewById(R.id.list_experiment_status);
         experimentOwner = view.findViewById(R.id.list_experiment_owner);
         experimentDate = view.findViewById(R.id.list_experiment_date);
+        ownerIcon = view.findViewById(R.id.owner_icon);
 
         setFields(position);
 
         // Launches a ProfileActivity when the username of an Experiment's Owner is clicked on
         experimentOwner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Experiment experiment = experimentsList.get(position);
+
+                startProfileActivity(experiment.getOwner().getId());
+            }
+        });
+
+        // Launches a ProfileActivity when the username of an Experiment's Owner is clicked on
+        ownerIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Experiment experiment = experimentsList.get(position);
@@ -92,7 +107,13 @@ public class CustomList extends ArrayAdapter<Experiment> {
 
         experimentTitle.setText(experiment.getTitle());
         experimentDescription.setText(experiment.getDesc());
-        experimentStatus.setText("Active");
+        if (experiment.getOpen()) {
+            experimentStatus.setText("Active");
+            experimentStatus.setTextColor(ContextCompat.getColor(context, R.color.positive));
+        } else {
+            experimentStatus.setText("Inactive");
+            experimentStatus.setTextColor(ContextCompat.getColor(context, R.color.neutral));
+        }
         experimentOwner.setText(experiment.getOwner().getUsername());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");

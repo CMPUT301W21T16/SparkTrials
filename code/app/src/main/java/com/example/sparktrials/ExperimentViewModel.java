@@ -25,7 +25,7 @@ import java.util.Map;
  * A class to manage the data for ExperimentActivity - experiment and profile
  */
 public class ExperimentViewModel extends ViewModel {
-    private FirebaseManager manager = new FirebaseManager();
+    public FirebaseManager manager = new FirebaseManager();
 
     private MutableLiveData<Experiment> exp;
     private String expId;

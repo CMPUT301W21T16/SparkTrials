@@ -7,6 +7,7 @@ import java.util.Date;
  * Used in the forum
  */
 public abstract class Post {
+    private String id;
     private String content;
     private String expId;
     private Profile profile;
@@ -18,7 +19,8 @@ public abstract class Post {
      * @param expId
      * @param profile
      */
-    Post(String content, String expId, Profile profile){
+    Post(String id, String content, String expId, Profile profile){
+        this.id = id;
         this.content = content;
         this.expId = expId;
         this.profile = profile;

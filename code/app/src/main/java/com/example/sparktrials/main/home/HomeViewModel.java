@@ -179,11 +179,13 @@ public class HomeViewModel extends ViewModel {
                                         if (value.getDate("Date", DocumentSnapshot.ServerTimestampBehavior.PREVIOUS) == null) {
                                             Log.w(TAG, "Could not return date");
                                         }
+                                        Boolean open = (Boolean) value.get("Open");
 
                                         experiment.setId(id);
                                         experiment.setTitle(title);
                                         experiment.setDesc(desc);
                                         experiment.setDate(date);
+                                        experiment.setOpen(open);
                                         ArrayList<Experiment> x = subscribedExperiments.getValue();
                                         x.add(experiment);
 

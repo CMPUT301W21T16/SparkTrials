@@ -1,10 +1,8 @@
 package com.example.sparktrials;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.sparktrials.models.Experiment;
@@ -61,7 +58,7 @@ public class CustomList extends ArrayAdapter<Experiment> {
 
         if (view == null) {
             // Set the layout of list items to be based on list_content.xml
-            view = LayoutInflater.from(context).inflate(R.layout.list_content2, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.list_content, parent, false);
         }
 
         experimentTitle = view.findViewById(R.id.list_experiment_title);

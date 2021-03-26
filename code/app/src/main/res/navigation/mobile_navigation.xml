@@ -9,13 +9,13 @@
         android:id="@+id/navigation_home"
         android:name="com.example.sparktrials.main.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home2" />
 
     <fragment
         android:id="@+id/navigation_search"
         android:name="com.example.sparktrials.main.search.SearchFragment"
         android:label="@string/title_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search2" />
 
     <fragment
         android:id="@+id/navigation_me"

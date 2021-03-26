@@ -1,7 +1,6 @@
 package com.example.sparktrials.main.search;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,14 +8,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,9 +25,7 @@ import com.example.sparktrials.CustomList;
 import com.example.sparktrials.ExperimentActivity;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
-import com.example.sparktrials.models.ProfileActivity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -48,7 +42,7 @@ public class SearchFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_search2, container, false);
+        View root = inflater.inflate(R.layout.fragment_search, container, false);
 
         return root;
     }

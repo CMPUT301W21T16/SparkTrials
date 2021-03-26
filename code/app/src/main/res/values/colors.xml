@@ -12,11 +12,11 @@
 
     <color name="header">#B2DFE6</color>
     <color name="backdrop">#FFFEFB</color>
-    <color name="main_text">#225DB0</color>
-    <color name="norm_text">#00050C</color>
+    <color name="main_text">#3C5E84</color>
+    <color name="norm_text">#00060C</color>
     <color name="spark_text">#F8D361</color>
 
-    <color name="positive">#7FFF5C</color>
+    <color name="positive">#5BDD38</color>
     <color name="neutral">#8E8E8E</color>
     <color name="negative">#D80000</color>
 

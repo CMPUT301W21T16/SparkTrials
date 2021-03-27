@@ -22,10 +22,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -241,6 +244,30 @@ public class FirebaseManager {
 
         return profile;
 
+    }
+
+    public void unsubscribeUsers(String expId){
+        CollectionReference users = firestore.collection("users");
+        users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    List<DocumentSnapshot> allUsers = task.getResult().getDocuments();
+                    for(DocumentSnapshot userSnap : allUsers){
+                        String uid = (String) userSnap.get("uid");
+                        ArrayList<String> subs = (ArrayList<String>) userSnap.get("subscriptions");
+                        if(subs.contains(expId)){
+                            subs.remove(expId);
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("subscriptions", subs);
+                            update("users", uid, map);
+                        }
+                    }
+                } else {
+                    Log.d("Unsubscribing Users", "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
     public void uploadTrials(Experiment experiment){

@@ -1,6 +1,7 @@
 package com.example.sparktrials.exp.admin;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ public class AuditLog extends ArrayAdapter<Profile> {
     private ArrayList<Trial> trialList;
     private ArrayList<Profile> userList;
     private Experiment experiment;
+    private final String TAG = "Audit Log: ";
 
     FirebaseManager dbManager = new FirebaseManager();
 
@@ -72,8 +74,21 @@ public class AuditLog extends ArrayAdapter<Profile> {
                 if(!blacklist.contains(userList.get(position).getId())){
                     blacklist.add(userList.get(position).getId());
                     Map<String, Object> map = new HashMap<>();
+                    experiment.setBlacklist(blacklist);
                     map.put("Blacklist", blacklist);
                     dbManager.update("experiments", experiment.getId(), map);
+                } else {
+                    blacklist.remove(userList.get(position).getId());
+                    Map<String, Object> map = new HashMap<>();
+                    experiment.setBlacklist(blacklist);
+                    map.put("Blacklist", blacklist);
+                    dbManager.update("experiments", experiment.getId(), map);
+                }
+
+                if(ignoreButton.getText() == "IGNORE"){
+                    ignoreButton.setText("IGNORED");
+                } else {
+                    ignoreButton.setText("IGNORE");
                 }
             }
         });

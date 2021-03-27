@@ -56,11 +56,12 @@ public class AdminViewModel extends ViewModel {
     }
 
     /**
-     * Unpublish i.e. delete an experiment
+     * Unpublish i.e. delete an experiment and unsubscribe all users from that experiment
      * @param id
      *  The id of the experiment being deleted
      */
     public void deleteExperiment(String id){
+        dbManager.unsubscribeUsers(id);
         dbManager.delete("experiments", id);
     }
 

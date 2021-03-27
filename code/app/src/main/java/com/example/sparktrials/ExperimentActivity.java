@@ -152,14 +152,15 @@ public class ExperimentActivity extends AppCompatActivity {
             //unsubscribe
             expManager.subscribe();
         }
+        expManager.updateSubscribe();
     }
 
     /**
      * When this activity is over, update the subscribe attribute
      */
-    @Override
-    protected void onStop() {
-        super.onStop();
-        expManager.updateSubscribe();
-    }
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        expManager.updateSubscribe();
+//    }
 }

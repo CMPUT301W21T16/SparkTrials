@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +26,7 @@ public class MeFragment extends Fragment {
 
 
     EditText et_name, etContact;
-    Button updateButton;
+    ImageButton updateButton;
 
     TextView tvUserID, tvName, tvContact;
 
@@ -95,15 +96,15 @@ public class MeFragment extends Fragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 View updateMe = getLayoutInflater().inflate(R.layout.update_me_fragment, null);
                 builder.setView(updateMe);
-                    builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            et_name = updateMe.findViewById(R.id.et_name);
-                            etContact= updateMe.findViewById((R.id.etContact));
-                            updateProfile();
-                            Toast.makeText(getContext() , "updated", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        et_name = updateMe.findViewById(R.id.et_name);
+                        etContact= updateMe.findViewById((R.id.etContact));
+                        updateProfile();
+                        Toast.makeText(getContext() , "updated", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -112,6 +113,8 @@ public class MeFragment extends Fragment {
                 });
                 AlertDialog dialog = builder.create();
                 dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.spark_text));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.neutral));
             }
         });
     }

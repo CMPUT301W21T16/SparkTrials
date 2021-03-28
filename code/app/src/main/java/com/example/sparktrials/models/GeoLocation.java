@@ -19,6 +19,7 @@ public class GeoLocation {
     public GeoLocation(){
         this.lat = 1000.0;
         this.lon = 1000.0;
+        this.radius = 0;
     }
 
     /**

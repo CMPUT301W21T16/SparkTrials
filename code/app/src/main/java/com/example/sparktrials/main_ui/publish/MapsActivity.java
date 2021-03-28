@@ -3,6 +3,8 @@ package com.example.sparktrials.main_ui.publish;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -49,7 +51,19 @@ public class MapsActivity extends AppCompatActivity {
         confirmLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendBackCoords(true);
+                if (map.isMarkerSet()) {
+                    if (map.getGeoLocation().getRadius() > 0) {
+                        sendBackCoords(true);
+                    } else {
+                        new ChooseRadiusFragment(map).show(getSupportFragmentManager(), "Choose Region Fragment");
+                    }
+                } else {
+                    new AlertDialog.Builder(MapsActivity.this)
+                            .setTitle("ERROR")
+                            .setMessage("Long click somewhere to set a center for your region.")
+                            .setPositiveButton("OK",null)
+                            .show();
+                }
             }
         });
 
@@ -58,10 +72,15 @@ public class MapsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (map.isMarkerSet()) {
                     new ChooseRadiusFragment(map).show(getSupportFragmentManager(), "Choose Region Fragment");
+                } else {
+                    AlertDialog builder = new AlertDialog.Builder(MapsActivity.this)
+                            .setTitle("ERROR")
+                            .setMessage("Long click somewhere to set a center for your region")
+                            .setPositiveButton("OK",null)
+                            .show();
                 }
             }
         });
-
     }
 
     /**
@@ -118,4 +137,7 @@ public class MapsActivity extends AppCompatActivity {
         }
         finish();
     }
+
+
+
 }

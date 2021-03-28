@@ -1,7 +1,14 @@
 package com.example.sparktrials.exp.action;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -12,9 +19,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
+import com.example.sparktrials.CustomList;
 import com.example.sparktrials.ExperimentActivity;
 import com.example.sparktrials.IdManager;
 import com.example.sparktrials.MainActivity;
@@ -27,7 +39,13 @@ import com.example.sparktrials.models.Trial;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ActionFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static android.content.Context.LOCATION_SERVICE;
+
+public class ActionFragment extends Fragment implements LocationListener {
     View view;
     TextView trialsNumber;
     TextView trialsCount;
@@ -35,8 +53,19 @@ public class ActionFragment extends Fragment {
     private ActionFragmentManager manager;
     private IdManager idManager;
     String id;
+
+    LocationManager locationManager;
+    boolean reqLocation;
+    MutableLiveData<GeoLocation> currentLocation;
+
     public ActionFragment(Experiment experiment){
         this.manager= new ActionFragmentManager(experiment);
+        reqLocation = experiment.getReqLocation();
+        if (reqLocation) {
+            currentLocation = new MutableLiveData<>();
+        } else {
+            currentLocation = null;
+        }
     }
 
     @Override
@@ -59,25 +88,36 @@ public class ActionFragment extends Fragment {
         Button deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
         EditText valueEditText = view.findViewById(R.id.countvalue_editText);
         updateView();
+
+        if (reqLocation) {
+            getLocation();
+        }
+
         if (manager.getType().equals("binomial trials".toLowerCase())){
+            if (reqLocation) {
+                getLocation();
+            }
             leftButton.setVisibility(View.VISIBLE);
             rightButton.setVisibility(View.VISIBLE);
             leftButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    manager.addBinomialTrial(true);
+                    manager.addBinomialTrial(true, currentLocation.getValue());
                     updateView();
                 }
             });
             rightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    manager.addBinomialTrial(false);
+                    manager.addBinomialTrial(false, currentLocation.getValue());
                     updateView();
                 }
             });
         }
         else if(manager.getType().equals("Non-Negative Integer Counts".toLowerCase())){
+            if (reqLocation) {
+                getLocation();
+            }
             recordNumButton.setVisibility(View.VISIBLE);
             valueEditText.setVisibility(View.VISIBLE);
             recordNumButton.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +127,7 @@ public class ActionFragment extends Fragment {
                     Integer result;
                     try{
                         result= Integer.parseInt(valueString);
-                        manager.addNonNegIntTrial(result);
+                        manager.addNonNegIntTrial(result, currentLocation.getValue());
                         updateView();
                     }catch (NumberFormatException e) {
                         AlertDialog builder = new AlertDialog.Builder(getContext())
@@ -100,6 +140,9 @@ public class ActionFragment extends Fragment {
             });
         }
         else if(manager.getType().equals("Measurement Trials".toLowerCase())){
+            if (reqLocation) {
+                getLocation();
+            }
             recordNumButton.setVisibility(View.VISIBLE);
             valueEditText.setVisibility(View.VISIBLE);
             valueEditText.setInputType(InputType.TYPE_CLASS_NUMBER |
@@ -112,7 +155,7 @@ public class ActionFragment extends Fragment {
                     String valueString = valueEditText.getText().toString();
                     try{
                         result= Double.parseDouble(valueString);
-                        manager.addMeasurementTrial(result);
+                        manager.addMeasurementTrial(result, currentLocation.getValue());
                         updateView();
                     }catch (NumberFormatException e) {
                         AlertDialog builder = new AlertDialog.Builder(getContext())
@@ -125,6 +168,9 @@ public class ActionFragment extends Fragment {
             });
         }
         else if(manager.getType().equals("Counts".toLowerCase())){
+            if (reqLocation) {
+                getLocation();
+            }
             leftButton.setVisibility(View.VISIBLE);
             rightButton.setVisibility(View.VISIBLE);
             leftButton.setText("Add Count");
@@ -139,7 +185,7 @@ public class ActionFragment extends Fragment {
             rightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    manager.addCountTrial(count);
+                    manager.addCountTrial(count, currentLocation.getValue());
                     count=0;
                     updateView();
                 }
@@ -164,8 +210,24 @@ public class ActionFragment extends Fragment {
                 updateView();
             }
         });
+
         return view;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (currentLocation != null) {
+            final Observer<GeoLocation> nameObserver = new Observer<GeoLocation>() {
+                @Override
+                public void onChanged(@Nullable final GeoLocation newLoc) {
+                    System.out.println(currentLocation.getValue().getLat());
+                }
+            };
+            currentLocation.observe(this, nameObserver);
+        }
+    }
+
     public void updateView(){
         int trials=manager.getNTrials();
         Log.d("NUM Is", String.valueOf(trials));
@@ -180,4 +242,33 @@ public class ActionFragment extends Fragment {
         else
             trialsNumber.setText("Trials completed: "+trials);
     }
+
+    /**
+     * Gets the updated location of the device, and causes onLocationChanged() to be called as
+     * a callback function.
+     */
+    @SuppressLint("MissingPermission")
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void getLocation() {
+        try {
+            locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,5, this);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        // Update the currentLocation of the user
+        GeoLocation cLoc = new GeoLocation(location.getLatitude(), location.getLongitude());
+
+        currentLocation.setValue(cLoc);
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {}
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {}
 }

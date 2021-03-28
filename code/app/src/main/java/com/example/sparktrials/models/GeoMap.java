@@ -5,9 +5,12 @@ import android.graphics.Color;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 /**
  * This class represents a GoogleMaps API and is responsible for displaying any Google Maps screem
@@ -18,6 +21,7 @@ public class GeoMap implements OnMapReadyCallback {
     private GoogleMap map;
 
     private GeoLocation geoLocation;
+    private ArrayList<Trial> trials;
 
     private boolean isEditable;
     private boolean markerSet;
@@ -46,7 +50,12 @@ public class GeoMap implements OnMapReadyCallback {
         this.isEditable = isEditable;
         this.geoLocation = experiment.getRegion();
         markerSet = true;
-        hasLocationSet = experiment.getReqLocation();
+        if (experiment.getRegion().getRadius() == 0) {
+            hasLocationSet = false;
+        } else {
+            hasLocationSet = true;
+            trials = experiment.getValidTrials();
+        }
     }
 
     @Override
@@ -79,6 +88,17 @@ public class GeoMap implements OnMapReadyCallback {
 
                 map.addMarker(new MarkerOptions()
                         .position(center));
+
+                // Add an orange marker for every trial
+                for (Trial trial: trials) {
+                    double trialLat = trial.getLocation().getLat();
+                    double trialLon = trial.getLocation().getLon();
+                    LatLng trialLocation = new LatLng(trialLat, trialLon);
+
+                    map.addMarker(new MarkerOptions()
+                            .position(trialLocation)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                }
 
                 displayCircle(center, geoLocation.getRadius());
 
@@ -129,7 +149,7 @@ public class GeoMap implements OnMapReadyCallback {
      * @param radius
      *      This represents the radius of the circle in meters.
      */
-    private void displayCircle(LatLng center, double radius) {
+    public void displayCircle(LatLng center, double radius) {
         // Set the attributes of the circle to be drawn on the map.
         CircleOptions circleOptions = new CircleOptions();
         circleOptions.center(center);

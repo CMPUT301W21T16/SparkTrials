@@ -19,6 +19,7 @@ import android.widget.Spinner;
 
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.GeoMap;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * This represents the Fragment (to be displayed in MapsActivity) that allows the user to set the
@@ -58,18 +59,23 @@ public class ChooseRadiusFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 String radiusString = radiusEditText.getText().toString().trim();
 
-                if (radiusString == "") {
-
+                if (radiusString.equals("")) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("ERROR")
+                            .setMessage("Radius cannot be empty!")
+                            .setPositiveButton("OK",null)
+                            .show();
                 } else {
                     double radius = Double.parseDouble(radiusString);
-                    if (((String) unitsDropDownMenu.getSelectedItem()).equals("km")) {
+                    if (unitsDropDownMenu.getSelectedItem().equals("km")) {
                         // If the radius is set in kilometers, convert it to meters
                         map.getGeoLocation().setRadius(1000 * radius);
                     } else {
                         map.getGeoLocation().setRadius(radius);
                     }
+                    LatLng center = new LatLng(map.getGeoLocation().getLat(), map.getGeoLocation().getLon());
+                    map.displayCircle(center, map.getGeoLocation().getRadius());
                 }
-
             }
         });
         builder.setNegativeButton("Cancel", null);

@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.sparktrials.IdManager;
 
@@ -31,13 +30,11 @@ public class PublishFragment extends DialogFragment {
     private EditText expTitle;
     private EditText expMinNTrials;
     private EditText expRegion;
-    //private EditText expLat;
-    //private EditText expLon;
     private Experiment experiment;
     private String userID;
-    private TextView reqLocation;
     private Spinner spinner;
-    private Spinner spinner2;
+    private Spinner locationSet;
+    private Spinner trialLocations;
 
     private double lat;
     private double lon;
@@ -57,30 +54,23 @@ public class PublishFragment extends DialogFragment {
         expDesc = view.findViewById(R.id.expDesc_editText);
         expTitle = view.findViewById(R.id.expTitle_editText);
         expMinNTrials = view.findViewById(R.id.expMinNTrials_editText);
-        /*expLat = view.findViewById(R.id.expLat_editText);
-        expLon = view.findViewById(R.id.expLon_editText);
-        expLat.setInputType(InputType.TYPE_CLASS_NUMBER |
-                InputType.TYPE_NUMBER_FLAG_DECIMAL |
-                InputType.TYPE_NUMBER_FLAG_SIGNED);
-        expLon.setInputType(InputType.TYPE_CLASS_NUMBER |
-                InputType.TYPE_NUMBER_FLAG_DECIMAL |
-                InputType.TYPE_NUMBER_FLAG_SIGNED);*/
-        reqLocation=view.findViewById(R.id.request_experiment_location);
         spinner = view.findViewById(R.id.experiment_type_spinner);
-        spinner2 = view.findViewById(R.id.experiment_location_spinner);
+        locationSet = view.findViewById(R.id.experiment_location_spinner);
+        trialLocations = view.findViewById(R.id.trial_location_spinner);
         String[] items = new String[]{"Binomial Trials", "Counts", "Non-Negative Integer Counts","Measurement Trials"};
         String[] locationOptions = new String[]{"False", "True"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,items);
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,locationOptions);
         spinner.setAdapter(adapter);
-        spinner2.setAdapter(adapter2);
+        locationSet.setAdapter(adapter2);
+        trialLocations.setAdapter(adapter2);
 
 
 
-        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        locationSet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Boolean chooseLocation = Boolean.parseBoolean(spinner2.getSelectedItem().toString());
+                Boolean chooseLocation = Boolean.parseBoolean(locationSet.getSelectedItem().toString());
                 if (chooseLocation) {
                     startMapsActivity();
                 }
@@ -93,8 +83,6 @@ public class PublishFragment extends DialogFragment {
         IdManager idManager = new IdManager(getActivity());
         String id = idManager.getUserId();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-
 
         return builder
                 .setView(view)
@@ -109,7 +97,7 @@ public class PublishFragment extends DialogFragment {
                         //String latString = expLat.getText().toString();
                         //String lonString = expLon.getText().toString();
                         String experimentType = spinner.getSelectedItem().toString();
-                        Boolean reqLocation = Boolean.parseBoolean(spinner2.getSelectedItem().toString());
+                        Boolean reqLocation = Boolean.parseBoolean(trialLocations.getSelectedItem().toString());
                         Log.d("Type",experimentType);
                         PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,lat,lon,radius,experimentType,reqLocation);
                     }
@@ -130,7 +118,7 @@ public class PublishFragment extends DialogFragment {
 
         if (resultCode == didNotPickLocation) {
             // Set Location field to False
-            spinner2.setSelection(0);
+            locationSet.setSelection(0);
         } else if (resultCode == didPickLocation) {
             lat = (double) data.getExtras().get("Latitude");
             lon = (double) data.getExtras().get("Longitude");

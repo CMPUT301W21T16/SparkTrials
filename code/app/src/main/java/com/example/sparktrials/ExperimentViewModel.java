@@ -2,7 +2,6 @@ package com.example.sparktrials;
 
 import android.util.Log;
 
-import androidx.core.graphics.drawable.WrappedDrawable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -17,7 +16,6 @@ import com.example.sparktrials.models.TrialMeasurement;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -172,6 +170,15 @@ public class ExperimentViewModel extends ViewModel {
                     trial = new TrialCount();
                     ((TrialCount) trial).setCount(((Double) map.get("value")).intValue());
                 }
+
+                if (experiment.getReqLocation()) {
+                    HashMap<String, Object> trialCoords = (HashMap<String, Object>) map.get("location");
+                    GeoLocation trialLocation = new GeoLocation();
+                    trialLocation.setLat((double) trialCoords.get("lat"));
+                    trialLocation.setLon((double) trialCoords.get("lon"));
+                    trial.setLocation(trialLocation);
+                }
+
                 Profile experimenter = new Profile();
                 HashMap<String, Object> profile = (HashMap<String, Object>) map.get("profile");
                 experimenter.setContact((String) profile.get("contact"));
@@ -182,7 +189,6 @@ public class ExperimentViewModel extends ViewModel {
                 trial.setId((String) map.get("id"));
                 Timestamp trialDate = (Timestamp) map.get("date");
                 trial.setDate(trialDate.toDate());
-                //trial.setLocation((GeoLocation) map.get("location"));
                 trials.add(trial);
             }
             experiment.setTrials(trials);

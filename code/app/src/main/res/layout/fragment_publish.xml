@@ -95,7 +95,7 @@
         android:paddingLeft="20dp"
         android:gravity="top"/>
     <TextView
-        android:id="@+id/request_experiment_location"
+        android:id="@+id/set_experiment_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
@@ -114,5 +114,18 @@
         android:drawablePadding="7dp"
         android:paddingLeft="20dp"
         android:gravity="top"/>
+
+    <TextView
+        android:id="@+id/request_trials_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="Enforce Trial Location"
+        android:textSize="20sp"
+        />
+    <Spinner
+        android:id="@+id/trial_location_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

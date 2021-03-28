@@ -97,7 +97,7 @@ public class ExperimentActivity extends AppCompatActivity {
                 adapter.addFragment(new ActionFragment(experiment), "Action");
                 adapter.addFragment(new StatsFragment(experiment), "Stats");
                 adapter.addFragment(new ForumFragment(experiment), "Forum");
-                if (experiment.getReqLocation()) {
+                if (experiment.getRegion().getRadius() > 0) {
                     adapter.addFragment(new LocationFragment(experiment), "Map");
                 }
                 if (experiment.getOwner().getId().equals(userId)) {

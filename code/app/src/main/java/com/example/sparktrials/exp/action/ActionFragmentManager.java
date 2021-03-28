@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.example.sparktrials.FirebaseManager;
 import com.example.sparktrials.IdManager;
 import com.example.sparktrials.models.Experiment;
+import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.Trial;
 import com.example.sparktrials.models.TrialBinomial;
@@ -45,10 +46,11 @@ public class ActionFragmentManager {
      * Adds a binomial trial to the experiment
      * @param result
      */
-    public void addBinomialTrial(Boolean result){
+    public void addBinomialTrial(Boolean result, GeoLocation location){
         TrialBinomial trial = new TrialBinomial(result);
         trial.setId(UUID.randomUUID().toString());
         trial.setProfile(profile);
+        trial.setLocation(location);
         experiment.addTrial(trial);
     }
 
@@ -56,10 +58,11 @@ public class ActionFragmentManager {
      * Adds a non negative Integer count trial to the experiment
      * @param result
      */
-    public void addNonNegIntTrial(Integer result){
+    public void addNonNegIntTrial(Integer result, GeoLocation location){
         TrialIntCount trial = new TrialIntCount(result);
         trial.setId(UUID.randomUUID().toString());
         trial.setProfile(profile);
+        trial.setLocation(location);
         experiment.addTrial(trial);
     }
 
@@ -67,21 +70,23 @@ public class ActionFragmentManager {
      * Adds a measurement trial to the experiment
      * @param result
      */
-    public void addMeasurementTrial(Double result){
+    public void addMeasurementTrial(Double result, GeoLocation location){
         TrialMeasurement trial = new TrialMeasurement(result);
         trial.setId(UUID.randomUUID().toString());
         trial.setProfile(profile);
+        trial.setLocation(location);
         experiment.addTrial(trial);
     }
 
     /**
      * Adds a count trial to the experiment
      */
-    public void addCountTrial(Integer count){
+    public void addCountTrial(Integer count, GeoLocation location){
         TrialCount trial = new TrialCount();
         trial.setCount(count);
         trial.setId(UUID.randomUUID().toString());
         trial.setProfile(profile);
+        trial.setLocation(location);
         experiment.addTrial(trial);
     }
 

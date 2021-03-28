@@ -276,7 +276,7 @@ public class ExperimentTest extends TestCase {
         assertEquals("removeDupes does not work", 37, this.exp.removeDupes().length);
         assertEquals("frequencies does not work", 37, exp.frequencies().length);
         assertEquals("median does not work", "46.5", exp.getMedian());
-        assertEquals("Q1 does not work", "21.00", exp.getQ1());
+        assertEquals("Q1 does not work", "23.00", exp.getQ1());
         assertEquals("Q3 does not work", "76.50", exp.getQ3());
         assertEquals("std does not work", "30.39", exp.getStd());
         assertEquals("mean does not work", "49.05", exp.getMean());

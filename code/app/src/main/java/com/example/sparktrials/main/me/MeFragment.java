@@ -3,6 +3,7 @@ package com.example.sparktrials.main.me;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +97,7 @@ public class MeFragment extends Fragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 View updateMe = getLayoutInflater().inflate(R.layout.update_me_fragment, null);
                 builder.setView(updateMe);
-                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         et_name = updateMe.findViewById(R.id.et_name);
@@ -105,7 +106,7 @@ public class MeFragment extends Fragment {
                         Toast.makeText(getContext() , "updated", Toast.LENGTH_SHORT).show();
                     }
                 });
-                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNeutralButton("X", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(getContext() , "Nevermind", Toast.LENGTH_SHORT).show();

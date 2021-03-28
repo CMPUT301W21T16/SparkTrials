@@ -18,8 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/header"
-        android:text="Add Experiment"
-        android:textSize="40sp"
+        android:text="Publish Experiment"
+        android:textSize="30sp"
         android:textAlignment="center"
         android:textColor="@color/norm_text"
         android:gravity="center_horizontal"
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/norm_text"
-        android:layout_marginBottom="30dp"/>
+        android:layout_marginBottom="15dp"/>
 
     <EditText
         android:id="@+id/expTitle_editText"
@@ -113,6 +113,7 @@
         android:layout_marginLeft="4dp"
         android:drawablePadding="7dp"
         android:paddingLeft="20dp"
+        android:layout_marginBottom="30dp"
         android:gravity="top"/>
 
     <TextView

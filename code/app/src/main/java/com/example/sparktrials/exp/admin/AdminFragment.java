@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,6 +32,7 @@ public class AdminFragment extends Fragment {
 
     private Button endButton;
     private Button unpublishButton;
+    private TextView activeText;
 
     Experiment experiment;
 
@@ -71,8 +73,12 @@ public class AdminFragment extends Fragment {
                 manager.toggleExpOpen(experiment);
                 if (endButton.getText() == "END EXPERIMENT"){
                     endButton.setText("OPEN EXPERIMENT");
+                    activeText.setText("Inactive");
+                    activeText.setTextColor(getResources().getColor(R.color.neutral));
                 } else {
                     endButton.setText("END EXPERIMENT");
+                    activeText.setText("Active");
+                    activeText.setTextColor(getResources().getColor(R.color.positive));
                 }
             }
         });
@@ -105,5 +111,9 @@ public class AdminFragment extends Fragment {
             alert.show();
 
         });
+    }
+
+    public void setActiveText( TextView activeText){
+        this.activeText = activeText;
     }
 }

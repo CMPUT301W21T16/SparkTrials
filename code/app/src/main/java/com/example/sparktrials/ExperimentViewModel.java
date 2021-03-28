@@ -148,7 +148,10 @@ public class ExperimentViewModel extends ViewModel {
             experiment.setOpen((Boolean) expData.getData().get("Open"));
             experiment.setType((String) expData.getData().get("Type"));
             String uId = (String) expData.getData().get("profileID");
-            experiment.setOwner(new Profile(uId));
+            String username = (String) expData.getData().get("ownerName");
+            Profile owner = new Profile(uId);
+            owner.setUsername(username);
+            experiment.setOwner(owner);
 //            experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
             ArrayList<HashMap> trialsHash = (ArrayList<HashMap>) expData.getData().get("Trials");
             ArrayList<Trial> trials = new ArrayList<>();

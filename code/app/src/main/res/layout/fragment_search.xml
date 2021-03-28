@@ -58,16 +58,11 @@
         android:layout_height="10dp">
     </Space>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_gravity="center"
-        android:background="@color/spark_text"/>
-
     <ListView
         android:id="@+id/search_list"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
+        android:layout_marginBottom="50dp"
         android:background="@color/backdrop">
 
     </ListView>

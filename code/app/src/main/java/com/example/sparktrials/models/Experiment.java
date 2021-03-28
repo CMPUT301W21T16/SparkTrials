@@ -621,18 +621,24 @@ public class Experiment {
      * Q1 of type string
      */
     public String getQ1(){
+        ArrayList<Double> trials = trialsValuesSorted();
+
         double quartile;
-        if (trialsValuesSorted().isEmpty() ){
+        if (trials.isEmpty() ){
             return "N/A";
         }
-        int num = trialsValuesSorted().size();
-        int length = num +1;
-        float newArraySize = (length * ((float) (1) * 25 / 100)) - 1;
-        if (newArraySize % 1 == 0) {
-            quartile =  trialsValuesSorted().get((int) newArraySize);
+
+        if (trials.size() <= 3){
+            quartile = trials.get(0);
         } else {
-            int newArraySize1 = (int) (newArraySize);
-            quartile = (trialsValuesSorted().get(newArraySize1) + trialsValuesSorted().get(newArraySize1+1)) / 2.0;
+            int length = trials.size();
+            float newArraySize = (length * ((float) (1) * 25 / 100));
+            if (newArraySize % 1 == 0) {
+                quartile = trials.get((int) newArraySize);
+            } else {
+                int newArraySize1 = (int) (newArraySize);
+                quartile = (trials.get(newArraySize1) + trials.get(newArraySize1 + 1)) / 2.0;
+            }
         }
         return String.format("%.2f", quartile);
     }
@@ -643,18 +649,24 @@ public class Experiment {
      * Q3 of type string
      */
     public String getQ3(){
-        if (trialsValuesSorted().isEmpty() ){
+        ArrayList<Double> trials = trialsValuesSorted();
+
+        double quartile;
+        if (trials.isEmpty() ){
             return "N/A";
         }
-        double quartile;
-        int num = trialsValuesSorted().size();
-        int length = num +1;
-        float newArraySize = (length * ((float) (3) * 25 / 100)) - 1;
-        if (newArraySize % 1 == 0) {
-            quartile =  trialsValuesSorted().get((int) newArraySize);
+
+        if (trials.size() <= 3){
+            quartile = trials.get(trials.size());
         } else {
-            int newArraySize1 = (int) (newArraySize);
-            quartile = (trialsValuesSorted().get(newArraySize1-1) + trialsValuesSorted().get(newArraySize1)) / 2.0;
+            int length = trials.size();
+            float newArraySize = (length * ((float) (3) * 25 / 100))-1;
+            if (newArraySize % 1 == 0) {
+                quartile = trials.get((int) newArraySize);
+            } else {
+                int newArraySize1 = (int) (newArraySize);
+                quartile = (trials.get(newArraySize1) + trials.get(newArraySize1 + 1)) / 2.0;
+            }
         }
         return String.format("%.2f", quartile);
     }

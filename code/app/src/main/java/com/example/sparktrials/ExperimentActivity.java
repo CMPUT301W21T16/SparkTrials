@@ -1,18 +1,25 @@
 package com.example.sparktrials;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
@@ -23,13 +30,13 @@ import com.example.sparktrials.exp.admin.AdminFragment;
 import com.example.sparktrials.exp.forum.ForumFragment;
 import com.example.sparktrials.exp.location.LocationFragment;
 import com.example.sparktrials.exp.stats.StatsFragment;
-import com.example.sparktrials.main.search.SearchViewModel;
+import com.example.sparktrials.main_ui.publish.PublishFragment;
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.Profile;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.sparktrials.models.ProfileActivity;
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A class with tabs for each ability of an experiment
@@ -45,8 +52,11 @@ public class ExperimentActivity extends AppCompatActivity {
     private ViewPager viewPager;
 
     private Button subscribe;
-    private Button backToMain;
+    private ImageButton backToMain;
     private TextView titleText;
+    private TextView activeText;
+    private TextView ownerNameText;
+    private ImageView ownerIcon;
     private TextView descText;
 
     private String textSubscribe = "Subscribe";
@@ -54,7 +64,32 @@ public class ExperimentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.experiment_main);
+        setContentView(R.layout.activity_experiment);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.top_app_bar);
+        myToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
+            @SuppressLint("NonConstantResourceId")
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.top_app_bar_draft:
+                        Log.d("BUTTON", "draftClicked");
+                        Toast.makeText(getApplicationContext(), "Welcome back.", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.top_app_bar_scan_qr_code:
+                        Log.d("BUTTON", "scanClicked");
+                        break;
+                    case R.id.top_app_bar_publish_experiment:
+                        Log.d("BUTTON", "publishClicked");
+                        new PublishFragment().show(getSupportFragmentManager(), "Add Experiment");
+                        break;
+                    default:
+                        Log.d("BUTTON", "something wrong");
+                }
+                return true;
+            }
+        });
 
         experimentId = getIntent().getStringExtra("EXPERIMENT_ID");
         IdManager idManager = new IdManager(this);
@@ -67,6 +102,9 @@ public class ExperimentActivity extends AppCompatActivity {
         titleText = findViewById(R.id.text_title);
         descText = findViewById(R.id.text_desc);
         descText.setMovementMethod(new ScrollingMovementMethod());
+        activeText = findViewById(R.id.text_active);
+        ownerNameText = findViewById(R.id.text_owner_name);
+        ownerIcon = findViewById(R.id.owner_icon);
 
         tablayout = (TabLayout) findViewById(R.id.tablayout_id);
         viewPager = (ViewPager) findViewById(R.id.viewpager_id);
@@ -90,9 +128,16 @@ public class ExperimentActivity extends AppCompatActivity {
 
             @Override
             public void onChanged(Experiment experiment) {
-
                 titleText.setText(experiment.getTitle());
                 descText.setText(experiment.getDesc());
+                if (experiment.getOpen()) {
+                    activeText.setText("Active");
+                    activeText.setTextColor(getResources().getColor(R.color.positive));
+                } else {
+                    activeText.setText("Inactive");
+                    activeText.setTextColor(getResources().getColor(R.color.neutral));
+                }
+                ownerNameText.setText(experiment.getOwner().getUsername());
 
                 adapter.addFragment(new ActionFragment(experiment), "Action");
                 adapter.addFragment(new StatsFragment(experiment), "Stats");
@@ -101,7 +146,9 @@ public class ExperimentActivity extends AppCompatActivity {
                     adapter.addFragment(new LocationFragment(experiment), "Map");
                 }
                 if (experiment.getOwner().getId().equals(userId)) {
-                    adapter.addFragment(new AdminFragment(experiment), "Admin");
+                    AdminFragment a_frag = new AdminFragment(experiment);
+                    a_frag.setActiveText(activeText);
+                    adapter.addFragment(a_frag, "Admin");
                 }
                 viewPager.setAdapter(adapter);
                 tablayout.setupWithViewPager(viewPager);
@@ -112,6 +159,22 @@ public class ExperimentActivity extends AppCompatActivity {
         subscribe.setOnClickListener((v) -> {
             this.subscribe();
 
+        });
+
+        // Launches a ProfileActivity when the username of an Experiment's Owner is clicked on
+        ownerNameText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startProfileActivity(expManager.getExperiment().getValue().getOwner().getId());
+            }
+        });
+
+        // Launches a ProfileActivity when the username of an Experiment's Owner is clicked on
+        ownerIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startProfileActivity(expManager.getExperiment().getValue().getOwner().getId());
+            }
         });
 
         backToMain.setOnClickListener((v) -> {
@@ -134,6 +197,7 @@ public class ExperimentActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     //subscribe
                     expManager.subscribe();
+                    expManager.updateSubscribe();
                     dialog.dismiss();
                 }
             });
@@ -152,7 +216,18 @@ public class ExperimentActivity extends AppCompatActivity {
             //unsubscribe
             expManager.subscribe();
         }
-        expManager.updateSubscribe();
+    }
+
+    /**
+     * This method starts a ProfileActivity, which displays the information of the owner of an
+     * experiment.
+     * @param ownerId
+     *      The user whose profile we want to display.
+     */
+    private void startProfileActivity(String ownerId) {
+        Intent intent = new Intent(this.getBaseContext(), ProfileActivity.class);
+        intent.putExtra("USER_ID", ownerId);
+        startActivityForResult(intent, 0); // Throwaway requestCode
     }
 
     /**

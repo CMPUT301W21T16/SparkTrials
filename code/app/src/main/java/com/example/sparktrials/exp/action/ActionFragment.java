@@ -226,7 +226,7 @@ public class ActionFragment extends Fragment implements LocationListener {
     @Override
     public void onStart() {
         super.onStart();
-        if (currentLocation.getValue() != null) {
+        if (reqLocation) {
             final Observer<GeoLocation> nameObserver = new Observer<GeoLocation>() {
                 @Override
                 public void onChanged(@Nullable final GeoLocation newLoc) {

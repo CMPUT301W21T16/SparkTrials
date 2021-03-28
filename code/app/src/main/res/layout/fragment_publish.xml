@@ -120,13 +120,21 @@
         android:id="@+id/request_trials_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:paddingLeft="10dp"
         android:ems="10"
-        android:text="Enforce Trial Location"
+        android:text="Enforce Trials Location"
+        android:textColor="@color/main_text"
         android:textSize="20sp"
         />
     <Spinner
         android:id="@+id/trial_location_spinner"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:drawablePadding="7dp"
+        android:paddingLeft="20dp"
+        android:gravity="top"/>
 
 </LinearLayout>

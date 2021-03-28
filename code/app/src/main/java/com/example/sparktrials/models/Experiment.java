@@ -657,7 +657,7 @@ public class Experiment {
         }
 
         if (trials.size() <= 3){
-            quartile = trials.get(trials.size());
+            quartile = trials.get(trials.size() - 1);
         } else {
             int length = trials.size();
             float newArraySize = (length * ((float) (3) * 25 / 100))-1;

@@ -52,7 +52,7 @@ public class PublishFragment extends DialogFragment {
      * @param savedInstanceState
      * @return
      */
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    public AlertDialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_publish, null);
         expDesc = view.findViewById(R.id.expDesc_editText);
         expTitle = view.findViewById(R.id.expTitle_editText);
@@ -94,11 +94,8 @@ public class PublishFragment extends DialogFragment {
         String id = idManager.getUserId();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
-
-
-        return builder
+        builder
                 .setView(view)
-                .setTitle("Add Experiment")
                 .setNeutralButton("Cancel", null)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -115,6 +112,13 @@ public class PublishFragment extends DialogFragment {
                     }
                 })
                 .create();
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.spark_text));
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.neutral));
+        return dialog;
+
     }
 
     private void startMapsActivity() {

@@ -87,8 +87,10 @@ public class ExperimentActivity extends AppCompatActivity {
         expManager.subscribe().observe(this, name1Observer);
         // This will allow the experiment to be displayed when the activity is launched
         final Observer<Experiment> name2Observer = new Observer<Experiment>() {
+
             @Override
             public void onChanged(Experiment experiment) {
+
                 titleText.setText(experiment.getTitle());
                 descText.setText(experiment.getDesc());
 
@@ -108,35 +110,8 @@ public class ExperimentActivity extends AppCompatActivity {
         expManager.getExperiment().observe(this, name2Observer);
 
         subscribe.setOnClickListener((v) -> {
-            //NEW
-            if (expManager.getExperiment().getValue().getReqLocation() &&
-                !expManager.getProfile().getValue().getSubscriptions().contains(experimentId)) {
-                //Experiment requires locations and user is not currently subscribed
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("This experiment requires your location to be submitted");
-                builder.setMessage("Are you sure you want to subscribe?");
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //subscribe
-                        expManager.subscribe();
-                        dialog.dismiss();
-                    }
-                });
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing
-                        dialog.dismiss();
-                    }
-                });
+            this.subscribe();
 
-                AlertDialog alert = builder.create();
-                alert.show();
-            } else {
-                //Experiment doesn't require locations or user is already subscribed
-                //unsubscribe
-                expManager.subscribe();
-            }
         });
 
         backToMain.setOnClickListener((v) -> {
@@ -148,12 +123,44 @@ public class ExperimentActivity extends AppCompatActivity {
 
     }
 
+    public void subscribe() {
+        if (expManager.getExperiment().getValue().getReqLocation() &&
+                !expManager.getProfile().getValue().getSubscriptions().contains(experimentId)) {
+            //Experiment requires locations and user is not currently subscribed
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("This experiment requires your location to be submitted");
+            builder.setMessage("Are you sure you want to subscribe?");
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    //subscribe
+                    expManager.subscribe();
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Do nothing
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            //Experiment doesn't require locations or user is already subscribed
+            //unsubscribe
+            expManager.subscribe();
+        }
+        expManager.updateSubscribe();
+    }
+
     /**
      * When this activity is over, update the subscribe attribute
      */
-    @Override
-    protected void onStop() {
-        super.onStop();
-        expManager.updateSubscribe();
-    }
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        expManager.updateSubscribe();
+//    }
 }

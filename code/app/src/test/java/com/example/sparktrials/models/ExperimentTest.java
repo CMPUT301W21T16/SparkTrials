@@ -241,4 +241,47 @@ public class ExperimentTest extends TestCase {
 
     }
 
+    /**
+     * Tests the methods in experiment removeDupes, frequencies, median, Q1, Q3, std, and mean
+     * By making some test data with known statistics
+     */
+    public void testStatistics(){
+        Profile profile = new Profile("id1");
+        GeoLocation uni_loc = new GeoLocation(0.0, 0.0);
+        ArrayList<Trial> trials = new ArrayList<>();
+
+        for (int i=1; i<101; i++){
+            TrialCount trial = new TrialCount(""+i, uni_loc, profile);
+            if (i<40 && i%2==0){
+                trial.setCount(i);
+
+                trials.add(trial);
+            } else if (i>= 40 && i<80 && i%3==0){
+                trial.setCount(i);
+
+                trials.add(trial);
+            } else if ( i >= 80 && i%5==0) {
+                trial.setCount(i);
+                TrialCount trial2 = new TrialCount("1"+i, uni_loc, profile);
+                trial2.setCount(i);
+
+                trials.add(trial);
+                trials.add(trial2);
+            }
+        }
+
+        this.exp = new Experiment("foo");
+        this.exp.addTrials(trials);
+
+        assertEquals("removeDupes does not work", 37, this.exp.removeDupes().length);
+        assertEquals("frequencies does not work", 37, exp.frequencies().length);
+        assertEquals("median does not work", "46.5", exp.getMedian());
+        assertEquals("Q1 does not work", "21.00", exp.getQ1());
+        assertEquals("Q3 does not work", "76.50", exp.getQ3());
+        assertEquals("std does not work", "30.39", exp.getStd());
+        assertEquals("mean does not work", "49.05", exp.getMean());
+
+    }
+
+
 }

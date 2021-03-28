@@ -18,5 +18,8 @@ public class PostTest extends TestCase {
         assertEquals("get profile does not work", "proId1", question.getProfile().getId());
         assertEquals("get answers does not work", 1, question.getAnswers().size());
         assertEquals("get question does not work", "proId1", answer.getQuestion().getProfile().getId());
+        Answer answer2 = new Answer("content2", "expId", profile2, question);
+        question.addAnswer(answer2);
+        assertEquals("get answers does not work", 2, question.getAnswers().size());
     }
 }

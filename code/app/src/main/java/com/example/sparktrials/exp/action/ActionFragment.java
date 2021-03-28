@@ -3,12 +3,11 @@ package com.example.sparktrials.exp.action;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -25,6 +24,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.sparktrials.CustomList;
 import com.example.sparktrials.ExperimentActivity;
@@ -79,138 +79,147 @@ public class ActionFragment extends Fragment implements LocationListener {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_action, container, false);
-        Button leftButton = view.findViewById(R.id.action_bar_pass);
-        Button rightButton = view.findViewById(R.id.action_bar_fail);
-        Button uploadButton = view.findViewById(R.id.action_bar_upload_trials);
-        Button recordNumButton = view.findViewById(R.id.action_bar_recordnum);
-        Button generateQR = view.findViewById(R.id.action_bar_generateQR);
-        Button deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
-        EditText valueEditText = view.findViewById(R.id.countvalue_editText);
-        updateView();
+        if (manager.getOpen()) {
+            view = inflater.inflate(R.layout.fragment_action, container, false);
+            Button leftButton = view.findViewById(R.id.action_bar_pass);
+            Button rightButton = view.findViewById(R.id.action_bar_fail);
+            Button uploadButton = view.findViewById(R.id.action_bar_upload_trials);
+            Button recordNumButton = view.findViewById(R.id.action_bar_recordnum);
+            Button generateQR = view.findViewById(R.id.action_bar_generateQR);
+            Button deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
+            EditText valueEditText = view.findViewById(R.id.countvalue_editText);
+            updateView();
 
-        if (reqLocation) {
-            getLocation();
-        }
-
-        if (manager.getType().equals("binomial trials".toLowerCase())){
             if (reqLocation) {
                 getLocation();
             }
-            leftButton.setVisibility(View.VISIBLE);
-            rightButton.setVisibility(View.VISIBLE);
-            leftButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    manager.addBinomialTrial(true, currentLocation.getValue());
-                    updateView();
+
+            if (manager.getType().equals("binomial trials".toLowerCase())) {
+                if (reqLocation) {
+                    getLocation();
                 }
-            });
-            rightButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    manager.addBinomialTrial(false, currentLocation.getValue());
-                    updateView();
-                }
-            });
-        }
-        else if(manager.getType().equals("Non-Negative Integer Counts".toLowerCase())){
-            if (reqLocation) {
-                getLocation();
-            }
-            recordNumButton.setVisibility(View.VISIBLE);
-            valueEditText.setVisibility(View.VISIBLE);
-            recordNumButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String valueString = valueEditText.getText().toString();
-                    Integer result;
-                    try{
-                        result= Integer.parseInt(valueString);
-                        manager.addNonNegIntTrial(result, currentLocation.getValue());
+                leftButton.setVisibility(View.VISIBLE);
+                rightButton.setVisibility(View.VISIBLE);
+                leftButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        manager.addBinomialTrial(true, currentLocation.getValue());
                         updateView();
-                    }catch (NumberFormatException e) {
+                    }
+                });
+                rightButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        manager.addBinomialTrial(false, currentLocation.getValue());
+                        updateView();
+                    }
+                });
+            } else if (manager.getType().equals("Non-Negative Integer Counts".toLowerCase())) {
+                if (reqLocation) {
+                    getLocation();
+                }
+                recordNumButton.setVisibility(View.VISIBLE);
+                valueEditText.setVisibility(View.VISIBLE);
+                recordNumButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String valueString = valueEditText.getText().toString();
+                        Integer result;
+                        try {
+                            result = Integer.parseInt(valueString);
+                            manager.addNonNegIntTrial(result, currentLocation.getValue());
+                            updateView();
+                        } catch (NumberFormatException e) {
+                            AlertDialog builder = new AlertDialog.Builder(getContext())
+                                    .setTitle("ERROR")
+                                    .setMessage("You must enter a number")
+                                    .setPositiveButton("OK", null)
+                                    .show();
+                        }
+                    }
+                });
+            } else if (manager.getType().equals("Measurement Trials".toLowerCase())) {
+                if (reqLocation) {
+                    getLocation();
+                }
+                recordNumButton.setVisibility(View.VISIBLE);
+                valueEditText.setVisibility(View.VISIBLE);
+                valueEditText.setInputType(InputType.TYPE_CLASS_NUMBER |
+                        InputType.TYPE_NUMBER_FLAG_DECIMAL |
+                        InputType.TYPE_NUMBER_FLAG_SIGNED);
+                recordNumButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        double result;
+                        String valueString = valueEditText.getText().toString();
+                        try {
+                            result = Double.parseDouble(valueString);
+                            manager.addMeasurementTrial(result, currentLocation.getValue());
+                            updateView();
+                        } catch (NumberFormatException e) {
+                            AlertDialog builder = new AlertDialog.Builder(getContext())
+                                    .setTitle("ERROR")
+                                    .setMessage("You must enter a number")
+                                    .setPositiveButton("OK", null)
+                                    .show();
+                        }
+                    }
+                });
+            } else if (manager.getType().equals("Counts".toLowerCase())) {
+                if (reqLocation) {
+                    getLocation();
+                }
+                leftButton.setVisibility(View.VISIBLE);
+                rightButton.setVisibility(View.VISIBLE);
+                leftButton.setText("Add Count");
+                rightButton.setText("Commit Trial");
+                leftButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        count += 1;
+                        updateView();
+                    }
+                });
+                rightButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        manager.addCountTrial(count, currentLocation.getValue());
+                        count = 0;
+                        updateView();
+                    }
+                });
+            }
+            uploadButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (manager.getNTrials() >= manager.getMinNTrials())
+                        manager.uploadTrials();
+                    else {
                         AlertDialog builder = new AlertDialog.Builder(getContext())
                                 .setTitle("ERROR")
-                                .setMessage("You must enter a number")
-                                .setPositiveButton("OK",null)
+                                .setMessage("You have not reached the minimum number of trials")
+                                .setPositiveButton("OK", null)
                                 .show();
                     }
                 }
             });
-        }
-        else if(manager.getType().equals("Measurement Trials".toLowerCase())){
-            if (reqLocation) {
-                getLocation();
-            }
-            recordNumButton.setVisibility(View.VISIBLE);
-            valueEditText.setVisibility(View.VISIBLE);
-            valueEditText.setInputType(InputType.TYPE_CLASS_NUMBER |
-                    InputType.TYPE_NUMBER_FLAG_DECIMAL |
-                    InputType.TYPE_NUMBER_FLAG_SIGNED);
-            recordNumButton.setOnClickListener(new View.OnClickListener() {
+            generateQR.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    double result;
-                    String valueString = valueEditText.getText().toString();
-                    try{
-                        result= Double.parseDouble(valueString);
-                        manager.addMeasurementTrial(result, currentLocation.getValue());
-                        updateView();
-                    }catch (NumberFormatException e) {
-                        AlertDialog builder = new AlertDialog.Builder(getContext())
-                                .setTitle("ERROR")
-                                .setMessage("You must enter a number")
-                                .setPositiveButton("OK",null)
-                                .show();
-                    }
+
                 }
             });
-        }
-        else if(manager.getType().equals("Counts".toLowerCase())){
-            if (reqLocation) {
-                getLocation();
-            }
-            leftButton.setVisibility(View.VISIBLE);
-            rightButton.setVisibility(View.VISIBLE);
-            leftButton.setText("Add Count");
-            rightButton.setText("Commit Trial");
-            leftButton.setOnClickListener(new View.OnClickListener() {
+            deleteTrials.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    count+=1;
-                    updateView();
-                }
-            });
-            rightButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    manager.addCountTrial(count, currentLocation.getValue());
-                    count=0;
+                    manager.deleteTrials();
                     updateView();
                 }
             });
         }
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.uploadTrials();
-            }
-        });
-        generateQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        deleteTrials.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.deleteTrials();
-                updateView();
-            }
-        });
-
+        else {
+            view = inflater.inflate(R.layout.fragment_closed_action, container, false);
+        }
         return view;
     }
 

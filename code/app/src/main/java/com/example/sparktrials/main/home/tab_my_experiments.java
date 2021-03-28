@@ -51,7 +51,7 @@ public class tab_my_experiments extends Fragment {
     public void onStart() {
         super.onStart();
         myExperiments = getView().findViewById(R.id.myExperiment_list);
-        context = requireActivity().getApplicationContext();
+        context = getActivity();
         IdManager idManager = new IdManager(context);
         homeViewModel = new HomeViewModel(idManager.getUserId());
 

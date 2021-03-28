@@ -3,6 +3,8 @@ package com.example.sparktrials;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.top_app_bar_publish_experiment:
                         Log.d("BUTTON", "publishClicked");
-                        new PublishFragment().show(getSupportFragmentManager(),"Add Experiment");
+                        new PublishFragment().show(getSupportFragmentManager(), "Add Experiment");
                         break;
                     default:
                         Log.d("BUTTON", "something wrong");

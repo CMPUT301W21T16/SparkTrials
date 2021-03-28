@@ -97,52 +97,52 @@ public class HomeViewModel extends ViewModel {
 //                });
 //    }
         private void getMyExperiments() {
-
             experimentsCollection.whereEqualTo("profileID",profileID)
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                             @Override
-                                             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                                                 if (error != null) {
-                                                     Log.w(TAG, "Listen failed.",error);
-                                                     return;
-                                                 }
-                                                 myExperiments.setValue(new ArrayList<>());
-                                                 for(QueryDocumentSnapshot document: value) {
-                                                     String id = document.getId();
-                                                     String title = (String) document.get("Title");
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                     @Override
+                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                         if (error != null) {
+                             Log.w(TAG, "Listen failed.",error);
+                             return;
+                         }
+                         myExperiments.setValue(new ArrayList<>());
+                         for(QueryDocumentSnapshot document: value) {
+                             String id = document.getId();
+                             String title = (String) document.get("Title");
+                             String desc = (String) document.get("Description");
+                             Boolean open = (Boolean) document.get("Open");
 
-                                                     String desc = (String) document.get("Description");
-                                                     Experiment exp = new Experiment(id);
-                                                     exp.setTitle(title);
-                                                     exp.setDesc(desc);
+                             Experiment exp = new Experiment(id);
+                             exp.setTitle(title);
+                             exp.setDesc(desc);
+                             exp.setOpen(open);
 
-                                                     usersCollection.document(profileID).get()
-                                                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                                 @Override
-                                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                     if (task.isSuccessful()) {
-                                                                         DocumentSnapshot document = task.getResult();
-                                                                         String username = (String) document.get("name");
-                                                                         String phoneNum = (String) document.get("contact");
+                             usersCollection.document(profileID).get()
+                                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                     @Override
+                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                         if (task.isSuccessful()) {
+                                             DocumentSnapshot document = task.getResult();
+                                             String username = (String) document.get("name");
+                                             String phoneNum = (String) document.get("contact");
 
-                                                                         Profile owner = new Profile(profileID);
-                                                                         owner.setUsername(username);
-                                                                         owner.setContact(phoneNum);
+                                             Profile owner = new Profile(profileID);
+                                             owner.setUsername(username);
+                                             owner.setContact(phoneNum);
 
-                                                                         exp.setOwner(owner);
+                                             exp.setOwner(owner);
 
-                                                                         ArrayList<Experiment> x = myExperiments.getValue();
-                                                                         x.add(exp);
+                                             ArrayList<Experiment> x = myExperiments.getValue();
+                                             x.add(exp);
 
-                                                                         myExperiments.setValue(x);
-                                                                     }
-                                                                 }
-                                                             });
-
-                                                 }
-                                             }
+                                             myExperiments.setValue(x);
                                          }
-                    );
+                                     }
+                                 });
+
+                         }
+                     }
+                 });
         }
         private void getSubscribedExperiments() {
             usersCollection.document(profileID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -177,11 +177,13 @@ public class HomeViewModel extends ViewModel {
                                         if (value.getDate("Date", DocumentSnapshot.ServerTimestampBehavior.PREVIOUS) == null) {
                                             Log.w(TAG, "Could not return date");
                                         }
+                                        Boolean open = (Boolean) value.get("Open");
 
                                         experiment.setId(id);
                                         experiment.setTitle(title);
                                         experiment.setDesc(desc);
                                         experiment.setDate(date);
+                                        experiment.setOpen(open);
                                         ArrayList<Experiment> x = subscribedExperiments.getValue();
                                         x.add(experiment);
 

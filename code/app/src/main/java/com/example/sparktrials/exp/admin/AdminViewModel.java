@@ -48,16 +48,20 @@ public class AdminViewModel extends ViewModel {
     public void toggleExpOpen(Experiment exp){
         Map<String, Object> map = new HashMap<>();
         map.put("Open", !exp.getOpen());
-
+        if (exp.getOpen())
+            exp.setOpen(false);
+        else
+            exp.setOpen(true);
         dbManager.update("experiments", exp.getId(), map);
     }
 
     /**
-     * Unpublish i.e. delete an experiment
+     * Unpublish i.e. delete an experiment and unsubscribe all users from that experiment
      * @param id
      *  The id of the experiment being deleted
      */
     public void deleteExperiment(String id){
+        dbManager.unsubscribeUsers(id);
         dbManager.delete("experiments", id);
     }
 

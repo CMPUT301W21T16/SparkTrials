@@ -1,16 +1,21 @@
 package com.example.sparktrials;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.example.sparktrials.models.Experiment;
+import com.example.sparktrials.models.ProfileActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +33,9 @@ public class CustomList extends ArrayAdapter<Experiment> {
     private TextView experimentStatus;
     private TextView experimentOwner;
     private TextView experimentDate;
+    private ImageView ownerIcon;
+
+    private View.OnClickListener onOwnerClick;
 
     /**
      * Constructor for a CustomList list adapter, which shows a customized list of experiments,
@@ -58,12 +66,31 @@ public class CustomList extends ArrayAdapter<Experiment> {
         experimentStatus = view.findViewById(R.id.list_experiment_status);
         experimentOwner = view.findViewById(R.id.list_experiment_owner);
         experimentDate = view.findViewById(R.id.list_experiment_date);
+        ownerIcon = view.findViewById(R.id.owner_icon);
 
         setFields(position);
 
+        // Launches a ProfileActivity when the username of an Experiment's Owner is clicked on
+        experimentOwner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Experiment experiment = experimentsList.get(position);
+
+                startProfileActivity(experiment.getOwner().getId());
+            }
+        });
+
+        // Launches a ProfileActivity when the username of an Experiment's Owner is clicked on
+        ownerIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Experiment experiment = experimentsList.get(position);
+
+                startProfileActivity(experiment.getOwner().getId());
+            }
+        });
 
         return view;
-
     }
 
     /**
@@ -77,12 +104,30 @@ public class CustomList extends ArrayAdapter<Experiment> {
 
         experimentTitle.setText(experiment.getTitle());
         experimentDescription.setText(experiment.getDesc());
-        experimentStatus.setText("Active");
+        if (experiment.getOpen()) {
+            experimentStatus.setText("Active");
+            experimentStatus.setTextColor(ContextCompat.getColor(context, R.color.positive));
+        } else {
+            experimentStatus.setText("Inactive");
+            experimentStatus.setTextColor(ContextCompat.getColor(context, R.color.neutral));
+        }
         experimentOwner.setText(experiment.getOwner().getUsername());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 
         experimentDate.setText(dateFormat.format(experiment.getDate()));
+    }
+
+    /**
+     * This method starts a ProfileActivity, which displays the information of the owner of an
+     * experiment.
+     * @param ownerId
+     *      The user whose profile we want to display.
+     */
+    private void startProfileActivity(String ownerId) {
+        Intent intent = new Intent(getContext(), ProfileActivity.class);
+        intent.putExtra("USER_ID", ownerId);
+        ((Activity) getContext()).startActivityForResult(intent, 0); // Throwaway requestCode
     }
 
 }

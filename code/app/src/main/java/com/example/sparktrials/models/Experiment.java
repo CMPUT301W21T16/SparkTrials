@@ -426,6 +426,11 @@ public class Experiment {
         return this.date;
     }
 
+    /**
+     * Gets the sart date of the experiment formatted as a string
+     * @return
+     *    Returns the string of the date
+     */
     public String getDay(){
         String pattern = "EEE MMM MM HH:mm:ss z yyyy";
         DateFormat df = new SimpleDateFormat(pattern);
@@ -592,6 +597,7 @@ public class Experiment {
 
     /**
      * Calculates the Median value for the experiment
+     * If even number of numbers, then take average of middle two
      * @return
      * Median of type string
      */
@@ -602,7 +608,7 @@ public class Experiment {
         }
         int num = trialsValuesSorted().size();
         if (num  % 2 == 0){
-            median = ((double)(trialsValuesSorted().get(num/2) + trialsValuesSorted().get(num/2 - 1)));
+            median = ((double)(trialsValuesSorted().get(num/2) + trialsValuesSorted().get(num/2 - 1)))/2.0;
         }else{
             median = ((double) trialsValuesSorted().get(num/2));
         }
@@ -626,7 +632,7 @@ public class Experiment {
             quartile =  trialsValuesSorted().get((int) newArraySize);
         } else {
             int newArraySize1 = (int) (newArraySize);
-            quartile = (trialsValuesSorted().get(newArraySize1) + trialsValuesSorted().get(newArraySize1+1)) / 2;
+            quartile = (trialsValuesSorted().get(newArraySize1) + trialsValuesSorted().get(newArraySize1+1)) / 2.0;
         }
         return String.format("%.2f", quartile);
     }
@@ -648,7 +654,7 @@ public class Experiment {
             quartile =  trialsValuesSorted().get((int) newArraySize);
         } else {
             int newArraySize1 = (int) (newArraySize);
-            quartile = (trialsValuesSorted().get(newArraySize1) + trialsValuesSorted().get(newArraySize1+1)) / 2;
+            quartile = (trialsValuesSorted().get(newArraySize1-1) + trialsValuesSorted().get(newArraySize1)) / 2.0;
         }
         return String.format("%.2f", quartile);
     }

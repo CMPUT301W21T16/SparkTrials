@@ -14,8 +14,8 @@ public class Answer extends Post{
      * @param question
      *    The question that this answer is answering
      */
-    Answer(String content, String expId, Profile profile, Question question){
-        super(content, expId, profile);
+    Answer(String id, String content, String expId, Profile profile, Question question){
+        super(id, content, expId, profile);
         this.question = question;
     }
 

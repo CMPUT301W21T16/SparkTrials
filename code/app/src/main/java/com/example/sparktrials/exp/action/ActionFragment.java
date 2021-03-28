@@ -64,7 +64,7 @@ public class ActionFragment extends Fragment implements LocationListener {
         if (reqLocation) {
             currentLocation = new MutableLiveData<>();
         } else {
-            currentLocation = null;
+            currentLocation = new MutableLiveData<>(null);
         }
     }
 
@@ -226,7 +226,7 @@ public class ActionFragment extends Fragment implements LocationListener {
     @Override
     public void onStart() {
         super.onStart();
-        if (currentLocation != null) {
+        if (currentLocation.getValue() != null) {
             final Observer<GeoLocation> nameObserver = new Observer<GeoLocation>() {
                 @Override
                 public void onChanged(@Nullable final GeoLocation newLoc) {

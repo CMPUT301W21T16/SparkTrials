@@ -215,6 +215,7 @@ public class ExperimentActivity extends AppCompatActivity {
             //Experiment doesn't require locations or user is already subscribed
             //unsubscribe
             expManager.subscribe();
+            expManager.updateSubscribe();
         }
     }
 

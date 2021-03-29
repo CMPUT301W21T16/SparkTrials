@@ -83,8 +83,6 @@ public class AdminFragment extends Fragment {
             }
         });
 
-        // I WANT THIS TO OPEN A DIALOG TO CONFIRM THE DELETION, CURRENTLY IT JUST DELETES
-        // AS SOON AS YOU CLICK IT BE CAREFUL
         unpublishButton.setOnClickListener((v) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Are you sure you want to unpublish this experiment?");

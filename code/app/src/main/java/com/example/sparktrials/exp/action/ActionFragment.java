@@ -4,12 +4,15 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,10 +41,16 @@ import com.example.sparktrials.models.Experiment;
 
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.Profile;
+import com.example.sparktrials.models.QrCode;
 import com.example.sparktrials.models.Trial;
+import com.google.zxing.WriterException;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -128,7 +137,26 @@ public class ActionFragment extends Fragment implements LocationListener {
                     biDialog.setPositiveButton("GENERATE", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Log.d("Generate", "Selection was " + selection.getSelectedItem().toString());
+                            String value = selection.getSelectedItem().toString();
+                            QrCode generated;
+                            if(value.equals("Pass")){
+                                generated = manager.createQrCodeObject(1.0);
+                            } else {
+                                generated = manager.createQrCodeObject(0.0);
+                            }
+                            Bitmap qrMap = null;
+                            try {
+                                qrMap = manager.IdToQrCode(generated.getQrId());
+                            } catch(WriterException writerException){
+                                Log.d("QrGen", writerException.getMessage());
+                            }
+                            manager.uploadQR(generated);
+                            Log.d("Generated", generated.getQrId());
+                            try {
+                                saveQrCode(qrMap, generated.getQrId());
+                            } catch (IOException e) {
+                                Log.d("QrSave", e.getMessage());
+                            }
                             dialog.dismiss();
                         }
                     });
@@ -167,27 +195,42 @@ public class ActionFragment extends Fragment implements LocationListener {
                     }
                 });
                 generateQR.setOnClickListener((v) -> {
-                    AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());
-                    biDialog.setTitle("Enter QR Code Value");
+                    AlertDialog.Builder nncoDialog = new AlertDialog.Builder(getContext());
+                    nncoDialog.setTitle("Enter QR Code Value");
                     final EditText value = new EditText(getContext());
                     value.setHint("Count");
                     value.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    biDialog.setView(value);
-                    biDialog.setPositiveButton("GENERATE", new DialogInterface.OnClickListener() {
+                    nncoDialog.setView(value);
+                    nncoDialog.setPositiveButton("GENERATE", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Log.d("Generate", "Value was " + value.getText().toString());
+                            double input = Double.parseDouble(value.getText().toString());
+                            QrCode generated = manager.createQrCodeObject(input);
+                            Bitmap qrMap = null;
+                            try {
+                                qrMap = manager.IdToQrCode(generated.getQrId());
+                            } catch(WriterException writerException){
+                                Log.d("QrGen", writerException.getMessage());
+                            }
+                            manager.uploadQR(generated);
+                            Log.d("Generated", generated.getQrId());
+                            try {
+                                saveQrCode(qrMap, generated.getQrId());
+                            } catch (IOException e) {
+                                Log.d("QrSave", e.getMessage());
+                            }
+                            Log.d("Generated", generated.getQrId());
                             dialog.dismiss();
                         }
                     });
-                    biDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    nncoDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
 
-                    AlertDialog alert = biDialog.create();
+                    AlertDialog alert = nncoDialog.create();
                     alert.show();
                 });
             } else if (manager.getType().equals("Measurement Trials".toLowerCase())) {
@@ -218,29 +261,44 @@ public class ActionFragment extends Fragment implements LocationListener {
                     }
                 });
                 generateQR.setOnClickListener((v) -> {
-                    AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());
-                    biDialog.setTitle("Enter QR Code Value");
+                    AlertDialog.Builder measDialog = new AlertDialog.Builder(getContext());
+                    measDialog.setTitle("Enter QR Code Value");
                     final EditText value = new EditText(getContext());
                     value.setHint("Measurement");
                     value.setInputType(InputType.TYPE_CLASS_NUMBER |
                                         InputType.TYPE_NUMBER_FLAG_DECIMAL |
                                         InputType.TYPE_NUMBER_FLAG_SIGNED);
-                    biDialog.setView(value);
-                    biDialog.setPositiveButton("GENERATE", new DialogInterface.OnClickListener() {
+                    measDialog.setView(value);
+                    measDialog.setPositiveButton("GENERATE", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Log.d("Generate", "Value was " + value.getText().toString());
+                            double input = Double.parseDouble(value.getText().toString());
+                            QrCode generated = manager.createQrCodeObject(input);
+                            Bitmap qrMap = null;
+                            try {
+                                qrMap = manager.IdToQrCode(generated.getQrId());
+                            } catch(WriterException writerException){
+                                Log.d("QrGen", writerException.getMessage());
+                            }
+                            manager.uploadQR(generated);
+                            Log.d("Generated", generated.getQrId());
+                            try {
+                                saveQrCode(qrMap, generated.getQrId());
+                            } catch (IOException e) {
+                                Log.d("QrSave", e.getMessage());
+                            }
+                            Log.d("Generated", generated.getQrId());
                             dialog.dismiss();
                         }
                     });
-                    biDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    measDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
 
-                    AlertDialog alert = biDialog.create();
+                    AlertDialog alert = measDialog.create();
                     alert.show();
                 });
             } else if (manager.getType().equals("Counts".toLowerCase())) {
@@ -273,28 +331,48 @@ public class ActionFragment extends Fragment implements LocationListener {
                     }
                 });
                 generateQR.setOnClickListener((v) -> {
-                    AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());
-                    biDialog.setTitle("Enter QR Code Value");
+                    AlertDialog.Builder coDialog = new AlertDialog.Builder(getContext());
+                    coDialog.setTitle("Enter QR Code Value");
                     final Spinner selection = new Spinner(getContext());
                     String[] items = new String[]{"Increment trial", "Commit trial"};
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
                     selection.setAdapter(adapter);
-                    biDialog.setView(selection);
-                    biDialog.setPositiveButton("GENERATE", new DialogInterface.OnClickListener() {
+                    coDialog.setView(selection);
+                    coDialog.setPositiveButton("GENERATE", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Log.d("Generate", "Selection was " + selection.getSelectedItem().toString());
+                            String value = selection.getSelectedItem().toString();
+                            QrCode generated;
+                            if(value.equals("Increment trial")){
+                                generated = manager.createQrCodeObject(1.0);
+                            } else {
+                                generated = manager.createQrCodeObject(-1.0);
+                            }
+                            Bitmap qrMap = null;
+                            try {
+                                qrMap = manager.IdToQrCode(generated.getQrId());
+                            } catch(WriterException writerException){
+                                Log.d("QrGen", writerException.getMessage());
+                            }
+                            manager.uploadQR(generated);
+                            Log.d("Generated", generated.getQrId());
+                            try {
+                                saveQrCode(qrMap, generated.getQrId());
+                            } catch (IOException e) {
+                                Log.d("QrSave", e.getMessage());
+                            }
+                            Log.d("Generated", generated.getQrId());
                             dialog.dismiss();
                         }
                     });
-                    biDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    coDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
 
-                    AlertDialog alert = biDialog.create();
+                    AlertDialog alert = coDialog.create();
                     alert.show();
                 });
             }
@@ -338,6 +416,30 @@ public class ActionFragment extends Fragment implements LocationListener {
             };
             currentLocation.observe(this, nameObserver);
         }
+    }
+
+    /**
+     * saves a QrCode, passed in as a bitmap as a png file on the device
+     * @param code
+     *  The bitmap referring to the QrCode
+     * @param id
+     *  The Id of the QrCode, currently used as the name for the QrCode
+     * @throws IOException
+     */
+    public void saveQrCode(Bitmap code, String id) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        code.compress(Bitmap.CompressFormat.PNG, 90, bytes);
+        //File dir = getContext().getExternalFilesDir("QrCodes" + File.separator + id + ".png");
+        File f = new File(getContext().getExternalFilesDir("QrCodes"), id + ".png");
+        boolean fc = f.createNewFile();
+        if(fc){
+            Log.d("File Creation", "Created file " + f.getAbsolutePath());
+        } else {
+            Log.d("File Creation", "File already exists");
+        }
+        FileOutputStream fo = new FileOutputStream(f);
+        fo.write(bytes.toByteArray());
+        fo.close();
     }
 
     public void updateView(){

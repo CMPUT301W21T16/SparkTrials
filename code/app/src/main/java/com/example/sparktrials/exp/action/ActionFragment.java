@@ -3,6 +3,7 @@ package com.example.sparktrials.exp.action;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,8 +15,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -114,6 +117,31 @@ public class ActionFragment extends Fragment implements LocationListener {
                         updateView();
                     }
                 });
+                generateQR.setOnClickListener((v) -> {
+                    AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());
+                    biDialog.setTitle("Select QR Code Value");
+                    final Spinner selection = new Spinner(getContext());
+                    String[] items = new String[]{"Pass", "Fail"};
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
+                    selection.setAdapter(adapter);
+                    biDialog.setView(selection);
+                    biDialog.setPositiveButton("GENERATE", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.d("Generate", "Selection was " + selection.getSelectedItem().toString());
+                            dialog.dismiss();
+                        }
+                    });
+                    biDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    AlertDialog alert = biDialog.create();
+                    alert.show();
+                });
             } else if (manager.getType().equals("Non-Negative Integer Counts".toLowerCase())) {
                 if (reqLocation) {
                     getLocation();
@@ -137,6 +165,30 @@ public class ActionFragment extends Fragment implements LocationListener {
                                     .show();
                         }
                     }
+                });
+                generateQR.setOnClickListener((v) -> {
+                    AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());
+                    biDialog.setTitle("Enter QR Code Value");
+                    final EditText value = new EditText(getContext());
+                    value.setHint("Count");
+                    value.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    biDialog.setView(value);
+                    biDialog.setPositiveButton("GENERATE", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.d("Generate", "Value was " + value.getText().toString());
+                            dialog.dismiss();
+                        }
+                    });
+                    biDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    AlertDialog alert = biDialog.create();
+                    alert.show();
                 });
             } else if (manager.getType().equals("Measurement Trials".toLowerCase())) {
                 if (reqLocation) {
@@ -165,6 +217,32 @@ public class ActionFragment extends Fragment implements LocationListener {
                         }
                     }
                 });
+                generateQR.setOnClickListener((v) -> {
+                    AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());
+                    biDialog.setTitle("Enter QR Code Value");
+                    final EditText value = new EditText(getContext());
+                    value.setHint("Measurement");
+                    value.setInputType(InputType.TYPE_CLASS_NUMBER |
+                                        InputType.TYPE_NUMBER_FLAG_DECIMAL |
+                                        InputType.TYPE_NUMBER_FLAG_SIGNED);
+                    biDialog.setView(value);
+                    biDialog.setPositiveButton("GENERATE", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.d("Generate", "Value was " + value.getText().toString());
+                            dialog.dismiss();
+                        }
+                    });
+                    biDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    AlertDialog alert = biDialog.create();
+                    alert.show();
+                });
             } else if (manager.getType().equals("Counts".toLowerCase())) {
                 if (reqLocation) {
                     getLocation();
@@ -188,6 +266,37 @@ public class ActionFragment extends Fragment implements LocationListener {
                         updateView();
                     }
                 });
+                generateQR.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                generateQR.setOnClickListener((v) -> {
+                    AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());
+                    biDialog.setTitle("Enter QR Code Value");
+                    final Spinner selection = new Spinner(getContext());
+                    String[] items = new String[]{"Increment trial", "Commit trial"};
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
+                    selection.setAdapter(adapter);
+                    biDialog.setView(selection);
+                    biDialog.setPositiveButton("GENERATE", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.d("Generate", "Selection was " + selection.getSelectedItem().toString());
+                            dialog.dismiss();
+                        }
+                    });
+                    biDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    AlertDialog alert = biDialog.create();
+                    alert.show();
+                });
             }
             uploadButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -201,12 +310,6 @@ public class ActionFragment extends Fragment implements LocationListener {
                                 .setPositiveButton("OK", null)
                                 .show();
                     }
-                }
-            });
-            generateQR.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
                 }
             });
             deleteTrials.setOnClickListener(new View.OnClickListener() {

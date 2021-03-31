@@ -133,7 +133,9 @@ public class ActionFragmentManager {
      * TO DO: Uploads the trials to firbase
      */
     public void uploadTrials(){
+
         firebaseManager.uploadTrials(experiment);
+        this.originalNTrials=Integer.parseInt(experiment.getNumTrials());
     }
     /**
      * Removes all trials inserted by the user from the experiment object

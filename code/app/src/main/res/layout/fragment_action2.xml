@@ -1,141 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical">
     <Space
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="5">
+        android:layout_height="match_parent"
+        android:layout_weight="2">
     </Space>
-    <TextView
-        android:id="@+id/trials_completed_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:gravity="left"
-        android:text="Trials taken"
-        android:textSize="18dp"
-        android:textColor="@color/neutral">
-    </TextView>
-    <TextView
-        android:id="@+id/trials_completed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:gravity="left"
-        android:textSize="20dp"
-        android:textColor="@color/norm_text"
-        android:textStyle="bold">
-    </TextView>
     <TextView
         android:id="@+id/trials_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="20dp"
-        android:textColor="@color/neutral">
+        android:textSize="20dp">
+    </TextView>
+    <TextView
+        android:id="@+id/trials_completed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="20dp">
     </TextView>
     <LinearLayout
         android:id="@+id/LinearLayout02"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true">
         <Space
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2">
+            android:layout_weight="20">
         </Space>
         <Button
             android:id="@+id/action_bar_pass"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Record Pass"
-            app:backgroundTint="@color/spark_text"
             android:visibility="invisible"/>
         <Space
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2">
+            android:layout_weight="20">
         </Space>
         <Button
             android:id="@+id/action_bar_fail"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Record Fail"
-            app:backgroundTint="@color/spark_text"
             android:visibility="invisible"/>
         <Space
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2">
+            android:layout_weight="20">
         </Space>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/LinearLayout03"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
         <EditText
             android:id="@+id/countvalue_editText"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Enter Count"
             android:inputType="number"
             android:textSize="20sp"
             android:visibility="invisible"
             />
-
         <Button
             android:id="@+id/action_bar_recordnum"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:layout_marginRight="20dp"
+            android:layout_weight="1"
             android:text="Record Number"
-            app:backgroundTint="@color/spark_text"
             android:visibility="invisible"/>
     </LinearLayout>
     <Space
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="2.5">
     </Space>
 
-
+    <Button
+        android:id="@+id/action_bar_generateQR"
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2.6"
+        android:text="Generate QR Code" />
     <Button
         android:id="@+id/action_bar_upload_trials"
         android:layout_width="250dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="2.6"
-        app:backgroundTint="@color/header"
-        android:text="Upload Trials" />    <Button
-    android:id="@+id/action_bar_generateQR"
-    android:layout_width="250dp"
-    android:layout_height="wrap_content"
-    android:layout_weight="2.6"
-    app:backgroundTint="@color/header"
-    android:text="Generate QR Code" />
+        android:text="Upload Trials" />
     <Button
         android:id="@+id/action_bar_delete_trials"
         android:layout_width="250dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="2.6"
-        app:backgroundTint="@color/negative"
         android:text="Delete Trials" />
     <Space
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="2.8">
     </Space>
 </LinearLayout>

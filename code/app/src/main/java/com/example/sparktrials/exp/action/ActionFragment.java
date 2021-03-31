@@ -9,10 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,20 +27,13 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.fragment.app.FragmentManager;
 
-import com.example.sparktrials.CustomList;
-import com.example.sparktrials.ExperimentActivity;
 import com.example.sparktrials.IdManager;
-import com.example.sparktrials.MainActivity;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
 
 import com.example.sparktrials.models.GeoLocation;
-import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.QrCode;
-import com.example.sparktrials.models.Trial;
-import com.google.zxing.WriterException;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,9 +41,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -452,9 +439,9 @@ public class ActionFragment extends Fragment implements LocationListener {
             trialsCount.setText("Trial count: "+count);
         }
         if (minimumNumberTrials>0)
-            trialsNumber.setText("Trials completed: "+trials+"/"+minimumNumberTrials);
+            trialsNumber.setText(""+trials+"/"+minimumNumberTrials);
         else
-            trialsNumber.setText("Trials completed: "+trials);
+            trialsNumber.setText(""+trials);
     }
 
     /**

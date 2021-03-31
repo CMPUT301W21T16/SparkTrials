@@ -113,7 +113,6 @@
         android:layout_marginLeft="4dp"
         android:drawablePadding="7dp"
         android:paddingLeft="20dp"
-        android:layout_marginBottom="30dp"
         android:gravity="top"/>
 
     <TextView
@@ -135,6 +134,7 @@
         android:layout_marginLeft="4dp"
         android:drawablePadding="7dp"
         android:paddingLeft="20dp"
+        android:layout_marginBottom="30dp"
         android:gravity="top"/>
 
 </LinearLayout>

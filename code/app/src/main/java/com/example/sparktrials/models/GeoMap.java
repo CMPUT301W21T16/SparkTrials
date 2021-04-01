@@ -55,6 +55,13 @@ public class GeoMap implements OnMapReadyCallback {
         } else {
             hasLocationSet = true;
             trials = experiment.getValidTrials();
+            for (Trial trial: trials) {
+                for (String blackListedUser: experiment.getBlacklist()) {
+                    if (trial.getProfile().getId().equals(blackListedUser)) {
+                        trials.remove(trial);
+                    }
+                }
+            }
         }
     }
 

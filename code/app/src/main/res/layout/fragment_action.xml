@@ -93,19 +93,24 @@
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_weight="2.6"
-        android:text="Generate QR Code" />
+        android:text="Generate QR Code"
+        android:visibility="invisible" />
+
     <Button
         android:id="@+id/action_bar_upload_trials"
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_weight="2.6"
-        android:text="Upload Trials" />
+        android:text="Upload Trials"
+        android:visibility="invisible" />
+
     <Button
         android:id="@+id/action_bar_delete_trials"
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_weight="2.6"
-        android:text="Delete Trials" />
+        android:text="Delete Trials"
+        android:visibility="invisible" />
     <Space
         android:layout_width="match_parent"
         android:layout_height="match_parent"

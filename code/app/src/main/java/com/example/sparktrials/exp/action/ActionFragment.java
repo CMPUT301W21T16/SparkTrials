@@ -54,6 +54,14 @@ public class ActionFragment extends Fragment implements LocationListener {
     private IdManager idManager;
     String id;
 
+    Button leftButton;
+    Button rightButton;
+    Button uploadButton;
+    Button recordNumButton;
+    Button generateQR;
+    Button deleteTrials;
+    EditText valueEditText;
+
     LocationManager locationManager;
     boolean reqLocation;
     MutableLiveData<GeoLocation> currentLocation;
@@ -81,141 +89,30 @@ public class ActionFragment extends Fragment implements LocationListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (manager.getOpen()) {
             view = inflater.inflate(R.layout.fragment_action, container, false);
-            Button leftButton = view.findViewById(R.id.action_bar_pass);
-            Button rightButton = view.findViewById(R.id.action_bar_fail);
-            Button uploadButton = view.findViewById(R.id.action_bar_upload_trials);
-            Button recordNumButton = view.findViewById(R.id.action_bar_recordnum);
-            Button generateQR = view.findViewById(R.id.action_bar_generateQR);
-            Button deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
-            EditText valueEditText = view.findViewById(R.id.countvalue_editText);
+            leftButton = view.findViewById(R.id.action_bar_pass);
+            rightButton = view.findViewById(R.id.action_bar_fail);
+            uploadButton = view.findViewById(R.id.action_bar_upload_trials);
+            recordNumButton = view.findViewById(R.id.action_bar_recordnum);
+            generateQR = view.findViewById(R.id.action_bar_generateQR);
+            deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
+            valueEditText = view.findViewById(R.id.countvalue_editText);
             updateView();
 
             if (reqLocation) {
                 getLocation();
-            }
-
-            if (manager.getType().equals("binomial trials".toLowerCase())) {
-                if (reqLocation) {
-                    getLocation();
-                }
-                leftButton.setVisibility(View.VISIBLE);
-                rightButton.setVisibility(View.VISIBLE);
-                leftButton.setOnClickListener(new View.OnClickListener() {
+                final Observer<GeoLocation> nameObserver = new Observer<GeoLocation>() {
                     @Override
-                    public void onClick(View v) {
-                        manager.addBinomialTrial(true, currentLocation.getValue());
-                        updateView();
-                    }
-                });
-                rightButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        manager.addBinomialTrial(false, currentLocation.getValue());
-                        updateView();
-                    }
-                });
-            } else if (manager.getType().equals("Non-Negative Integer Counts".toLowerCase())) {
-                if (reqLocation) {
-                    getLocation();
-                }
-                recordNumButton.setVisibility(View.VISIBLE);
-                valueEditText.setVisibility(View.VISIBLE);
-                recordNumButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String valueString = valueEditText.getText().toString();
-                        Integer result;
-                        try {
-                            result = Integer.parseInt(valueString);
-                            manager.addNonNegIntTrial(result, currentLocation.getValue());
-                            updateView();
-                        } catch (NumberFormatException e) {
-                            AlertDialog builder = new AlertDialog.Builder(getContext())
-                                    .setTitle("ERROR")
-                                    .setMessage("You must enter a number")
-                                    .setPositiveButton("OK", null)
-                                    .show();
+                    public void onChanged(@Nullable final GeoLocation newLoc) {
+                        //System.out.println(currentLocation.getValue().getLat());
+                        if (newLoc != null) {
+                            showViews();
                         }
                     }
-                });
-            } else if (manager.getType().equals("Measurement Trials".toLowerCase())) {
-                if (reqLocation) {
-                    getLocation();
-                }
-                recordNumButton.setVisibility(View.VISIBLE);
-                valueEditText.setVisibility(View.VISIBLE);
-                valueEditText.setInputType(InputType.TYPE_CLASS_NUMBER |
-                        InputType.TYPE_NUMBER_FLAG_DECIMAL |
-                        InputType.TYPE_NUMBER_FLAG_SIGNED);
-                recordNumButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        double result;
-                        String valueString = valueEditText.getText().toString();
-                        try {
-                            result = Double.parseDouble(valueString);
-                            manager.addMeasurementTrial(result, currentLocation.getValue());
-                            updateView();
-                        } catch (NumberFormatException e) {
-                            AlertDialog builder = new AlertDialog.Builder(getContext())
-                                    .setTitle("ERROR")
-                                    .setMessage("You must enter a number")
-                                    .setPositiveButton("OK", null)
-                                    .show();
-                        }
-                    }
-                });
-            } else if (manager.getType().equals("Counts".toLowerCase())) {
-                if (reqLocation) {
-                    getLocation();
-                }
-                leftButton.setVisibility(View.VISIBLE);
-                rightButton.setVisibility(View.VISIBLE);
-                leftButton.setText("Add Count");
-                rightButton.setText("Commit Trial");
-                leftButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        count += 1;
-                        updateView();
-                    }
-                });
-                rightButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        manager.addCountTrial(count, currentLocation.getValue());
-                        count = 0;
-                        updateView();
-                    }
-                });
+                };
+                currentLocation.observe(getViewLifecycleOwner(), nameObserver);
+            } else {
+                showViews();
             }
-            uploadButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (manager.getNTrials() >= manager.getMinNTrials())
-                        manager.uploadTrials();
-                    else {
-                        AlertDialog builder = new AlertDialog.Builder(getContext())
-                                .setTitle("ERROR")
-                                .setMessage("You have not reached the minimum number of trials")
-                                .setPositiveButton("OK", null)
-                                .show();
-                    }
-                }
-            });
-            generateQR.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-            deleteTrials.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    manager.deleteTrials();
-                    updateView();
-                }
-            });
         }
         else {
             view = inflater.inflate(R.layout.fragment_closed_action, container, false);
@@ -237,7 +134,7 @@ public class ActionFragment extends Fragment implements LocationListener {
         }
     }
 
-    public void updateView(){
+    public void updateView() {
         int trials=manager.getNTrials();
         Log.d("NUM Is", String.valueOf(trials));
         int minimumNumberTrials = manager.getMinNTrials();
@@ -250,6 +147,122 @@ public class ActionFragment extends Fragment implements LocationListener {
             trialsNumber.setText("Trials completed: "+trials+"/"+minimumNumberTrials);
         else
             trialsNumber.setText("Trials completed: "+trials);
+    }
+
+    private void showViews() {
+        if (manager.getType().equals("binomial trials".toLowerCase())) {
+            leftButton.setVisibility(View.VISIBLE);
+            rightButton.setVisibility(View.VISIBLE);
+            leftButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    manager.addBinomialTrial(true, currentLocation.getValue());
+                    updateView();
+                }
+            });
+            rightButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    manager.addBinomialTrial(false, currentLocation.getValue());
+                    updateView();
+                }
+            });
+        } else if (manager.getType().equals("Non-Negative Integer Counts".toLowerCase())) {
+            recordNumButton.setVisibility(View.VISIBLE);
+            valueEditText.setVisibility(View.VISIBLE);
+            recordNumButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String valueString = valueEditText.getText().toString();
+                    Integer result;
+                    try {
+                        result = Integer.parseInt(valueString);
+                        manager.addNonNegIntTrial(result, currentLocation.getValue());
+                        updateView();
+                    } catch (NumberFormatException e) {
+                        AlertDialog builder = new AlertDialog.Builder(getContext())
+                                .setTitle("ERROR")
+                                .setMessage("You must enter a number")
+                                .setPositiveButton("OK", null)
+                                .show();
+                    }
+                }
+            });
+        } else if (manager.getType().equals("Measurement Trials".toLowerCase())) {
+            recordNumButton.setVisibility(View.VISIBLE);
+            valueEditText.setVisibility(View.VISIBLE);
+            valueEditText.setInputType(InputType.TYPE_CLASS_NUMBER |
+                    InputType.TYPE_NUMBER_FLAG_DECIMAL |
+                    InputType.TYPE_NUMBER_FLAG_SIGNED);
+            recordNumButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    double result;
+                    String valueString = valueEditText.getText().toString();
+                    try {
+                        result = Double.parseDouble(valueString);
+                        manager.addMeasurementTrial(result, currentLocation.getValue());
+                        updateView();
+                    } catch (NumberFormatException e) {
+                        AlertDialog builder = new AlertDialog.Builder(getContext())
+                                .setTitle("ERROR")
+                                .setMessage("You must enter a number")
+                                .setPositiveButton("OK", null)
+                                .show();
+                    }
+                }
+            });
+        } else if (manager.getType().equals("Counts".toLowerCase())) {
+            leftButton.setVisibility(View.VISIBLE);
+            rightButton.setVisibility(View.VISIBLE);
+            leftButton.setText("Add Count");
+            rightButton.setText("Commit Trial");
+            leftButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    count += 1;
+                    updateView();
+                }
+            });
+            rightButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    manager.addCountTrial(count, currentLocation.getValue());
+                    count = 0;
+                    updateView();
+                }
+            });
+        }
+        uploadButton.setVisibility(View.VISIBLE);
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (manager.getNTrials() >= manager.getMinNTrials())
+                    manager.uploadTrials();
+                else {
+                    AlertDialog builder = new AlertDialog.Builder(getContext())
+                            .setTitle("ERROR")
+                            .setMessage("You have not reached the minimum number of trials")
+                            .setPositiveButton("OK", null)
+                            .show();
+                }
+            }
+        });
+        generateQR.setVisibility(View.VISIBLE);
+        generateQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        deleteTrials.setVisibility(View.VISIBLE);
+        deleteTrials.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manager.deleteTrials();
+                updateView();
+            }
+        });
     }
 
     /**

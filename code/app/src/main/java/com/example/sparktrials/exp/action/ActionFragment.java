@@ -103,7 +103,6 @@ public class ActionFragment extends Fragment implements LocationListener {
                 final Observer<GeoLocation> nameObserver = new Observer<GeoLocation>() {
                     @Override
                     public void onChanged(@Nullable final GeoLocation newLoc) {
-                        //System.out.println(currentLocation.getValue().getLat());
                         if (newLoc != null) {
                             showViews();
                         }

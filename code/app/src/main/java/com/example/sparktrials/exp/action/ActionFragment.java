@@ -34,6 +34,7 @@ import com.example.sparktrials.models.Experiment;
 
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.QrCode;
+import com.google.zxing.WriterException;
 
 import org.jetbrains.annotations.NotNull;
 

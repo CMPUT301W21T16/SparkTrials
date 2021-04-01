@@ -98,7 +98,7 @@ public class GeoMap implements OnMapReadyCallback {
                 map.addMarker(new MarkerOptions()
                         .position(center));
 
-                if (reqLocation) {
+                if (reqLocation) { // If user wants to see locations of trials
                     // Add an orange marker for every trial
                     for (Trial trial : trials) {
                         double trialLat = trial.getLocation().getLat();

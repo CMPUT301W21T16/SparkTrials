@@ -123,11 +123,14 @@ public class ActionFragment extends Fragment implements LocationListener {
     @Override
     public void onStart() {
         super.onStart();
+        
         if (reqLocation) {
             final Observer<GeoLocation> nameObserver = new Observer<GeoLocation>() {
                 @Override
                 public void onChanged(@Nullable final GeoLocation newLoc) {
-                    System.out.println(currentLocation.getValue().getLat());
+                    String locString = "(" + currentLocation.getValue().getLat() + ", "
+                                            + currentLocation.getValue().getLon() + ")";
+                    Log.d("Fetched Location", locString);
                 }
             };
             currentLocation.observe(this, nameObserver);
@@ -173,6 +176,9 @@ public class ActionFragment extends Fragment implements LocationListener {
             trialsNumber.setText(""+trials);
     }
 
+    /**
+     * Makes the required Views visible.
+     */
     private void showViews() {
         uploadButton.setVisibility(View.VISIBLE);
         generateQR.setVisibility(View.VISIBLE);

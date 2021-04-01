@@ -118,21 +118,27 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_weight="2.6"
-        app:backgroundTint="@color/header"
-        android:text="Upload Trials" />    <Button
-    android:id="@+id/action_bar_generateQR"
-    android:layout_width="250dp"
-    android:layout_height="wrap_content"
-    android:layout_weight="2.6"
-    app:backgroundTint="@color/header"
-    android:text="Generate QR Code" />
+        android:text="Upload Trials"
+        android:visibility="invisible"
+        app:backgroundTint="@color/header" />
+
+    <Button
+        android:id="@+id/action_bar_generateQR"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.6"
+        android:text="Generate QR Code"
+        android:visibility="invisible"
+        app:backgroundTint="@color/header" />
+
     <Button
         android:id="@+id/action_bar_delete_trials"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_weight="2.6"
-        app:backgroundTint="@color/negative"
-        android:text="Delete Trials" />
+        android:text="Delete Trials"
+        android:visibility="invisible"
+        app:backgroundTint="@color/negative" />
     <Space
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

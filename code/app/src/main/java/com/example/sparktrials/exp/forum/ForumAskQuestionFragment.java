@@ -19,12 +19,18 @@ import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.Date;
 import java.util.HashMap;
 
 public class ForumAskQuestionFragment extends BottomSheetDialogFragment {
+    private Experiment experiment;
 
-    public static ForumAskQuestionFragment newInstance() {
-        return new ForumAskQuestionFragment();
+    public static ForumAskQuestionFragment newInstance(Experiment experiment) {
+        return new ForumAskQuestionFragment(experiment);
+    }
+
+    public ForumAskQuestionFragment(Experiment experiment) {
+        this.experiment = experiment;
     }
 
     @Nullable
@@ -52,12 +58,17 @@ public class ForumAskQuestionFragment extends BottomSheetDialogFragment {
                 String title = titleText.getText().toString();
                 String body = bodyText.getText().toString();
                 String id = idManager.generateRandomId();
+                String path = "experiments/" + experiment.getId() + "/posts";
+
                 HashMap<String, Object> data = new HashMap<>();
 
                 data.put("title", title);
                 data.put("body", body);
+                data.put("author", experiment.getOwner().getId());
+                data.put("date", new Date());
 
-//                firebaseManager.set("posts", id, data);
+                firebaseManager.set(path, id, data);
+                dismiss();
             }
         });
 

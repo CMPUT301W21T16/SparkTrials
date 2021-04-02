@@ -9,32 +9,32 @@ public class Question extends Post {
 
     /**
      * A constructor for initializing a question
-     * @param content
+     * @param body
      *    The content (text body) of the post
      * @param expId
      *    The id of the experiment its for
-     * @param profile
-     *    The profile of the poster
+     * @param author
+     *    The author of the poster
      */
-    Question(String id, String title, String content, String expId, Profile profile){
-        super(id, content, expId, profile);
+    public Question(String id, String title, String body, String expId, String author){
+        super(id, body, expId, author);
         this.title = title;
         this.answers = new ArrayList<>();
     }
 
     /**
      * A constructor for rebuilding a question from the database
-     * @param content
+     * @param body
      *    The content (text body) of the post
      * @param expId
      *    The id of the experiment its for
-     * @param profile
+     * @param author
      *    The profile of the poster
      * @param answers
      *    The list of answers that this post has
      */
-    public Question(String id, String title, String content, String expId, Profile profile, ArrayList<Answer> answers){
-        super(id, content, expId, profile);
+    public Question(String id, String title, String body, String expId, String author, ArrayList<Answer> answers){
+        super(id, body, expId, author);
         this.title = title;
         this.answers = answers;
     }

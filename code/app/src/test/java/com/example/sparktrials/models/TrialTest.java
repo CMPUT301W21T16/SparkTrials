@@ -15,8 +15,8 @@ public class TrialTest extends TestCase {
     public void testGetId() {
         GeoLocation geoLocation = new GeoLocation(30.0, 50.0);
         Profile profile = new Profile("foo", "foo", "foo");
-        this.trial = new TrialCount(21598721, geoLocation, profile);
-        assertEquals("getId not working", 21598721, (int)trial.getId());
+        this.trial = new TrialCount("21598721", geoLocation, profile);
+        assertEquals("getId not working", "21598721", trial.getId());
     }
 
     /**
@@ -27,10 +27,10 @@ public class TrialTest extends TestCase {
         GeoLocation geoLocation = new GeoLocation(30.0, 50.0);
         Profile profile = new Profile("foo", "foo", "foo");
         this.trial = new TrialCount(null, geoLocation, profile);
-        trial.setId(395210);
-        assertEquals("setId not working", 395210, (int)trial.getId());
-        trial.setId(5);
-        assertEquals("setId allows overwrites", 395210, (int)trial.getId());
+        trial.setId("395210");
+        assertEquals("setId not working", "395210", trial.getId());
+        trial.setId("5");
+        assertEquals("setId allows overwrites", "395210", trial.getId());
     }
 
     /**
@@ -40,7 +40,7 @@ public class TrialTest extends TestCase {
     public void testGetLocation() {
         GeoLocation geoLocation = new GeoLocation(30.0, 50.0);
         Profile profile = new Profile("foo", "foo", "foo");
-        this.trial = new TrialCount(5, geoLocation, profile);
+        this.trial = new TrialCount("5", geoLocation, profile);
         assertEquals("getLocation not working", geoLocation.getLat(), trial.getLocation().getLat());
         assertEquals("getLocation not working", geoLocation.getLon(), trial.getLocation().getLon());
     }
@@ -51,7 +51,7 @@ public class TrialTest extends TestCase {
     public void testSetLocation() {
         GeoLocation geoLocation = new GeoLocation(30.0, 50.0);
         Profile profile = new Profile("foo", "foo", "foo");
-        this.trial = new TrialCount(5, geoLocation, profile);
+        this.trial = new TrialCount("5", geoLocation, profile);
         GeoLocation geoLocation2 = new GeoLocation(45.6, -112.4);
         trial.setLocation(geoLocation2);
         assertEquals("getLocation not working", geoLocation2.getLat(), trial.getLocation().getLat());
@@ -65,7 +65,7 @@ public class TrialTest extends TestCase {
     public void testGetProfile() {
         GeoLocation geoLocation = new GeoLocation(30.0, 50.0);
         Profile profile = new Profile("foo1", "foo2", "foo3");
-        this.trial = new TrialCount(5, geoLocation, profile);
+        this.trial = new TrialCount("5", geoLocation, profile);
         assertEquals("getProfile not working", profile.getId(), trial.getProfile().getId());
         assertEquals("getProfile not working", profile.getContact(), trial.getProfile().getContact());
         assertEquals("getProfile not working", profile.getUsername(), trial.getProfile().getUsername());
@@ -96,7 +96,7 @@ public class TrialTest extends TestCase {
         GeoLocation geoLocation = new GeoLocation(30.0, 50.0);
         Profile profile = new Profile("foo1", "foo2", "foo3");
         Profile profile2 = new Profile("foobar1", "foobar2", "foobar3");
-        this.trial = new TrialCount(5, geoLocation, profile);
+        this.trial = new TrialCount("5", geoLocation, profile);
         this.trial.overwriteProfile(profile2);
         assertEquals("overwriteProfile not working", profile2.getId(), trial.getProfile().getId());
         assertEquals("overwriteProfile not working", profile2.getContact(), trial.getProfile().getContact());

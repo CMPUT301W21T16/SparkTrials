@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,6 +32,7 @@ public class AdminFragment extends Fragment {
 
     private Button endButton;
     private Button unpublishButton;
+    private TextView activeText;
 
     Experiment experiment;
 
@@ -67,12 +69,20 @@ public class AdminFragment extends Fragment {
         endButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 manager.toggleExpOpen(experiment);
+                if (endButton.getText() == "END EXPERIMENT"){
+                    endButton.setText("OPEN EXPERIMENT");
+                    activeText.setText("Inactive");
+                    activeText.setTextColor(getResources().getColor(R.color.neutral));
+                } else {
+                    endButton.setText("END EXPERIMENT");
+                    activeText.setText("Active");
+                    activeText.setTextColor(getResources().getColor(R.color.positive));
+                }
             }
         });
 
-        // I WANT THIS TO OPEN A DIALOG TO CONFIRM THE DELETION, CURRENTLY IT JUST DELETES
-        // AS SOON AS YOU CLICK IT BE CAREFUL
         unpublishButton.setOnClickListener((v) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Are you sure you want to unpublish this experiment?");
@@ -99,5 +109,9 @@ public class AdminFragment extends Fragment {
             alert.show();
 
         });
+    }
+
+    public void setActiveText( TextView activeText){
+        this.activeText = activeText;
     }
 }

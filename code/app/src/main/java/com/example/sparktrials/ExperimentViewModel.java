@@ -16,7 +16,6 @@ import com.example.sparktrials.models.TrialMeasurement;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ import java.util.Map;
  * A class to manage the data for ExperimentActivity - experiment and profile
  */
 public class ExperimentViewModel extends ViewModel {
-    FirebaseManager manager = new FirebaseManager();
+    public FirebaseManager manager = new FirebaseManager();
 
     private MutableLiveData<Experiment> exp;
     private String expId;
@@ -140,6 +139,7 @@ public class ExperimentViewModel extends ViewModel {
             GeoLocation region = new GeoLocation();
             region.setLat((Double) expData.getData().get("Latitude"));
             region.setLon((Double) expData.getData().get("Longitude"));
+            region.setRadius((Double) expData.getData().get("Radius"));
             experiment.setRegion(region);
             experiment.setReqLocation((Boolean) expData.getData().get("ReqLocation"));
             experiment.setMinNTrials(((Long) expData.getData().get("MinNTrials")).intValue());
@@ -148,8 +148,11 @@ public class ExperimentViewModel extends ViewModel {
             experiment.setOpen((Boolean) expData.getData().get("Open"));
             experiment.setType((String) expData.getData().get("Type"));
             String uId = (String) expData.getData().get("profileID");
-            experiment.setOwner(new Profile(uId));
-            //experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
+            String username = (String) expData.getData().get("ownerName");
+            Profile owner = new Profile(uId);
+            owner.setUsername(username);
+            experiment.setOwner(owner);
+//            experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
             ArrayList<HashMap> trialsHash = (ArrayList<HashMap>) expData.getData().get("Trials");
             ArrayList<Trial> trials = new ArrayList<>();
             for(HashMap<String, Object> map: trialsHash){
@@ -170,19 +173,25 @@ public class ExperimentViewModel extends ViewModel {
                     trial = new TrialCount();
                     ((TrialCount) trial).setCount(((Double) map.get("value")).intValue());
                 }
-                Profile experimenter = new Profile();
-                try{
-                    experimenter = manager.downloadProfile((String) map.get("profile"));
-                } catch(Exception e){
-                    experimenter.setUsername("No user Existed");
-                    experimenter.setId("No user existed");
-                    experimenter.setContact("No user existed");
+
+                if (experiment.getReqLocation()) {
+                    HashMap<String, Object> trialCoords = (HashMap<String, Object>) map.get("location");
+                    GeoLocation trialLocation = new GeoLocation();
+                    trialLocation.setLat((double) trialCoords.get("lat"));
+                    trialLocation.setLon((double) trialCoords.get("lon"));
+                    trial.setLocation(trialLocation);
                 }
+
+                Profile experimenter = new Profile();
+                HashMap<String, Object> profile = (HashMap<String, Object>) map.get("profile");
+                experimenter.setContact((String) profile.get("contact"));
+                experimenter.setUsername((String) profile.get("username"));
+                experimenter.setId((String) profile.get("id"));
+                experimenter.setSubscriptions((ArrayList<String>) profile.get("subscriptions"));
                 trial.setProfile(experimenter);
                 trial.setId((String) map.get("id"));
                 Timestamp trialDate = (Timestamp) map.get("date");
                 trial.setDate(trialDate.toDate());
-                //trial.setLocation((GeoLocation) map.get("location"));
                 trials.add(trial);
             }
             experiment.setTrials(trials);

@@ -15,8 +15,8 @@ public class Question extends Post {
      * @param profile
      *    The profile of the poster
      */
-    Question(String content, String expId, Profile profile){
-        super(content, expId, profile);
+    Question(String id, String content, String expId, Profile profile){
+        super(id, content, expId, profile);
         this.answers = new ArrayList<>();
     }
 
@@ -31,8 +31,8 @@ public class Question extends Post {
      * @param answers
      *    The list of answers that this post has
      */
-    Question(String content, String expId, Profile profile, ArrayList<Answer> answers){
-        super(content, expId, profile);
+    Question(String id, String content, String expId, Profile profile, ArrayList<Answer> answers){
+        super(id, content, expId, profile);
         this.answers = answers;
     }
 

@@ -1,6 +1,9 @@
 package com.example.sparktrials.exp.admin;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,7 @@ import com.example.sparktrials.FirebaseManager;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.Profile;
+import com.example.sparktrials.models.ProfileActivity;
 import com.example.sparktrials.models.Trial;
 
 import org.w3c.dom.Text;
@@ -28,6 +32,7 @@ public class AuditLog extends ArrayAdapter<Profile> {
     private ArrayList<Trial> trialList;
     private ArrayList<Profile> userList;
     private Experiment experiment;
+    private final String TAG = "Audit Log: ";
 
     FirebaseManager dbManager = new FirebaseManager();
 
@@ -69,17 +74,55 @@ public class AuditLog extends ArrayAdapter<Profile> {
             @Override
             public void onClick(View v){
                 ArrayList<String> blacklist = experiment.getBlacklist();
-                blacklist.add(userList.get(position).getId());
-                Map<String, Object> map = new HashMap<>();
-                map.put("Blacklist", blacklist);
-                dbManager.update("experiments", experiment.getId(), map);
+                if(!blacklist.contains(userList.get(position).getId())){
+                    blacklist.add(userList.get(position).getId());
+                    Map<String, Object> map = new HashMap<>();
+                    experiment.setBlacklist(blacklist);
+                    map.put("Blacklist", blacklist);
+                    dbManager.update("experiments", experiment.getId(), map);
+                } else {
+                    blacklist.remove(userList.get(position).getId());
+                    Map<String, Object> map = new HashMap<>();
+                    experiment.setBlacklist(blacklist);
+                    map.put("Blacklist", blacklist);
+                    dbManager.update("experiments", experiment.getId(), map);
+                }
+
+                String currentBtnText = ignoreButton.getText().toString();
+
+                if(currentBtnText.equals("Ignore")){
+                    ignoreButton.setText("IGNORED");
+                } else {
+                    ignoreButton.setText("IGNORE");
+                }
             }
         });
 
         setFields(position);
 
+        userName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Profile profile = userList.get(position);
+                startProfileActivity(profile.getId());
+            }
+        });
+
         return view;
 
+
+    }
+
+    /**
+     * This method starts a ProfileActivity, which displays the information of the user referred
+     * to by an audit log list element
+     * @param userId
+     *  The userId to make a profile page for
+     */
+    private void startProfileActivity(String userId){
+        Intent intent = new Intent(getContext(), ProfileActivity.class);
+        intent.putExtra("USER_ID", userId);
+        ((Activity) getContext()).startActivityForResult(intent, 0);
     }
 
     /**

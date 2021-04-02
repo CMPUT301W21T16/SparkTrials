@@ -2,47 +2,25 @@ package com.example.sparktrials.main_ui.publish;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.sparktrials.IdManager;
-import com.example.sparktrials.MapsActivity;
-import com.example.sparktrials.models.Profile;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.DocumentSnapshot;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
-import com.example.sparktrials.models.GeoLocation;
-
-import java.util.Calendar;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * The class containing the UI associated with publishing experiments, handles input and UI
@@ -53,16 +31,15 @@ public class PublishFragment extends DialogFragment {
     private EditText expTitle;
     private EditText expMinNTrials;
     private EditText expRegion;
-    //private EditText expLat;
-    //private EditText expLon;
     private Experiment experiment;
     private String userID;
-    private TextView reqLocation;
     private Spinner spinner;
-    private Spinner spinner2;
+    private Spinner locationSet;
+    private Spinner trialLocations;
 
     private double lat;
     private double lon;
+    private double radius;
 
     final private int didNotPickLocation = 0;
     final private int didPickLocation = 1;
@@ -73,35 +50,28 @@ public class PublishFragment extends DialogFragment {
      * @param savedInstanceState
      * @return
      */
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    public AlertDialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_publish, null);
         expDesc = view.findViewById(R.id.expDesc_editText);
         expTitle = view.findViewById(R.id.expTitle_editText);
         expMinNTrials = view.findViewById(R.id.expMinNTrials_editText);
-        /*expLat = view.findViewById(R.id.expLat_editText);
-        expLon = view.findViewById(R.id.expLon_editText);
-        expLat.setInputType(InputType.TYPE_CLASS_NUMBER |
-                InputType.TYPE_NUMBER_FLAG_DECIMAL |
-                InputType.TYPE_NUMBER_FLAG_SIGNED);
-        expLon.setInputType(InputType.TYPE_CLASS_NUMBER |
-                InputType.TYPE_NUMBER_FLAG_DECIMAL |
-                InputType.TYPE_NUMBER_FLAG_SIGNED);*/
-        reqLocation=view.findViewById(R.id.request_experiment_location);
         spinner = view.findViewById(R.id.experiment_type_spinner);
-        spinner2 = view.findViewById(R.id.experiment_location_spinner);
+        locationSet = view.findViewById(R.id.experiment_location_spinner);
+        trialLocations = view.findViewById(R.id.trial_location_spinner);
         String[] items = new String[]{"Binomial Trials", "Counts", "Non-Negative Integer Counts","Measurement Trials"};
         String[] locationOptions = new String[]{"False", "True"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,items);
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,locationOptions);
         spinner.setAdapter(adapter);
-        spinner2.setAdapter(adapter2);
+        locationSet.setAdapter(adapter2);
+        trialLocations.setAdapter(adapter2);
 
 
 
-        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        locationSet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Boolean chooseLocation = Boolean.parseBoolean(spinner2.getSelectedItem().toString());
+                Boolean chooseLocation = Boolean.parseBoolean(locationSet.getSelectedItem().toString());
                 if (chooseLocation) {
                     startMapsActivity();
                 }
@@ -115,13 +85,10 @@ public class PublishFragment extends DialogFragment {
         String id = idManager.getUserId();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
-
-
-        return builder
+        builder
                 .setView(view)
-                .setTitle("Add Experiment")
-                .setNeutralButton("Cancel", null)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setNeutralButton("X", null)
+                .setPositiveButton("POST", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String desc = expDesc.getText().toString();
@@ -130,12 +97,18 @@ public class PublishFragment extends DialogFragment {
                         //String latString = expLat.getText().toString();
                         //String lonString = expLon.getText().toString();
                         String experimentType = spinner.getSelectedItem().toString();
-                        Boolean reqLocation = Boolean.parseBoolean(spinner2.getSelectedItem().toString());
+                        Boolean reqLocation = Boolean.parseBoolean(trialLocations.getSelectedItem().toString());
                         Log.d("Type",experimentType);
-                        PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,lat,lon,experimentType,reqLocation);
+                        PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,lat,lon,radius,experimentType,reqLocation);
                     }
                 })
                 .create();
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.spark_text));
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.neutral));
+        return dialog;
     }
 
     private void startMapsActivity() {
@@ -151,10 +124,11 @@ public class PublishFragment extends DialogFragment {
 
         if (resultCode == didNotPickLocation) {
             // Set Location field to False
-            spinner2.setSelection(0);
+            locationSet.setSelection(0);
         } else if (resultCode == didPickLocation) {
-            lat = (Double) data.getExtras().get("Latitude");
-            lon = (Double) data.getExtras().get("Longitude");
+            lat = (double) data.getExtras().get("Latitude");
+            lon = (double) data.getExtras().get("Longitude");
+            radius = (double) data.getExtras().get("Radius");
         }
 
     }

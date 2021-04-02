@@ -1,6 +1,7 @@
 package com.example.sparktrials;
 
 
+import android.content.Context;
 import android.telecom.Call;
 import android.util.Log;
 import android.widget.Toast;
@@ -15,15 +16,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -200,8 +205,10 @@ public class FirebaseManager {
         data.put("Description",experiment.getDesc());
         data.put("Latitude",experiment.getRegion().getLat());
         data.put("Longitude",experiment.getRegion().getLon());
+        data.put("Radius",experiment.getRegion().getRadius());
         data.put("MinNTrials",experiment.getMinNTrials());
         data.put("profileID",experiment.getOwner().getId());
+        data.put("ownerName",experiment.getOwner().getUsername());
         data.put("Date",experiment.getDate());
         data.put("Open",experiment.getOpen());
         data.put("Type",experiment.getType());
@@ -238,6 +245,30 @@ public class FirebaseManager {
 
         return profile;
 
+    }
+
+    public void unsubscribeUsers(String expId){
+        CollectionReference users = firestore.collection("users");
+        users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    List<DocumentSnapshot> allUsers = task.getResult().getDocuments();
+                    for(DocumentSnapshot userSnap : allUsers){
+                        String uid = (String) userSnap.get("uid");
+                        ArrayList<String> subs = (ArrayList<String>) userSnap.get("subscriptions");
+                        if(subs.contains(expId)){
+                            subs.remove(expId);
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("subscriptions", subs);
+                            update("users", uid, map);
+                        }
+                    }
+                } else {
+                    Log.d("Unsubscribing Users", "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
     public void uploadTrials(Experiment experiment){

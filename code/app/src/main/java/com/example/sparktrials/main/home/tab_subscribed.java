@@ -62,7 +62,7 @@ public class tab_subscribed extends Fragment {
     public void onStart() {
         super.onStart();
         subExperiments = getView().findViewById(R.id.subscribed_list);
-        context = requireActivity().getApplicationContext();
+        context = getActivity();
         IdManager idManager = new IdManager(context);
         homeViewModel = new HomeViewModel(idManager.getUserId());
 
@@ -73,7 +73,7 @@ public class tab_subscribed extends Fragment {
                 subExperiments.setAdapter(subExperiment_adapter);
             }
         };
-        homeViewModel.getMyExpList().observe(getViewLifecycleOwner(), nameObserver);
+        homeViewModel.getSubExpList().observe(getViewLifecycleOwner(), nameObserver);
         subExperiments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

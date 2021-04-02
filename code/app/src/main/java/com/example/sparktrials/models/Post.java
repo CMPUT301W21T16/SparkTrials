@@ -63,8 +63,18 @@ public abstract class Post {
      */
     public Date getDate(){ return date; }
 
+
     public String getFormattedDate() {
         return formatter.format(date);
+    }
+
+  
+    public String getDay(){
+        String pattern = "EEE MMM DD HH:mm:ss z yyyy";
+        DateFormat df = new SimpleDateFormat(pattern);
+        String strDate = df.format(date);
+        strDate = strDate.substring(4,10);
+        return strDate;
     }
 
 }

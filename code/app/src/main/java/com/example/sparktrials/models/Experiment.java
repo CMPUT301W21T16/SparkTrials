@@ -432,12 +432,11 @@ public class Experiment {
      *    Returns the string of the date
      */
     public String getDay(){
-        String pattern = "EEE MMM MM HH:mm:ss z yyyy";
+        String pattern = "EEE MMM DD HH:mm:ss z yyyy";
         DateFormat df = new SimpleDateFormat(pattern);
         String strDate = df.format(date);
         strDate = strDate.substring(4,10);
         return strDate;
-
     }
     /**
      * Sets a new start date of the experiment. You really should not use this to *change* the date
@@ -584,7 +583,7 @@ public class Experiment {
     public int [] frequencies(){
         int []frequencies = new int [getXaxis().length];
         for (int i = 0 ; i < getXaxis().length ; i++){
-            for (int j = 0; j< trialsValuesSorted().size(); j++){
+            for (int j = 0; j < trialsValuesSorted().size(); j++){
                 if (Double.parseDouble(getXaxis()[i]) == trialsValuesSorted().get(j)){
                     frequencies[i]+=1;
                 }

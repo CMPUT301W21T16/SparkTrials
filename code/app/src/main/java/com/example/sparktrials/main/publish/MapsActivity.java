@@ -1,9 +1,8 @@
-package com.example.sparktrials.main_ui.publish;
+package com.example.sparktrials.main.publish;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,8 +1,6 @@
 package com.example.sparktrials;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,7 +17,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
@@ -30,13 +27,10 @@ import com.example.sparktrials.exp.admin.AdminFragment;
 import com.example.sparktrials.exp.forum.ForumFragment;
 import com.example.sparktrials.exp.location.LocationFragment;
 import com.example.sparktrials.exp.stats.StatsFragment;
-import com.example.sparktrials.main_ui.publish.PublishFragment;
+import com.example.sparktrials.main.publish.PublishFragment;
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.Profile;
-import com.example.sparktrials.models.ProfileActivity;
 import com.google.android.material.tabs.TabLayout;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A class with tabs for each ability of an experiment

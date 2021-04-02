@@ -75,11 +75,13 @@ public class SearchViewModel extends ViewModel {
                                 String title = (String) document.get("Title");
                                 String desc = (String) document.get("Description");
                                 Boolean open = (Boolean) document.get("Open");
+                                Date date = document.getTimestamp("Date").toDate();
 
                                 Experiment experiment = new Experiment(id);
                                 experiment.setTitle(title);
                                 experiment.setDesc(desc);
                                 experiment.setOpen(open);
+                                experiment.setDate(date);
 
                                 String ownerId = (String) document.get("profileID");
 

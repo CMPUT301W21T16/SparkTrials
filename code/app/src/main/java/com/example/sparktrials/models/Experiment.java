@@ -437,7 +437,6 @@ public class Experiment {
         String strDate = df.format(date);
         strDate = strDate.substring(4,10);
         return strDate;
-
     }
     /**
      * Sets a new start date of the experiment. You really should not use this to *change* the date

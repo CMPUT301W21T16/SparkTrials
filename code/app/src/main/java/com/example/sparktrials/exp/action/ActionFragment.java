@@ -123,7 +123,7 @@ public class ActionFragment extends Fragment implements LocationListener {
     @Override
     public void onStart() {
         super.onStart();
-        
+
         if (reqLocation) {
             final Observer<GeoLocation> nameObserver = new Observer<GeoLocation>() {
                 @Override

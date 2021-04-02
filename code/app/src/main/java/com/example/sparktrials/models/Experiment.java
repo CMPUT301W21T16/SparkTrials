@@ -584,7 +584,7 @@ public class Experiment {
     public int [] frequencies(){
         int []frequencies = new int [getXaxis().length];
         for (int i = 0 ; i < getXaxis().length ; i++){
-            for (int j = 0; j< trialsValuesSorted().size(); j++){
+            for (int j = 0; j < trialsValuesSorted().size(); j++){
                 if (Double.parseDouble(getXaxis()[i]) == trialsValuesSorted().get(j)){
                     frequencies[i]+=1;
                 }

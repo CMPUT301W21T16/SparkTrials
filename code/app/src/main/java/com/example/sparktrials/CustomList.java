@@ -113,7 +113,7 @@ public class CustomList extends ArrayAdapter<Experiment> {
         }
         experimentOwner.setText(experiment.getOwner().getUsername());
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         experimentDate.setText(dateFormat.format(experiment.getDate()));
     }

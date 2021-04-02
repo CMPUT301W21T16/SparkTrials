@@ -28,6 +28,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -136,7 +138,7 @@ public class StatsFragment extends Fragment {
              */
             @Override
             public String getFormattedValue(float value){
-                String [] vals = experiment.getXaxis();
+                String[]  vals = experiment.getXaxis();
                 return vals[(int) value];
             }
         });
@@ -151,8 +153,11 @@ public class StatsFragment extends Fragment {
          */
         lineChart = (LineChart) getView().findViewById(R.id.linechartID);
         ArrayList <Entry> lineEntries =  new ArrayList<>();
-        lineEntries.add(new Entry (1, 20));
-        lineEntries.add(new Entry(2, 30));
+        for (int i = 0; i<experiment.daysOfTrials().size(); i++){
+            lineEntries.add(new Entry((float) i, (float) (experiment.daysFrequencies()[i])));
+
+        }
+
         XAxis plotXAxis = lineChart.getXAxis();
         plotXAxis.setLabelCount(experiment.daysOfTrials().size(), true);
         Log.d("dates, ", ""+ experiment.daysOfTrials());

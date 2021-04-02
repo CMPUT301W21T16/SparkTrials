@@ -1,5 +1,7 @@
 package com.example.sparktrials.models;
 
+import android.util.Log;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -567,7 +569,9 @@ public class Experiment {
         for (int i=0 ; i<size; i++){
             str[i] = removeDupes()[i].toString();
         }
-        return str ;
+        ArrayList<String> strArr = new ArrayList<String>();
+
+        return str;
     }
 
     /**
@@ -584,6 +588,87 @@ public class Experiment {
                 }
             }
         }
+        return frequencies;
+    }
+
+    public double [] daysFrequencies(){
+        double []frequencies = new double [daysOfTrials().size()];
+        /*if (trialsValuesSorted().isEmpty()){
+            frequencies[0]=0;
+            return frequencies;
+        }*/
+
+        int numDays = daysOfTrials().size();
+
+        if (this.getType().equals("binomial trials")){
+            double success = 0;
+            double failure = 1 ;
+            Log.d("access, ", "true");
+            for (int i = 0 ; i < numDays ; i++){
+                String day = daysOfTrials().get(i);
+                double proportionOfSuccess = 0;
+                for (int j = 0; j< getValidTrials().size(); j++){
+                    if (day.equals(getValidTrials().get(j).getDay())){
+                        if(getValidTrials().get(j).value == 1){
+                            success +=1;
+                        }
+                        else {
+                            failure+=1;
+                        }
+                    }
+                }
+                proportionOfSuccess = success/failure;
+                frequencies[i]+=proportionOfSuccess;
+            }
+            return frequencies;
+        }
+        if (this.getType().equals("count trials")){
+
+            Log.d("access, ", "true");
+            for (int i = 0 ; i < numDays ; i++){
+                String day = daysOfTrials().get(i);
+                double proportionOfSuccess = 0;
+                for (int j = 0; j< getValidTrials().size(); j++){
+                    if (day.equals(getValidTrials().get(j).getDay())){
+                        frequencies[i]+=getValidTrials().get(j).getValue();
+                    }
+                }
+            }
+            return frequencies;
+        }
+        if (this.getType().equals("integercount trials")){
+            for (int i = 0 ; i < numDays ; i++){
+                double count = 0;
+                double sum = 0;
+                String day = daysOfTrials().get(i);
+                double proportionOfSuccess = 0;
+                for (int j = 0; j< getValidTrials().size(); j++){
+                    if (day.equals(getValidTrials().get(j).getDay())){
+                        sum+=getValidTrials().get(j).getValue();
+                        count +=1;
+                    }
+                }
+                frequencies[i]= sum/count;
+            }
+            return frequencies;
+        }
+        if (this.getType().equals("measurement trials")){
+            for (int i = 0 ; i < numDays ; i++){
+                double count = 0;
+                double sum = 0;
+                String day = daysOfTrials().get(i);
+                double proportionOfSuccess = 0;
+                for (int j = 0; j< getValidTrials().size(); j++){
+                    if (day.equals(getValidTrials().get(j).getDay())){
+                        sum+=getValidTrials().get(j).getValue();
+                        count +=1;
+                    }
+                }
+                frequencies[i]= sum/count;
+            }
+            return frequencies;
+        }
+
         return frequencies;
     }
 

@@ -2,14 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:gravity="center">
 
-    <TextView
+    <Button
+        android:id="@+id/forum_ask_question_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Forum Fragment"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
+        android:layout_height="45dp"
+        android:textSize="12sp"
+        android:layout_gravity="end"
+        android:backgroundTint="@color/header"
+        android:textAllCaps="false"
+        android:text="Ask Question"
+
+
+        />
+
+    <ListView
+        android:id="@+id/question_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
 
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.sparktrials.models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -12,6 +13,7 @@ public abstract class Post {
     private String expId;
     private Profile profile;
     private Date date;
+    private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * A constructor for post. A post always has a poster, some content, and for what experiment it was posted on
@@ -60,5 +62,9 @@ public abstract class Post {
      * @return
      */
     public Date getDate(){ return date; }
+
+    public String getFormattedDate() {
+        return formatter.format(date);
+    }
 
 }

@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Question extends Post {
+    private String title;
     ArrayList<Answer> answers;
 
     /**
@@ -15,8 +16,9 @@ public class Question extends Post {
      * @param profile
      *    The profile of the poster
      */
-    Question(String id, String content, String expId, Profile profile){
+    Question(String id, String title, String content, String expId, Profile profile){
         super(id, content, expId, profile);
+        this.title = title;
         this.answers = new ArrayList<>();
     }
 
@@ -31,8 +33,9 @@ public class Question extends Post {
      * @param answers
      *    The list of answers that this post has
      */
-    Question(String id, String content, String expId, Profile profile, ArrayList<Answer> answers){
+    public Question(String id, String title, String content, String expId, Profile profile, ArrayList<Answer> answers){
         super(id, content, expId, profile);
+        this.title = title;
         this.answers = answers;
     }
 
@@ -62,5 +65,13 @@ public class Question extends Post {
      */
     public void addAnswer(Answer answer){
         this.answers.add(answer);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public int getAnswerNumber() {
+        return answers.size();
     }
 }

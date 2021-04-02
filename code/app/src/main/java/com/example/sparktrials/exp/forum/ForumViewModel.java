@@ -1,32 +1,67 @@
 package com.example.sparktrials.exp.forum;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.sparktrials.Callback;
 import com.example.sparktrials.FirebaseManager;
+import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.Question;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 
 public class ForumViewModel extends ViewModel {
     private String experimentId;
-    private MutableLiveData<Question> questions;
-    private FirebaseManager firebaseManager;
+    private MutableLiveData<ArrayList<Question>> questions;
+    private FirebaseFirestore db;
+    private final String LOG_TAG = "ForumViewModel";
 
     public ForumViewModel(String experimentId) {
+        this.experimentId = experimentId;
         questions = new MutableLiveData<>();
-        firebaseManager = new FirebaseManager();
+        questions.setValue(new ArrayList<>());
+        db = FirebaseFirestore.getInstance();
         getForumQuestions();
     }
 
     private void getForumQuestions() {
-        String subcollection = experimentId + '/' + experimentId;
-        firebaseManager.get(subcollection, "posts", new Callback() {
+        CollectionReference ref = db.collection("experiments").document(experimentId).collection("posts");
+        ref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onCallback(DocumentSnapshot document) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document: task.getResult()) {
+                        String id = document.getId();
+                        String title = (String) document.get("title");
+                        String body = (String) document.get("body");
+                        String author = (String) document.get("author");
+//                        String date = (String) document.get("date");
 
+                        Question question = new Question(id, title, body, experimentId, author);
+                        ArrayList<Question> existingQuestions = questions.getValue();
+                        existingQuestions.add(question);
+                        questions.setValue(existingQuestions);
+
+
+                    }
+                } else {
+                    Log.d(LOG_TAG, "Failed to get documents.", task.getException());
+                }
             }
         });
+    }
+
+    public MutableLiveData<ArrayList<Question>> getQuestions() {
+        return questions;
     }
 }

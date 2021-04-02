@@ -24,13 +24,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lorem ipsum dolor?"
-            android:textColor="@color/norm_text"
+            android:textColor="@color/title"
             android:textSize="20sp">
 
         </TextView>
 
         <TextView
-            android:id="@+id/forum_post_description"
+            android:id="@+id/forum_post_body"
             android:layout_width="match_parent"
             android:layout_height="32dp"
             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tortor ligula, accumsan non ex ut, tincidunt sollicitudin felis. "
@@ -56,7 +56,7 @@
                 android:id="@+id/forum_post_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2021-02-23  18:00"
+                android:text="1111-11-11 00:00"
                 android:layout_alignRight="@id/forum_post_info"
                 android:textSize="12sp">
 
@@ -77,18 +77,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <ImageView
-                android:layout_alignBottom="@id/forum_user_text"
+                android:layout_alignBottom="@id/forum_post_author"
                 android:id="@+id/forum_user_icon"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:src="@drawable/ic_user" />
 
             <TextView
-                android:id="@+id/forum_user_text"
+                android:id="@+id/forum_post_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/forum_user_icon"
-                android:text="user-1234"
+                android:text="user"
+                android:minWidth="50dp"
+                android:maxWidth="50dp"
                 android:textSize="12sp"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -115,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/forum_reply_icon"
-                    android:text="12"
+                    android:text="-1"
                     android:textSize="12sp">
 
                 </TextView>

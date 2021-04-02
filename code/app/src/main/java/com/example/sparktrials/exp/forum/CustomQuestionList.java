@@ -34,14 +34,16 @@ public class CustomQuestionList extends ArrayAdapter<Question> {
 
         Question question = questions.get(position);
 
-        TextView description = view.findViewById(R.id.forum_post_description);
+        TextView body = view.findViewById(R.id.forum_post_body);
         TextView date = view.findViewById(R.id.forum_post_time);
         TextView title = view.findViewById(R.id.forum_post_title);
+        TextView author = view.findViewById(R.id.forum_post_author);
         TextView reply_number = view.findViewById(R.id.forum_reply_number);
 
-        description.setText(question.getContent());
+        body.setText(question.getBody());
         date.setText(question.getFormattedDate());
         title.setText(question.getTitle());
+//        author.setText(question.getAuthor());
         reply_number.setText("" + question.getAnswerNumber());
 
         return view;

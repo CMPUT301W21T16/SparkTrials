@@ -3,11 +3,9 @@ package com.example.sparktrials.main.me;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -95,7 +93,7 @@ public class MeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                View updateMe = getLayoutInflater().inflate(R.layout.update_me_fragment, null);
+                View updateMe = getLayoutInflater().inflate(R.layout.fragment_me_update, null);
                 builder.setView(updateMe);
                 builder.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
                     @Override

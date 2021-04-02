@@ -130,7 +130,6 @@
         android:text="Generate QR Code"
         android:visibility="invisible"
         app:backgroundTint="@color/header" />
-
     <Button
         android:id="@+id/action_bar_delete_trials"
         android:layout_width="250dp"

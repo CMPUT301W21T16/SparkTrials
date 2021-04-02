@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.example.sparktrials.models.Experiment;
-import com.example.sparktrials.models.ProfileActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -113,7 +112,7 @@ public class CustomList extends ArrayAdapter<Experiment> {
         }
         experimentOwner.setText(experiment.getOwner().getUsername());
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         experimentDate.setText(dateFormat.format(experiment.getDate()));
     }

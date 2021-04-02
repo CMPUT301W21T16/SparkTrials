@@ -2,15 +2,15 @@
     <!-- Base application theme. -->
     <style name="Theme.SparkTrials" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/spark_text</item>
+        <item name="colorPrimaryVariant">@color/header</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/spark_text</item>
         <item name="colorSecondaryVariant">@color/norm_text</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/spark_text</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/neutral</item>
         <!-- Customize your theme here. -->
     </style>
 </resources>

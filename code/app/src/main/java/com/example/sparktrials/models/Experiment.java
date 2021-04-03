@@ -192,7 +192,7 @@ public class Experiment {
         for (int i=0; i < this.trials.size(); i++){
             trial = this.trials.get(i);
             if (this.blacklist.contains(trial.getProfile().getId())){
-                break;
+                continue;
             }
             user_id = trial.getProfile().getId();
             if (user_trials.get(user_id) == null){

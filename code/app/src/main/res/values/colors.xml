@@ -25,6 +25,6 @@
     <color name="title">#153E5C</color>
     <color name="cancel">#A2ADBE</color>
     <color name="divider">#4DA2ADBE</color>
-
+    <color name="norm_shadow">#1A3C3C3C</color>
 
 </resources>

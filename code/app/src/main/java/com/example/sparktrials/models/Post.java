@@ -1,5 +1,7 @@
 package com.example.sparktrials.models;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -7,44 +9,32 @@ import java.util.Date;
  * An abstract class that embodies questions and answers
  * Used in the forum
  */
-public abstract class Post {
+public abstract class Post implements Comparable {
     private String id;
     private String body;
     private String expId;
-    private Profile profile;
-    private String author;
+    private Profile author;
+//    private String author;
     private Date date;
-    private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-    /**
-     * A constructor for post. A post always has a poster, some body, and for what experiment it was posted on
-     * @param body
-     * @param expId
-     * @param profile
-     */
-    Post(String id, String body, String expId, Profile profile){
-        this.id = id;
-        this.body = body;
-        this.expId = expId;
-        this.profile = profile;
-        this.date = new Date();
-
-    }
 
     /**
      * A constructor for post. A post always has a poster, some body, and for what experiment it was posted on
      * @param body
      * @param expId
      * @param author
+     * @param date
      */
-    Post(String id, String body, String expId, String author){
+    Post(String id, String body, String expId, Profile author, Date date){
         this.id = id;
         this.body = body;
         this.expId = expId;
         this.author = author;
-        this.date = new Date();
+        this.date = date;
 
     }
+
 
     /**
      * Retrieves the experiment id of this post
@@ -60,8 +50,8 @@ public abstract class Post {
      * @return
      *    The profile of the use rwho made the post
      */
-    public Profile getProfile() {
-        return profile;
+    public Profile getAuthor() {
+        return author;
     }
 
     /**
@@ -80,20 +70,19 @@ public abstract class Post {
     public Date getDate(){ return date; }
 
 
-    public String getFormattedDate() {
+    public String getFormattedDate(Date date) {
         return formatter.format(date);
     }
 
-  
-    public String getDay(){
-        String pattern = "EEE MMM DD HH:mm:ss z yyyy";
-        SimpleDateFormat df = new SimpleDateFormat(pattern);
-        String strDate = df.format(date);
-        strDate = strDate.substring(4,10);
-        return strDate;
+
+
+    public String getId() {
+        return id;
     }
 
-    public String getAuthor() {
-        return author;
+    @Override
+    public int compareTo(Object o) {
+        o = (Post) o;
+        return date.compareTo(((Post) o).getDate());
     }
 }

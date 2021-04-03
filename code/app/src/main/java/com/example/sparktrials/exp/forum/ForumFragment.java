@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 
 import com.example.sparktrials.CustomList;
+import com.example.sparktrials.FirebaseManager;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Answer;
 import com.example.sparktrials.models.Experiment;
@@ -50,15 +52,6 @@ public class ForumFragment extends Fragment {
         askQuestionButton = view.findViewById(R.id.forum_ask_question_button);
         TextView noPostYet = view.findViewById(R.id.forum_no_post_yet);
 
-        askQuestionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ForumAskQuestionFragment forumAskQuestionFragment = ForumAskQuestionFragment.newInstance(experiment);
-                forumAskQuestionFragment.show(getActivity().getSupportFragmentManager(), "ask_question_dialog_fragment");
-            }
-        });
-
-
         final Observer<ArrayList<Question>> questionObserver = new Observer<ArrayList<Question>>() {
             @Override
             public void onChanged(@Nullable final ArrayList<Question> questions) {
@@ -73,5 +66,30 @@ public class ForumFragment extends Fragment {
         };
         forumManager.getQuestions().observe(this, questionObserver);
 
+        askQuestionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ForumAskQuestionFragment forumAskQuestionFragment = ForumAskQuestionFragment.newInstance(experiment);
+                forumAskQuestionFragment.show(getActivity().getSupportFragmentManager(), "ask_question_dialog_fragment");
+            }
+        });
+
+        questionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ForumDetailFragment forumDetailFragment = ForumDetailFragment.newInstance(forumManager.getQuestions().getValue().get(position));
+                forumDetailFragment.show(getActivity().getSupportFragmentManager(), "forum_post_dialog_fragment");
+            }
+        });
+
+        // Dev use only!!
+//        questionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Question q = forumManager.getQuestions().getValue().get(position);
+//                FirebaseManager firebaseManager = new FirebaseManager();
+//                firebaseManager.delete("experiments/" + q.getExpId() + "/posts", q.getId());
+//            }
+//        });
     }
 }

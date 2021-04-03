@@ -1,6 +1,7 @@
 package com.example.sparktrials.exp.forum;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Question;
@@ -25,6 +27,7 @@ public class CustomQuestionList extends ArrayAdapter<Question> {
         this.questions = questions;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
@@ -41,10 +44,10 @@ public class CustomQuestionList extends ArrayAdapter<Question> {
         TextView reply_number = view.findViewById(R.id.forum_reply_number);
 
         body.setText(question.getBody());
-        date.setText(question.getFormattedDate());
+        date.setText(question.getFormattedDate(question.getLastReplyTime()));
         title.setText(question.getTitle());
-//        author.setText(question.getAuthor());
-        reply_number.setText("" + question.getAnswerNumber());
+        author.setText(question.getAuthor().getUsername());
+        reply_number.setText("" + question.getAnswerCount());
 
         return view;
     }

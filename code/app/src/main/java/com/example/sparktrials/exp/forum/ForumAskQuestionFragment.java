@@ -1,12 +1,10 @@
 package com.example.sparktrials.exp.forum;
 
-import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -17,6 +15,8 @@ import com.example.sparktrials.FirebaseManager;
 import com.example.sparktrials.IdManager;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.Date;
@@ -36,7 +36,7 @@ public class ForumAskQuestionFragment extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_ask_question, container, false);
+        View view = inflater.inflate(R.layout.fragment_forum_ask_question, container, false);
         TextView cancelButton = view.findViewById(R.id.forum_ask_cancel);
         TextView postButton = view.findViewById(R.id.forum_ask_post);
         EditText titleText = view.findViewById(R.id.forum_ask_title);
@@ -64,14 +64,13 @@ public class ForumAskQuestionFragment extends BottomSheetDialogFragment {
 
                 data.put("title", title);
                 data.put("body", body);
-                data.put("author", experiment.getOwner().getId());
+                data.put("author", idManager.getUserId());
                 data.put("date", new Date());
 
                 firebaseManager.set(path, id, data);
                 dismiss();
             }
         });
-
 
         return view;
     }

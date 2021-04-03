@@ -603,25 +603,6 @@ public class Experiment {
     }
 
     /**
-     * Calculates the so called frequencies or Y values for the histogram
-     * @return
-     * An integer list of frequencies which matches the the index of the getXAxis list
-     */
-    public int [] oldFrequencies(){
-        int []frequencies = new int [getXaxis().length];
-        for (int i = 0 ; i < getXaxis().length ; i++){
-            for (int j = 0; j < trialsValuesSorted().size(); j++){
-                if (Double.parseDouble(getXaxis()[i]) == trialsValuesSorted().get(j)){
-                    frequencies[i]+=1;
-                }
-            }
-        }
-        return frequencies;
-    }
-
-
-
-    /**
      * Calculates the Median value for the experiment
      * If even number of numbers, then take average of middle two
      * @return

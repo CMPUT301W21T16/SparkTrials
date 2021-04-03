@@ -567,10 +567,11 @@ public class Experiment {
      * A sorted list of type string
      */
     public String [] getXaxis(){
-        int size = removeDupes().length;
+        Double[] dupesRemoved = removeDupes();
+        int size = dupesRemoved.length;
         String[] str = new String[size];
         for (int i=0 ; i<size; i++){
-            str[i] = removeDupes()[i].toString();
+            str[i] = dupesRemoved[i].toString();
         }
         return str ;
     }
@@ -581,18 +582,25 @@ public class Experiment {
      * An integer list of frequencies which matches the the index of the getXAxis list
      */
     public int [] frequencies(){
-        int []frequencies = new int [getXaxis().length];
-        for (int i = 0 ; i < getXaxis().length ; i++){
-            for (int j = 0; j < trialsValuesSorted().size(); j++){
-                if (Double.parseDouble(getXaxis()[i]) == trialsValuesSorted().get(j)){
-                    frequencies[i]+=1;
-                }
+        ArrayList<Double> sortedValues = trialsValuesSorted();
+        HashMap<String, Integer> map = new HashMap<>();
+        for (int i=0; i<sortedValues.size(); i++){
+            String value = sortedValues.get(i).toString();
+            if (map.containsKey(value)) {
+                map.put(value, map.get(value)+1);
+            } else {
+                map.put(value,0);
             }
         }
+
+        String[] xAxis = getXaxis();
+        int []frequencies = new int [xAxis.length];
+        for (int i=0; i<xAxis.length; i++) {
+            frequencies[i] = map.get(xAxis[i]);
+        }
+
         return frequencies;
     }
-
-
 
     /**
      * Calculates the Median value for the experiment

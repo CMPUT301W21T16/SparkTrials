@@ -111,7 +111,8 @@ public class StatsFragment extends Fragment {
         barChart = (BarChart) getView().findViewById(R.id.barchartID);
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         int[] frequencies = experiment.frequencies();
-        for (int i = 0; i<experiment.getXaxis().length; i++){
+        int xAxisLength = experiment.getXaxis().length;
+        for (int i = 0; i<xAxisLength; i++){
             barEntries.add(new BarEntry((float) i, (float) (frequencies[i])));
         }
         BarDataSet barDataSet = new BarDataSet(barEntries, "totals");

@@ -32,6 +32,7 @@ public class Experiment {
     private Boolean reqLocation;
     private Integer minNTrials;
     private Boolean open;
+    private Boolean published;
     private Date date;
     private ArrayList<String> blacklist;
 
@@ -53,6 +54,7 @@ public class Experiment {
         this.reqLocation = false;
         this.minNTrials = 0;
         this.open = true;
+        this.published = true;
         this.date = new Date();
         this.blacklist = new ArrayList<>();
     }
@@ -82,6 +84,7 @@ public class Experiment {
         this.reqLocation = reqLocation;
         this.minNTrials = minNTrials;
         this.open = true;
+        this.published = true;
         this.date = new Date();
         this.blacklist = new ArrayList<>();
     }
@@ -106,8 +109,8 @@ public class Experiment {
      * @param date
      *    The date that the experiment was created on
      */
-    public Experiment(String id, String type, Profile owner, ArrayList<Trial> trials, String title, String desc,
-                      GeoLocation region, Boolean reqLocation, Integer minNTrials, Boolean open, Date date, ArrayList<String> blacklist){
+    public Experiment(String id, String type, Profile owner, ArrayList<Trial> trials, String title, String desc, GeoLocation region,
+                      Boolean reqLocation, Integer minNTrials, Boolean open, Boolean published, Date date, ArrayList<String> blacklist){
         this.id = id;
         this.type = type.toLowerCase();
         this.owner = owner;
@@ -118,6 +121,7 @@ public class Experiment {
         this.reqLocation = reqLocation;
         this.minNTrials = minNTrials;
         this.open = open;
+        this.published = published;
         this.date = date;
         this.blacklist = blacklist;
     }

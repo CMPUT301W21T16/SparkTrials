@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:gravity="left"
-        android:text="Trials taken"
+        android:text="Global Trials Taken"
         android:textSize="18dp"
         android:textColor="@color/neutral">
     </TextView>
@@ -57,11 +57,14 @@
             android:text="Record Pass"
             app:backgroundTint="@color/spark_text"
             android:visibility="invisible"/>
-        <Space
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/action_bar_addCount"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:layout_weight="2">
-        </Space>
+            android:layout_weight="1"
+            android:text="Add Count"
+            app:backgroundTint="@color/spark_text"
+            android:visibility="invisible"/>
         <Button
             android:id="@+id/action_bar_fail"
             android:layout_width="100dp"

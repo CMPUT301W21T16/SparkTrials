@@ -49,7 +49,6 @@ public class ActionFragment extends Fragment implements LocationListener {
     View view;
     TextView trialsNumber;
     TextView trialsCount;
-    int count;
     private ActionFragmentManager manager;
     private IdManager idManager;
     String id;
@@ -61,6 +60,7 @@ public class ActionFragment extends Fragment implements LocationListener {
     Button generateQR;
     Button deleteTrials;
     EditText valueEditText;
+    Button middleButton;
 
     LocationManager locationManager;
     boolean hasLocationSet;
@@ -100,6 +100,7 @@ public class ActionFragment extends Fragment implements LocationListener {
             generateQR = view.findViewById(R.id.action_bar_generateQR);
             deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
             valueEditText = view.findViewById(R.id.countvalue_editText);
+            middleButton = view.findViewById(R.id.action_bar_addCount);
             updateView();
 
             if (hasLocationSet) {
@@ -176,12 +177,18 @@ public class ActionFragment extends Fragment implements LocationListener {
 
     public void updateView(){
         trialsCount.setText("");
-        int trials=manager.getNTrials();
+        int trials=manager.getPreUploadedNTrials();
         Log.d("NUM Is", String.valueOf(trials));
         int minimumNumberTrials = manager.getMinNTrials();
+        /*
         if(manager.getType().equals("Counts".toLowerCase())){
             trialsCount.setText("Trial count: "+count);
         }
+        else{
+            trialsCount.setText("Trials Count:"+manager.getNTrials());
+        }
+        */
+        trialsCount.setText("Trials Count: "+(manager.getNTrials()-manager.getPreUploadedNTrials()));
         if (minimumNumberTrials>0)
             trialsNumber.setText(""+trials+"/"+minimumNumberTrials);
         else
@@ -382,22 +389,11 @@ public class ActionFragment extends Fragment implements LocationListener {
                 alert.show();
             });
         } else if (manager.getType().equals("Counts".toLowerCase())) {
-            leftButton.setVisibility(View.VISIBLE);
-            rightButton.setVisibility(View.VISIBLE);
-            leftButton.setText("Add Count");
-            rightButton.setText("Commit Trial");
-            leftButton.setOnClickListener(new View.OnClickListener() {
+            middleButton.setVisibility(View.VISIBLE);
+            middleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    count += 1;
-                    updateView();
-                }
-            });
-            rightButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    manager.addCountTrial(count, currentLocation.getValue());
-                    count = 0;
+                    manager.addCountTrial(currentLocation.getValue());
                     updateView();
                 }
             });
@@ -452,15 +448,8 @@ public class ActionFragment extends Fragment implements LocationListener {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (manager.getNTrials() >= manager.getMinNTrials())
-                    manager.uploadTrials();
-                else {
-                    AlertDialog builder = new AlertDialog.Builder(getContext())
-                            .setTitle("ERROR")
-                            .setMessage("You have not reached the minimum number of trials")
-                            .setPositiveButton("OK", null)
-                            .show();
-                }
+                manager.uploadTrials();
+                updateView();
             }
         });
         deleteTrials.setOnClickListener(new View.OnClickListener() {

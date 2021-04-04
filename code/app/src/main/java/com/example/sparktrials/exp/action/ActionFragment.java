@@ -158,11 +158,11 @@ public class ActionFragment extends Fragment implements LocationListener {
      *  The Id of the QrCode, currently used as the name for the QrCode
      * @throws IOException
      */
-    public void saveQrCode(Bitmap code, String id) throws IOException {
+    public void saveQrCode(Bitmap code, String id, Double value) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         code.compress(Bitmap.CompressFormat.PNG, 90, bytes);
-        //File dir = getContext().getExternalFilesDir("QrCodes" + File.separator + id + ".png");
-        File f = new File(getContext().getExternalFilesDir("QrCodes"), id + ".png");
+        String fileName = "Experiment_" + manager.getTitle() + "_Value_" + value.toString();
+        File f = new File(getContext().getExternalFilesDir("QrCodes"), fileName + ".png");
         boolean fc = f.createNewFile();
         if(fc){
             Log.d("File Creation", "Created file " + f.getAbsolutePath());
@@ -239,7 +239,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                         manager.uploadQR(generated);
                         Log.d("Generated", generated.getQrId());
                         try {
-                            saveQrCode(qrMap, generated.getQrId());
+                            saveQrCode(qrMap, generated.getQrId(), generated.getValue());
                         } catch (IOException e) {
                             Log.d("QrSave", e.getMessage());
                         }
@@ -298,7 +298,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                         manager.uploadQR(generated);
                         Log.d("Generated", generated.getQrId());
                         try {
-                            saveQrCode(qrMap, generated.getQrId());
+                            saveQrCode(qrMap, generated.getQrId(), generated.getValue());
                         } catch (IOException e) {
                             Log.d("QrSave", e.getMessage());
                         }
@@ -363,7 +363,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                         manager.uploadQR(generated);
                         Log.d("Generated", generated.getQrId());
                         try {
-                            saveQrCode(qrMap, generated.getQrId());
+                            saveQrCode(qrMap, generated.getQrId(), generated.getValue());
                         } catch (IOException e) {
                             Log.d("QrSave", e.getMessage());
                         }
@@ -411,7 +411,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                 AlertDialog.Builder coDialog = new AlertDialog.Builder(getContext());
                 coDialog.setTitle("Enter QR Code Value");
                 final Spinner selection = new Spinner(getContext());
-                String[] items = new String[]{"Increment trial", "Commit trial"};
+                String[] items = new String[]{"Increment trial"};
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
                 selection.setAdapter(adapter);
                 coDialog.setView(selection);
@@ -420,11 +420,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                     public void onClick(DialogInterface dialog, int which) {
                         String value = selection.getSelectedItem().toString();
                         QrCode generated;
-                        if(value.equals("Increment trial")){
-                            generated = manager.createQrCodeObject(1.0);
-                        } else {
-                            generated = manager.createQrCodeObject(-1.0);
-                        }
+                        generated = manager.createQrCodeObject(1.0);
                         Bitmap qrMap = null;
                         try {
                             qrMap = manager.IdToQrCode(generated.getQrId());
@@ -434,7 +430,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                         manager.uploadQR(generated);
                         Log.d("Generated", generated.getQrId());
                         try {
-                            saveQrCode(qrMap, generated.getQrId());
+                            saveQrCode(qrMap, generated.getQrId(), generated.getValue());
                         } catch (IOException e) {
                             Log.d("QrSave", e.getMessage());
                         }

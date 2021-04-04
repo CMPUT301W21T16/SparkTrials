@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.sparktrials"
-        minSdkVersion 16
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -74,4 +74,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     //zxing for qr codes
     implementation 'com.google.zxing:core:3.2.1'
+    implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
 }

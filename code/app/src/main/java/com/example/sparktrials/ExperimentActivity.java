@@ -73,6 +73,8 @@ public class ExperimentActivity extends AppCompatActivity {
                         break;
                     case R.id.top_app_bar_scan_qr_code:
                         Log.d("BUTTON", "scanClicked");
+                        Intent intent = new Intent(ExperimentActivity.this, QrScannerActivity.class);
+                        startActivityForResult(intent, 1);
                         break;
                     case R.id.top_app_bar_publish_experiment:
                         Log.d("BUTTON", "publishClicked");

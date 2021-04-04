@@ -26,7 +26,6 @@ public class GeoMap implements OnMapReadyCallback {
     private boolean isEditable;
     private boolean markerSet;
     private boolean hasLocationSet;
-    private boolean reqLocation;
 
     /**
      * Constructor of GeoMap that is called when we want to set a region to an experiment.
@@ -51,20 +50,10 @@ public class GeoMap implements OnMapReadyCallback {
         this.isEditable = isEditable;
         this.geoLocation = experiment.getRegion();
         markerSet = true;
-        if (experiment.getRegion().getRadius() == 0) {
-            hasLocationSet = false;
-        } else {
-            hasLocationSet = true;
+        hasLocationSet = experiment.hasLocationSet();
+        if (hasLocationSet) {
             trials = experiment.getValidTrials();
-            for (Trial trial: trials) {
-                for (String blackListedUser: experiment.getBlacklist()) {
-                    if (trial.getProfile().getId().equals(blackListedUser)) {
-                        trials.remove(trial);
-                    }
-                }
-            }
         }
-        reqLocation = experiment.getReqLocation();
     }
 
     @Override
@@ -98,17 +87,15 @@ public class GeoMap implements OnMapReadyCallback {
                 map.addMarker(new MarkerOptions()
                         .position(center));
 
-                if (reqLocation) { // If user wants to see locations of trials
-                    // Add an orange marker for every trial
-                    for (Trial trial : trials) {
-                        double trialLat = trial.getLocation().getLat();
-                        double trialLon = trial.getLocation().getLon();
-                        LatLng trialLocation = new LatLng(trialLat, trialLon);
+                // Add an orange marker for every trial
+                for (Trial trial : trials) {
+                    double trialLat = trial.getLocation().getLat();
+                    double trialLon = trial.getLocation().getLon();
+                    LatLng trialLocation = new LatLng(trialLat, trialLon);
 
-                        map.addMarker(new MarkerOptions()
-                                .position(trialLocation)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-                    }
+                    map.addMarker(new MarkerOptions()
+                            .position(trialLocation)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
                 }
 
                 displayCircle(center, geoLocation.getRadius());

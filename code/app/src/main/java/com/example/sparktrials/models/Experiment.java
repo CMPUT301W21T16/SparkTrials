@@ -349,6 +349,15 @@ public class Experiment {
     }
 
     /**
+     * Checks if the experiment has a location set.
+     * @return
+     *      true if the experiment has a location set, false otherwise
+     */
+    public boolean hasLocationSet() {
+        return (getRegion().getRadius() > 0);
+    }
+
+    /**
      * Gets whether the experiment requires locations or not
      * @return
      *    Returns a boolean true=requires locations, false=doesn't require locations

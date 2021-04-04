@@ -209,6 +209,7 @@ public class FirebaseManager {
         data.put("MinNTrials",experiment.getMinNTrials());
         data.put("profileID",experiment.getOwner().getId());
         data.put("ownerName",experiment.getOwner().getUsername());
+        data.put("Published", experiment.getPublished());
         data.put("Date",experiment.getDate());
         data.put("Open",experiment.getOpen());
         data.put("Type",experiment.getType());

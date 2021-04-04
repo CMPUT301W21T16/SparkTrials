@@ -85,7 +85,6 @@ public class ActionFragmentManager {
      */
     public void addCountTrial(Integer count, GeoLocation location){
         TrialCount trial = new TrialCount();
-        trial.setCount(count);
         trial.setId(UUID.randomUUID().toString());
         trial.setProfile(profile);
         trial.setLocation(location);

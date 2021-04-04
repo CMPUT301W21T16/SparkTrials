@@ -146,6 +146,7 @@ public class ExperimentViewModel extends ViewModel {
             Timestamp date = (Timestamp) expData.getData().get("Date");
             experiment.setDate(date.toDate());
             experiment.setOpen((Boolean) expData.getData().get("Open"));
+            experiment.setPublished((Boolean) expData.getData().get("Published"));
             experiment.setType((String) expData.getData().get("Type"));
             String uId = (String) expData.getData().get("profileID");
             String username = (String) expData.getData().get("ownerName");
@@ -171,7 +172,6 @@ public class ExperimentViewModel extends ViewModel {
                     trial = new TrialMeasurement((Double) map.get("value"));
                 } else {
                     trial = new TrialCount();
-                    ((TrialCount) trial).setCount(((Double) map.get("value")).intValue());
                 }
 
                 if (experiment.hasLocationSet()) {

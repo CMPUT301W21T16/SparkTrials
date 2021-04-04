@@ -55,14 +55,24 @@ public class AdminViewModel extends ViewModel {
         dbManager.update("experiments", exp.getId(), map);
     }
 
+    public void toggleExpPublished(Experiment exp) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("Published", !exp.getPublished());
+        if(exp.getPublished()){
+            exp.setPublished(false);
+        } else {
+            exp.setPublished(true);
+        }
+        dbManager.update("experiments", exp.getId(), map);
+    }
+
     /**
      * Unpublish i.e. delete an experiment and unsubscribe all users from that experiment
      * @param id
      *  The id of the experiment being deleted
      */
-    public void deleteExperiment(String id){
+    public void unpublishExperiment(String id){
         dbManager.unsubscribeUsers(id);
-        dbManager.delete("experiments", id);
     }
 
 }

@@ -4,6 +4,8 @@ package com.example.sparktrials;
 import android.Manifest;
 import android.annotation.SuppressLint;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,8 +13,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.sparktrials.main.publish.PublishFragment;
+import com.example.sparktrials.models.Trial;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -58,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.top_app_bar_scan_qr_code:
                         Log.d("BUTTON", "scanClicked");
+                        Intent intent = new Intent(MainActivity.this, QrScannerActivity.class);
+                        startActivityForResult(intent, 1);
                         break;
                     case R.id.top_app_bar_publish_experiment:
                         Log.d("BUTTON", "publishClicked");
@@ -76,4 +84,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1) {
+            Trial trial = (Trial) data.getExtras().getSerializable("trial");
+            Log.d("bler", "plop");
+        }
+    }
+
+
 }

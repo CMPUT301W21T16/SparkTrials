@@ -34,8 +34,6 @@ public class CustomList extends ArrayAdapter<Experiment> {
     private TextView experimentDate;
     private ImageView ownerIcon;
 
-    private View.OnClickListener onOwnerClick;
-
     /**
      * Constructor for a CustomList list adapter, which shows a customized list of experiments,
      * with some of their data

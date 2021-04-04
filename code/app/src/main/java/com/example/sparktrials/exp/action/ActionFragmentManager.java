@@ -3,32 +3,22 @@ package com.example.sparktrials.exp.action;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Environment;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.example.sparktrials.FirebaseManager;
-import com.example.sparktrials.IdManager;
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.QrCode;
-import com.example.sparktrials.models.Trial;
 import com.example.sparktrials.models.TrialBinomial;
 import com.example.sparktrials.models.TrialCount;
 import com.example.sparktrials.models.TrialIntCount;
 import com.example.sparktrials.models.TrialMeasurement;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -38,11 +28,12 @@ import java.util.UUID;
  * fragment manager deals with that
  */
 public class ActionFragmentManager {
-    Experiment experiment;
-    FirebaseManager firebaseManager = new FirebaseManager();
-    int originalNTrials;
-    String id;
-    Profile profile;
+    private Experiment experiment;
+    private FirebaseManager firebaseManager = new FirebaseManager();
+    private int originalNTrials;
+    private String id;
+    private Profile profile;
+
     public ActionFragmentManager(Experiment experiment) {
         this.id=id;
         this.experiment=experiment;
@@ -217,6 +208,55 @@ public class ActionFragmentManager {
         Bitmap bitmap = Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_8888);
         bitmap.setPixels(pixels, 0, 400, 0, 0, bitMatrixWidth, bitMatrixHeight);
         return bitmap;
+    }
+
+    /**
+     * Returns the distance in metres between the center of the region and a point on the Earth's
+     * surface (as a latitude/longitude pair).
+     * @param point
+     *      The point whose distance from the center of the region we want to calculate.
+     * @return
+     *      The distance, in metres, between the center of the region and the point.
+     */
+    private double calculateDistance(GeoLocation point) {
+        // The haversine formula is used here.
+        // All distances are in metres. All angles are in radians.
+
+        double cLat = experiment.getRegion().getLat();
+        double cLon = experiment.getRegion().getLon();
+        double pLat = point.getLat();
+        double pLon = point.getLon();
+
+        final double R = 6371000; // Mean Earth's radius
+
+        // Converting angles to radians, and computing intermediate values
+        final double phi1 = cLat * Math.PI/180;
+        final double phi2 = pLat * Math.PI/180;
+        final double deltaPhi = (pLat - cLat) * Math.PI/180;
+        final double deltaLambda = (pLon - cLon) * Math.PI/180;
+
+        // Angular distance in radians between the two points
+        final double a = Math.pow(Math.sin(deltaPhi/2), 2) + (Math.cos(phi1) * Math.cos(phi2)
+                * Math.pow(Math.sin(deltaLambda/2), 2));
+        // Square of half the chord length between the two points
+        final double c = Math.atan2(Math.sqrt(a), Math.sqrt(1-a)) * 2;
+
+        final double distance = R*c; // Distance between the two points
+
+        return distance;
+    }
+
+    /**
+     * Checks if a point on the Earth's surface is within the region of an experiment. Only meant
+     * to be called for experiments that have a region set, i.e. distance between the center of the
+     * region and the point is less than the radius of the region.
+     * @param point
+     *      The point whose existence within the region we want to check.
+     * @return
+     *      true if the point is within the region, false otherwise.
+     */
+    public boolean isWithinRegion(GeoLocation point) {
+        return experiment.getRegion().getRadius() >= calculateDistance(point);
     }
 
 }

@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.example.sparktrials.models.Experiment;
+import com.example.sparktrials.models.ExperimentComparator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class CustomList extends ArrayAdapter<Experiment> {
         super(context, 0, experiments);
         this.context = context;
         experimentsList = experiments;
+        experimentsList.sort(new ExperimentComparator()); // Sort based on descending order of date
     }
 
     @NonNull

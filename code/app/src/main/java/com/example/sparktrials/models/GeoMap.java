@@ -1,6 +1,7 @@
 package com.example.sparktrials.models;
 
 import android.graphics.Color;
+import android.location.LocationProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

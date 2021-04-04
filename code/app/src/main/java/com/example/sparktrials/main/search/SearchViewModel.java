@@ -71,42 +71,46 @@ public class SearchViewModel extends ViewModel {
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-                                String id = document.getId();
-                                String title = (String) document.get("Title");
-                                String desc = (String) document.get("Description");
-                                Boolean open = (Boolean) document.get("Open");
-                                Date date = document.getTimestamp("Date").toDate();
+                                Boolean published = (Boolean) document.get("Published");
+                                if (published == null || published == true) {
+                                    String id = document.getId();
+                                    String title = (String) document.get("Title");
+                                    String desc = (String) document.get("Description");
+                                    Boolean open = (Boolean) document.get("Open");
+                                    Date date = document.getTimestamp("Date").toDate();
 
-                                Experiment experiment = new Experiment(id);
-                                experiment.setTitle(title);
-                                experiment.setDesc(desc);
-                                experiment.setOpen(open);
-                                experiment.setDate(date);
+                                    Experiment experiment = new Experiment(id);
+                                    experiment.setTitle(title);
+                                    experiment.setDesc(desc);
+                                    experiment.setOpen(open);
+                                    experiment.setPublished(true || published);
+                                    experiment.setDate(date);
 
-                                String ownerId = (String) document.get("profileID");
+                                    String ownerId = (String) document.get("profileID");
 
-                                usersCollection.document(ownerId).get()
-                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    DocumentSnapshot document = task.getResult();
-                                                    String username = (String) document.get("name");
-                                                    String phoneNum = (String) document.get("contact");
+                                    usersCollection.document(ownerId).get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DocumentSnapshot document = task.getResult();
+                                                        String username = (String) document.get("name");
+                                                        String phoneNum = (String) document.get("contact");
 
-                                                    Profile owner = new Profile(ownerId);
-                                                    owner.setUsername(username);
-                                                    owner.setContact(phoneNum);
+                                                        Profile owner = new Profile(ownerId);
+                                                        owner.setUsername(username);
+                                                        owner.setContact(phoneNum);
 
-                                                    experiment.setOwner(owner);
+                                                        experiment.setOwner(owner);
 
-                                                    ArrayList<Experiment> x = experiments.getValue();
-                                                    x.add(experiment);
+                                                        ArrayList<Experiment> x = experiments.getValue();
+                                                        x.add(experiment);
 
-                                                    experiments.setValue(x);
+                                                        experiments.setValue(x);
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
+                                }
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());

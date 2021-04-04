@@ -65,6 +65,11 @@ public class AdminFragment extends Fragment {
             endButton.setText("OPEN EXPERIMENT");
         }
         unpublishButton = getView().findViewById(R.id.unpublish_experiment_button);
+        if(experiment.getPublished()){
+            unpublishButton.setText("Unpublish Experiment");
+        } else {
+            unpublishButton.setText("Publish Experiment");
+        }
 
         endButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,30 +89,36 @@ public class AdminFragment extends Fragment {
         });
 
         unpublishButton.setOnClickListener((v) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Are you sure you want to unpublish this experiment?");
-            builder.setMessage("This cannot be reversed.");
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    manager.deleteExperiment(experiment.getId());
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    dialog.dismiss();
-                    getActivity().finish();
-                }
-            });
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
+            if(experiment.getPublished()){
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Are you sure you want to unpublish this experiment?");
+                builder.setMessage("All experimenters will be unsubscribed from it.");
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        manager.unpublishExperiment(experiment.getId());
+                        if(experiment.getOpen()) {
+                            manager.toggleExpOpen(experiment);
+                        }
+                        manager.toggleExpPublished(experiment);
+                        unpublishButton.setText("Publish Experiment");
+                        endButton.setText("Open Experiment");
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
-            AlertDialog alert = builder.create();
-            alert.show();
-
+                AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                manager.toggleExpPublished(experiment);
+                unpublishButton.setText("Unpublish Experiment");
+            }
         });
     }
 

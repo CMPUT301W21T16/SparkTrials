@@ -133,7 +133,6 @@ public class QrScannerActivity extends AppCompatActivity {
                     trial = new TrialMeasurement((Double) map.get("value"));
                 } else {
                     trial = new TrialCount();
-                    ((TrialCount) trial).setCount(((Double) map.get("value")).intValue());
                 }
 
                 if (experiment.hasLocationSet()) {

@@ -265,6 +265,24 @@ public class Experiment {
     }
 
     /**
+     * Returns whether the experiment is published or not
+     * @return
+     *  true if the experiment is published, false if not
+     */
+    public Boolean getPublished() {
+        return published;
+    }
+
+    /**
+     * Update the value of the published boolean
+     * @param publication
+     *  the new value
+     */
+    public void setPublished(Boolean publication) {
+        this.published = publication;
+    }
+
+    /**
      * Deletes a trial from the trial list
      * @param id
      *    The id of the trial to delete

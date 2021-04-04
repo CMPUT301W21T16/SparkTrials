@@ -63,17 +63,19 @@ public class ActionFragment extends Fragment implements LocationListener {
     EditText valueEditText;
 
     LocationManager locationManager;
-    boolean reqLocation;
+    boolean hasLocationSet;
+    boolean enforceLocation;
     MutableLiveData<GeoLocation> currentLocation;
 
     public ActionFragment(Experiment experiment){
         this.manager= new ActionFragmentManager(experiment);
-        reqLocation = experiment.getReqLocation();
-        if (reqLocation) {
+        hasLocationSet = experiment.hasLocationSet();
+        if (hasLocationSet) {
             currentLocation = new MutableLiveData<>();
         } else {
             currentLocation = new MutableLiveData<>(null);
         }
+        enforceLocation = experiment.getReqLocation();
     }
 
     @Override
@@ -100,7 +102,7 @@ public class ActionFragment extends Fragment implements LocationListener {
             valueEditText = view.findViewById(R.id.countvalue_editText);
             updateView();
 
-            if (reqLocation) {
+            if (hasLocationSet) {
                 getLocation();
                 final Observer<GeoLocation> nameObserver = new Observer<GeoLocation>() {
                     @Override
@@ -135,7 +137,7 @@ public class ActionFragment extends Fragment implements LocationListener {
     public void onStart() {
         super.onStart();
 
-        if (reqLocation) {
+        if (enforceLocation) {
             final Observer<GeoLocation> nameObserver = new Observer<GeoLocation>() {
                 @Override
                 public void onChanged(@Nullable final GeoLocation newLoc) {

@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.sparktrials.IdManager;
 
@@ -28,11 +29,9 @@ public class PublishFragment extends DialogFragment {
     private EditText expDesc;
     private EditText expTitle;
     private EditText expMinNTrials;
-    private EditText expRegion;
-    private Experiment experiment;
-    private String userID;
     private Spinner spinner;
     private Spinner locationSet;
+    private TextView reqTrialLocations;
     private Spinner trialLocations;
 
     private double lat;
@@ -55,6 +54,7 @@ public class PublishFragment extends DialogFragment {
         expMinNTrials = view.findViewById(R.id.expMinNTrials_editText);
         spinner = view.findViewById(R.id.experiment_type_spinner);
         locationSet = view.findViewById(R.id.experiment_location_spinner);
+        reqTrialLocations = view.findViewById(R.id.request_trials_location);
         trialLocations = view.findViewById(R.id.trial_location_spinner);
         String[] items = new String[]{"Binomial Trials", "Counts", "Non-Negative Integer Counts","Measurement Trials"};
         String[] locationOptions = new String[]{"False", "True"};
@@ -72,6 +72,12 @@ public class PublishFragment extends DialogFragment {
                 Boolean chooseLocation = Boolean.parseBoolean(locationSet.getSelectedItem().toString());
                 if (chooseLocation) {
                     startMapsActivity();
+                    reqTrialLocations.setVisibility(View.VISIBLE);
+                    trialLocations.setVisibility(View.VISIBLE);
+                } else {
+                    reqTrialLocations.setVisibility(View.INVISIBLE);
+                    trialLocations.setVisibility(View.INVISIBLE);
+                    trialLocations.setSelection(0); // Set to False
                 }
             }
 

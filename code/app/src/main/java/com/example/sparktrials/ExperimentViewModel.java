@@ -174,7 +174,7 @@ public class ExperimentViewModel extends ViewModel {
                     ((TrialCount) trial).setCount(((Double) map.get("value")).intValue());
                 }
 
-                if (experiment.getReqLocation()) {
+                if (experiment.hasLocationSet()) {
                     HashMap<String, Object> trialCoords = (HashMap<String, Object>) map.get("location");
                     GeoLocation trialLocation = new GeoLocation();
                     trialLocation.setLat((double) trialCoords.get("lat"));

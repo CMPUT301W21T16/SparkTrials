@@ -111,11 +111,13 @@ public class HomeViewModel extends ViewModel {
                              String title = (String) document.get("Title");
                              String desc = (String) document.get("Description");
                              Boolean open = (Boolean) document.get("Open");
+                             Date date = document.getTimestamp("Date").toDate();
 
                              Experiment exp = new Experiment(id);
                              exp.setTitle(title);
                              exp.setDesc(desc);
                              exp.setOpen(open);
+                             exp.setDate(date);
 
                              usersCollection.document(profileID).get()
                                  .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

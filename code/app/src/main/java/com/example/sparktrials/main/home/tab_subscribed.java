@@ -79,7 +79,6 @@ public class tab_subscribed extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Experiment experiment = subExperiment_adapter.getItem(position);
                 startExperimentActivity(experiment.getId());
-
             }
         });
     }

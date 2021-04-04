@@ -89,6 +89,8 @@ public class ActionFragment extends Fragment implements LocationListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (manager.getOpen()) {
             view = inflater.inflate(R.layout.fragment_action, container, false);
+            trialsNumber=view.findViewById(R.id.trials_completed);
+            trialsCount=view.findViewById(R.id.trials_count);
             leftButton = view.findViewById(R.id.action_bar_pass);
             rightButton = view.findViewById(R.id.action_bar_fail);
             uploadButton = view.findViewById(R.id.action_bar_upload_trials);
@@ -103,9 +105,18 @@ public class ActionFragment extends Fragment implements LocationListener {
                 final Observer<GeoLocation> nameObserver = new Observer<GeoLocation>() {
                     @Override
                     public void onChanged(@Nullable final GeoLocation newLoc) {
-                        //System.out.println(currentLocation.getValue().getLat());
                         if (newLoc != null) {
-                            showViews();
+                            if (manager.isWithinRegion(newLoc)) {
+                                // If the new location is within radius of experiment region.
+                                updateView();
+                                showViews();
+                            } else {
+                                hideViews();
+
+                                String message = "You are currently outside the region specified by the experiment owner.";
+                                trialsCount.setVisibility(View.VISIBLE);
+                                trialsCount.setText(message);
+                            }
                         }
                     }
                 };
@@ -162,11 +173,10 @@ public class ActionFragment extends Fragment implements LocationListener {
     }
 
     public void updateView(){
+        trialsCount.setText("");
         int trials=manager.getNTrials();
         Log.d("NUM Is", String.valueOf(trials));
         int minimumNumberTrials = manager.getMinNTrials();
-        trialsNumber=view.findViewById(R.id.trials_completed);
-        trialsCount=view.findViewById(R.id.trials_count);
         if(manager.getType().equals("Counts".toLowerCase())){
             trialsCount.setText("Trial count: "+count);
         }
@@ -462,6 +472,19 @@ public class ActionFragment extends Fragment implements LocationListener {
                 updateView();
             }
         });
+    }
+
+    /**
+     * Hides all views that could alter trials (add, delete, generate QR codes, etc.).
+     */
+    private void hideViews() {
+        leftButton.setVisibility(View.INVISIBLE);
+        rightButton.setVisibility(View.INVISIBLE);
+        uploadButton.setVisibility(View.INVISIBLE);
+        recordNumButton.setVisibility(View.INVISIBLE);
+        generateQR.setVisibility(View.INVISIBLE);
+        deleteTrials.setVisibility(View.INVISIBLE);
+        valueEditText.setVisibility(View.INVISIBLE);
     }
 
     /**

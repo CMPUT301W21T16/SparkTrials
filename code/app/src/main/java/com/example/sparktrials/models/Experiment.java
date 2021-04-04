@@ -1,5 +1,7 @@
 package com.example.sparktrials.models;
 
+import android.util.Log;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +34,9 @@ public class Experiment {
     private Boolean open;
     private Date date;
     private ArrayList<String> blacklist;
+
+    private Double upperBound;
+    private Double lowerBound;
 
     /**
      * Initiates an empty experiment that will be filled out later
@@ -577,13 +582,43 @@ public class Experiment {
      * A sorted list of type string
      */
     public String [] getXaxis(){
+        int maxBins = 15;
         Double[] dupesRemoved = removeDupes();
         int size = dupesRemoved.length;
-        String[] str = new String[size];
-        for (int i=0 ; i<size; i++){
-            str[i] = dupesRemoved[i].toString();
+        if (size < maxBins) {
+            String[] str = new String[size];
+            for (int i = 0; i < size; i++) {
+                str[i] = dupesRemoved[i].toString();
+            }
+            return str;
+        } else {
+            ArrayList<Double> sortedValues = trialsValuesSorted();
+            Double q1 = Double.parseDouble(getQ1());
+            Double q3 = Double.parseDouble(getQ3());
+            Double iq = q3-q1;
+            Double boundMultiplier = 1.5;
+            upperBound = sortedValues.get(0);
+            lowerBound = sortedValues.get(0);
+            for (int i=1; i<sortedValues.size(); i++) {
+                Double value = sortedValues.get(i);
+                if (value > upperBound) {
+                    upperBound = value;
+                }
+                if (value < lowerBound) {
+                    lowerBound = value;
+                }
+            }
+            upperBound = Math.min(upperBound, q3+boundMultiplier*iq);
+            lowerBound = Math.max(lowerBound, q1-boundMultiplier*iq);
+            Double binSize = (upperBound-lowerBound)/maxBins;
+
+            String[] str = new String[maxBins];
+            for (double i = 0.0; i < maxBins; i++) {
+                str[(int)i] = String.format("%.2f",lowerBound+i*binSize);
+            }
+
+            return str;
         }
-        return str ;
     }
 
     /**
@@ -592,24 +627,44 @@ public class Experiment {
      * An integer list of frequencies which matches the the index of the getXAxis list
      */
     public int [] frequencies(){
-        ArrayList<Double> sortedValues = trialsValuesSorted();
-        HashMap<String, Integer> map = new HashMap<>();
-        for (int i=0; i<sortedValues.size(); i++){
-            String value = sortedValues.get(i).toString();
-            if (map.containsKey(value)) {
-                map.put(value, map.get(value)+1);
-            } else {
-                map.put(value,1);
-            }
-        }
-
+        int maxBins = 15;
         String[] xAxis = getXaxis();
-        int []frequencies = new int [xAxis.length];
-        for (int i=0; i<xAxis.length; i++) {
-            frequencies[i] = map.get(xAxis[i]);
-        }
+        ArrayList<Double> sortedValues = trialsValuesSorted();
 
-        return frequencies;
+        if (xAxis.length<maxBins) {
+            HashMap<String, Integer> map = new HashMap<>();
+            for (int i=0; i<sortedValues.size(); i++) {
+                String value = sortedValues.get(i).toString();
+                if (map.containsKey(value)) {
+                    map.put(value, map.get(value) + 1);
+                } else {
+                    map.put(value, 1);
+                }
+            }
+
+            int[] frequencies = new int[xAxis.length];
+            for (int i = 0; i < xAxis.length; i++) {
+                frequencies[i] = map.get(xAxis[i]);
+            }
+            return frequencies;
+
+        } else {
+            Double binSize = (upperBound-lowerBound)/maxBins;
+
+            int[] frequencies = new int[maxBins];
+            for (int i = 0; i < sortedValues.size(); i++) {
+                Double value = sortedValues.get(i);
+                double binNumber = -(lowerBound-value)/binSize;
+                if (binNumber >= 0 && binNumber < maxBins) {
+                    frequencies[(int)binNumber] += 1;
+                } else if (binNumber == maxBins) {
+                    binNumber = maxBins-1;
+                    frequencies[(int)binNumber] += 1;
+                }
+            }
+
+            return frequencies;
+        }
     }
 
     /**
@@ -730,13 +785,13 @@ public class Experiment {
         if (trialsValuesSorted().isEmpty() ){
             return "N/A";
         }
-        int sum =0 ;
+        double sum =0 ;
         double mean;
         int num = getValidTrials().size();
         for (int i=0 ; i<num;  i++){
             sum+= getValidTrials().get(i).getValue();
         }
-        mean = ((double) sum) / ((double) num);
+        mean = sum / ((double) num);
         return String.format("%.2f", mean);
     }
 }

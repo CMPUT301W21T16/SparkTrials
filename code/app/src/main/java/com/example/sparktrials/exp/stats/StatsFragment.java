@@ -127,7 +127,6 @@ public class StatsFragment extends Fragment {
         //xAxis.setLabelCount(2);
 
 
-
         xAxis.setValueFormatter(new ValueFormatter() {
             /**
              * This method casts the X axis values necessary for the used graphing Library

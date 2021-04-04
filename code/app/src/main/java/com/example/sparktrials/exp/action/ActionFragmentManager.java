@@ -83,8 +83,9 @@ public class ActionFragmentManager {
     /**
      * Adds a count trial to the experiment
      */
-    public void addCountTrial(GeoLocation location){
+    public void addCountTrial(Integer count, GeoLocation location){
         TrialCount trial = new TrialCount();
+        trial.setCount(count);
         trial.setId(UUID.randomUUID().toString());
         trial.setProfile(profile);
         trial.setLocation(location);

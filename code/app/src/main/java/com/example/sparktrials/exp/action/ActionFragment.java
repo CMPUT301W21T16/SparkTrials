@@ -383,24 +383,24 @@ public class ActionFragment extends Fragment implements LocationListener {
             });
         } else if (manager.getType().equals("Counts".toLowerCase())) {
             leftButton.setVisibility(View.VISIBLE);
-            //rightButton.setVisibility(View.VISIBLE);
+            rightButton.setVisibility(View.VISIBLE);
             leftButton.setText("Add Count");
-            //rightButton.setText("Commit Trial");
+            rightButton.setText("Commit Trial");
             leftButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    manager.addCountTrial(currentLocation.getValue());
+                    count += 1;
                     updateView();
                 }
             });
-//            rightButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    manager.addCountTrial(count, currentLocation.getValue());
-//                    count = 0;
-//                    updateView();
-//                }
-//            });
+            rightButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    manager.addCountTrial(count, currentLocation.getValue());
+                    count = 0;
+                    updateView();
+                }
+            });
             generateQR.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

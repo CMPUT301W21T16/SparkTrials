@@ -28,6 +28,7 @@ import java.util.UUID;
  * fragment manager deals with that
  */
 public class ActionFragmentManager {
+
     private Experiment experiment;
     private FirebaseManager firebaseManager = new FirebaseManager();
     private int originalNTrials;
@@ -105,6 +106,15 @@ public class ActionFragmentManager {
      */
     public int getMinNTrials(){
         return experiment.getMinNTrials();
+    }
+
+    /**
+     * Returns the title of the experiment
+     * @return
+     *  The title of the experiment
+     */
+    public String getTitle() {
+        return experiment.getTitle();
     }
 
     /**

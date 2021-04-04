@@ -10,7 +10,7 @@ public class TrialCount extends Trial{
      */
     public TrialCount(){
         super();
-        this.value = 0.0;
+        this.value = 1.0;
     }
     /**
      * This constructor initializes a filled trial. Initializes count to 0 always
@@ -23,15 +23,19 @@ public class TrialCount extends Trial{
      */
     public TrialCount (String id, GeoLocation location, Profile profile){
         super(id, location, profile);
-        this.value = 0.0;
+        this.value = 1.0;
     }
 
-    /**
-     * Increments the count attribute
-     */
-    public void addCount() {
-        this.value += 1.0;
-    }
+    // removed this method as a Count trial only ever has the value 1. each count trial indicates a
+    // single occurence of whatever is being counted.
+    // eclass link discussing this:
+    // Question 3 from this post: https://eclass.srv.ualberta.ca/mod/forum/discuss.php?d=1712148
+//    /**
+//     * Increments the count attribute
+//     */
+//    public void addCount() {
+//        this.value += 1.0;
+//    }
 
 
     /**

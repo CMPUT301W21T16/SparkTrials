@@ -83,20 +83,25 @@ public class ActionFragmentManager {
     /**
      * Adds a count trial to the experiment
      */
-    public void addCountTrial(Integer count, GeoLocation location){
-        TrialCount trial = new TrialCount();
-        trial.setId(UUID.randomUUID().toString());
-        trial.setProfile(profile);
-        trial.setLocation(location);
+    public void addCountTrial(GeoLocation location){
+        TrialCount trial = new TrialCount(UUID.randomUUID().toString(),location,profile);
         experiment.addTrial(trial);
     }
 
     /**
-     * Returns the number of trials in the experiment
+     * Returns the number of trials in the experiment before uploading
+     * @return
+     */
+    public Integer getPreUploadedNTrials(){
+        return originalNTrials;
+    }
+
+    /**
+     * Returns number of trials in the experiment object(Unuploaded Trials included)
      * @return
      */
     public Integer getNTrials(){
-        return experiment.getUserTrials(profile.getId()).size();
+        return Integer.parseInt(experiment.getNumTrials());
     }
 
     /**
@@ -133,7 +138,6 @@ public class ActionFragmentManager {
      * TO DO: Uploads the trials to firbase
      */
     public void uploadTrials(){
-
         firebaseManager.uploadTrials(experiment);
         this.originalNTrials=Integer.parseInt(experiment.getNumTrials());
     }

@@ -25,25 +25,4 @@ public class TrialCount extends Trial{
         super(id, location, profile);
         this.value = 1.0;
     }
-
-    // removed this method as a Count trial only ever has the value 1. each count trial indicates a
-    // single occurence of whatever is being counted.
-    // eclass link discussing this:
-    // Question 3 from this post: https://eclass.srv.ualberta.ca/mod/forum/discuss.php?d=1712148
-//    /**
-//     * Increments the count attribute
-//     */
-//    public void addCount() {
-//        this.value += 1.0;
-//    }
-
-
-    /**
-     * Completely sets the count to a specified amount. Should not be used often - counts should be incremented
-     * @param count
-     *    The new count value that the trial will hold
-     */
-    public void setCount(Integer count) {
-        this.value = (double)count;
-    }
 }

@@ -45,6 +45,15 @@ public class ActionFragmentManager {
     }
 
     /**
+     * Returns the Id of the experiment
+     * @return
+     *  The Id
+     */
+    public String getExpId(){
+        return experiment.getId();
+    }
+
+    /**
      * Adds a binomial trial to the experiment
      * @param result
      */

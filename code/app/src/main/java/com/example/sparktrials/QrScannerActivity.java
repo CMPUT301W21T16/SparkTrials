@@ -25,6 +25,7 @@ import com.google.zxing.integration.android.IntentResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,10 +34,11 @@ public class QrScannerActivity extends AppCompatActivity {
 
     FirebaseManager db = new FirebaseManager();
     private String userId;
-    private String trialId;
     private MutableLiveData<Experiment> exp = new MutableLiveData<>();
     private MutableLiveData<Trial> trial = new MutableLiveData<>();
     private MutableLiveData<Profile> profile = new MutableLiveData<>();
+    // to tell if scanning a QrCode/Barcode or registering a barcode
+    private int scanReg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +48,17 @@ public class QrScannerActivity extends AppCompatActivity {
         userId = idManager.getUserId();
         downloadProfile();
 
+        scanReg = getIntent().getIntExtra("ScanReg", 0);
+
         IntentIntegrator qrIntegrator = new IntentIntegrator(this);
-        qrIntegrator.setPrompt("Scan a QRCode");
+        if(scanReg == 0){
+            qrIntegrator.setPrompt("Scan a QRCode or Registered Bar Code");
+        } else {
+            qrIntegrator.setPrompt("Scan a Barcode to register");
+        }
         qrIntegrator.setOrientationLocked(true);
         qrIntegrator.initiateScan();
+
     }
 
     @Override
@@ -57,16 +66,36 @@ public class QrScannerActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         String codeResult = intentResult.getContents();
-        Pattern uuidPattern = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
-        Matcher uuidMatcher = uuidPattern.matcher(codeResult);
-        String codeId;
-        if(!uuidMatcher.matches()){
-            codeId = UUID.nameUUIDFromBytes(codeResult.getBytes()).toString();
+        if(scanReg == 0) {
+            Pattern uuidPattern = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+            Matcher uuidMatcher = uuidPattern.matcher(codeResult);
+            String codeId;
+            if(!uuidMatcher.matches()){
+                codeId = UUID.nameUUIDFromBytes(codeResult.getBytes()).toString();
+            } else {
+                codeId = codeResult;
+            }
+
+            createTrial(codeId);
         } else {
-            codeId = codeResult;
+            String codeId = UUID.nameUUIDFromBytes(codeResult.getBytes()).toString();
+            String experimentId = getIntent().getStringExtra("ExpId");
+            String trialType = getIntent().getStringExtra("TrialType");
+            double value = getIntent().getDoubleExtra("Value", 0.0);
+            QrCode newCode = new QrCode(codeId, experimentId, trialType, value);
+            uploadCode(newCode);
+            finish();
         }
 
-        createTrial(codeId);
+    }
+
+    public void uploadCode(QrCode code){
+        Map<String, Object> map = new HashMap<>();
+        map.put("Id", code.getQrId());
+        map.put("ExperimentId", code.getExperimentId());
+        map.put("TrialType", code.getTrialType());
+        map.put("Value", code.getValue());
+        db.set("qrCodeData", code.getQrId(), map);
     }
 
     public void downloadProfile() {

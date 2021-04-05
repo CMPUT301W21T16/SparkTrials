@@ -1,8 +1,11 @@
 package com.example.sparktrials;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -34,7 +37,8 @@ import com.google.android.material.tabs.TabLayout;
 
 /**
  * A class with tabs for each ability of an experiment
- * Displays the title and description of the experiment, also the subscribe button persistently
+ * Displays the title, description, owner, and status of the experiment,
+ * also the subscribe button
  */
 public class ExperimentActivity extends AppCompatActivity {
 
@@ -60,7 +64,8 @@ public class ExperimentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_experiment);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.top_app_bar);
+        //sets up the topbar
+        Toolbar myToolbar = findViewById(R.id.top_app_bar);
         myToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
 
             @SuppressLint("NonConstantResourceId")
@@ -87,6 +92,7 @@ public class ExperimentActivity extends AppCompatActivity {
             }
         });
 
+        //unpacks info from mainactivity and sets up UI
         experimentId = getIntent().getStringExtra("EXPERIMENT_ID");
         IdManager idManager = new IdManager(this);
         userId = idManager.getUserId();
@@ -119,7 +125,8 @@ public class ExperimentActivity extends AppCompatActivity {
         };
         expManager.getProfile().observe(this, name1Observer);
         expManager.subscribe().observe(this, name1Observer);
-        // This will allow the experiment to be displayed when the activity is launched
+
+        // This will allow the experiment to be displayed when the activity is launched and firebase has retrieved the info
         final Observer<Experiment> name2Observer = new Observer<Experiment>() {
 
             @Override
@@ -138,7 +145,7 @@ public class ExperimentActivity extends AppCompatActivity {
                 adapter.addFragment(new ActionFragment(experiment), "Action");
                 adapter.addFragment(new StatsFragment(experiment), "Stats");
                 adapter.addFragment(new ForumFragment(experiment), "Forum");
-                if (experiment.getRegion().getRadius() > 0) {
+                if (experiment.getRegion().getRadius() > 0 && hasInternetConnectivity()) {
                     adapter.addFragment(new LocationFragment(experiment), "Map");
                 }
                 if (experiment.getOwner().getId().equals(userId)) {
@@ -173,6 +180,7 @@ public class ExperimentActivity extends AppCompatActivity {
             }
         });
 
+        //If back button is pressed, then go back to main activity
         backToMain.setOnClickListener((v) -> {
             Intent intent = new Intent(getBaseContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -182,12 +190,16 @@ public class ExperimentActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Subscribes or unsubscribes the user to the experiment
+     * If the experiment requires locations, sends a warning message
+     */
     public void subscribe() {
         if (expManager.getExperiment().getValue().getReqLocation() &&
                 !expManager.getProfile().getValue().getSubscriptions().contains(experimentId)) {
             //Experiment requires locations and user is not currently subscribed
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("This experiment requires your location to be submitted");
+            builder.setTitle("This experiment requires your location to be recorded");
             builder.setMessage("Are you sure you want to subscribe?");
             builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
@@ -197,7 +209,7 @@ public class ExperimentActivity extends AppCompatActivity {
                     dialog.dismiss();
                 }
             });
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            builder.setNeutralButton("NO", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // Do nothing
@@ -207,6 +219,8 @@ public class ExperimentActivity extends AppCompatActivity {
 
             AlertDialog alert = builder.create();
             alert.show();
+            alert.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.spark_text));
+            alert.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.neutral));
         } else {
             //Experiment doesn't require locations or user is already subscribed
             //unsubscribe
@@ -228,11 +242,16 @@ public class ExperimentActivity extends AppCompatActivity {
     }
 
     /**
-     * When this activity is over, update the subscribe attribute
+     * This method checks if the user has an internet connection
+     * @return
+     *    A boolean value; true if internet connection, false if no internet connection
      */
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        expManager.updateSubscribe();
-//    }
+    public boolean hasInternetConnectivity() {
+        ConnectivityManager cm =
+                (ConnectivityManager)this.getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return (activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting());
+    }
 }

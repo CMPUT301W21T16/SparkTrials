@@ -45,7 +45,7 @@ public class ChooseRadiusFragment extends DialogFragment {
         radiusEditText = view.findViewById(R.id.radius_edit_text);
         unitsDropDownMenu = view.findViewById(R.id.unit_drop_down_menu);
 
-        String[] units = {"m", "km"};
+        String[] units = {"km", "m"};
         ArrayAdapter<String> unitsAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, units);
         unitsDropDownMenu.setAdapter(unitsAdapter);
 
@@ -60,8 +60,7 @@ public class ChooseRadiusFragment extends DialogFragment {
                     new AlertDialog.Builder(getContext())
                             .setTitle("ERROR")
                             .setMessage("Radius cannot be empty!")
-                            .setPositiveButton("OK",null)
-                            .show();
+                            .setPositiveButton("OK",null);
                 } else {
                     double radius = Double.parseDouble(radiusString);
                     if (unitsDropDownMenu.getSelectedItem().equals("km")) {
@@ -75,8 +74,12 @@ public class ChooseRadiusFragment extends DialogFragment {
                 }
             }
         });
-        builder.setNegativeButton("Cancel", null);
+        builder.setNeutralButton("Cancel", null);
 
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.spark_text));
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.neutral));
+        return dialog;
     }
 }

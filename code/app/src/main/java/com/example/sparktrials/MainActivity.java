@@ -15,8 +15,6 @@ import android.widget.Toast;
 import com.example.sparktrials.main.publish.PublishFragment;
 import com.example.sparktrials.models.Trial;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;

@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="411dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:text="Choose radius of your region: "
-        android:textSize="22dp" />
+        android:paddingLeft="5dp"
+        android:background="@color/header"
+        android:gravity="center"
+        android:text="Choose Radius for Region: "
+        android:textStyle="bold"
+        android:textSize="22dp"
+        android:textColor="@color/norm_text"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/norm_text"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -20,15 +30,17 @@
 
         <EditText
             android:id="@+id/radius_edit_text"
-            android:layout_width="262dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:ems="10"
             android:hint="Enter radius..."
-            android:inputType="number|numberDecimal" />
+            android:inputType="number|numberDecimal"
+            android:layout_weight="3"/>
 
         <Spinner
             android:id="@+id/unit_drop_down_menu"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1" />
     </LinearLayout>

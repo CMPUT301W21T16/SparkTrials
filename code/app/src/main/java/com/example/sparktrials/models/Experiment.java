@@ -270,7 +270,12 @@ public class Experiment {
      *  true if the experiment is published, false if not
      */
     public Boolean getPublished() {
-        return published;
+
+        if (published != null){
+            return published;
+        } else {
+            return true;
+        }
     }
 
     /**

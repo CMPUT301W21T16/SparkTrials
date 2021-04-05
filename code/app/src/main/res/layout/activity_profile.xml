@@ -111,6 +111,24 @@
         android:background="@color/backdrop"/>
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/main_text"
+        android:textSize="18sp"
+        android:text="UserID: "
+        android:layout_margin="4dp"
+        android:paddingLeft="10dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/experimenter_id"
+        android:layout_margin="4dp"
+        android:drawablePadding="7dp"
+        android:paddingLeft="10dp"
+        android:textColor="@color/neutral"
+        android:textSize="14sp"/>
+
+    <TextView
         android:id="@+id/id2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

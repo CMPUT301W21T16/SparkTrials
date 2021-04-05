@@ -149,11 +149,8 @@ public class ExperimentViewModel extends ViewModel {
             experiment.setPublished((Boolean) expData.getData().get("Published"));
             experiment.setType((String) expData.getData().get("Type"));
             String uId = (String) expData.getData().get("profileID");
-            String username = (String) expData.getData().get("ownerName");
             Profile owner = new Profile(uId);
-            owner.setUsername(username);
             experiment.setOwner(owner);
-//            experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
             ArrayList<HashMap> trialsHash = (ArrayList<HashMap>) expData.getData().get("Trials");
             ArrayList<Trial> trials = new ArrayList<>();
             for(HashMap<String, Object> map: trialsHash){
@@ -198,8 +195,16 @@ public class ExperimentViewModel extends ViewModel {
             experiment.setBlacklist((ArrayList<String>) expData.getData().get("Blacklist"));
             Log.d(TAG, expData.getId() + " => " + expData.getData());
 
-            exp.setValue(experiment);
+            manager.get("users", experiment.getOwner().getId(), proData -> {
+                Log.d(TAG, proData.getId() + " => " + proData.getData());
+                experiment.getOwner().setUsername((String) proData.getData().get("name"));
+
+                exp.setValue(experiment);
+            });
+
         });
+
+
     }
 
 

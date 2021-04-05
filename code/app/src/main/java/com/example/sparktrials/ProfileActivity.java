@@ -41,6 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private TextView userNameTextView;
     private TextView userContactInfoTextView;
+    private TextView userIdTextView;
 
     private String TAG = "Fetching Profile...";
 
@@ -81,6 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         userNameTextView = findViewById(R.id.experimenter_name);
         userContactInfoTextView = findViewById(R.id.experimenter_contact);
+        userIdTextView = findViewById(R.id.experimenter_id);
 
         // Gets the user's profile information from the database
         usersCollection.document(userId).get()
@@ -112,9 +114,11 @@ public class ProfileActivity extends AppCompatActivity {
 
                 String userName = userProfile.getValue().getUsername();
                 String userContactInfo = userProfile.getValue().getContact();
+                String userId = userProfile.getValue().getId();
 
                 userNameTextView.setText(userName);
                 userContactInfoTextView.setText(userContactInfo);
+                userIdTextView.setText(userId);
             }
         };
         userProfile.observe(this, nameObserver);

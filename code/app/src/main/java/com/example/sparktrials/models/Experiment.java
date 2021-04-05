@@ -434,7 +434,7 @@ public class Experiment {
      *    Returns the string of the date
      */
     public String getDay(){
-        String pattern = "EEE MMM MM HH:mm:ss z yyyy";
+        String pattern = "EEE MMM DD HH:mm:ss z yyyy";
         DateFormat df = new SimpleDateFormat(pattern);
         String strDate = df.format(date);
         strDate = strDate.substring(4,10);

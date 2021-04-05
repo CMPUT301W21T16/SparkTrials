@@ -26,6 +26,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class QrScannerActivity extends AppCompatActivity {
 
@@ -54,8 +56,17 @@ public class QrScannerActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        trialId = intentResult.getContents();
-        createTrial(trialId);
+        String codeResult = intentResult.getContents();
+        Pattern uuidPattern = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+        Matcher uuidMatcher = uuidPattern.matcher(codeResult);
+        String codeId;
+        if(!uuidMatcher.matches()){
+            codeId = UUID.nameUUIDFromBytes(codeResult.getBytes()).toString();
+        } else {
+            codeId = codeResult;
+        }
+
+        createTrial(codeId);
     }
 
     public void downloadProfile() {
@@ -72,7 +83,13 @@ public class QrScannerActivity extends AppCompatActivity {
 
     public void createTrial(String qrId) {
         db.get("qrCodeData", qrId, qrData -> {
-            String trialType = (String) qrData.getData().get("TrialType");
+            String trialType;
+            try{
+                trialType = (String) qrData.getData().get("TrialType");
+            } catch(Exception e){
+                finish();
+                return;
+            }
             Trial tri;
             Double value = (Double) qrData.getData().get("Value");
             if(trialType.equals("binomial trials")){

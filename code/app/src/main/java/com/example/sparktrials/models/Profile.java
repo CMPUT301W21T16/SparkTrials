@@ -6,10 +6,10 @@ import java.util.ArrayList;
  * This class keeps track of each user profile with an id, their username and contact info
  */
 public class Profile {
-    String id;
-    String username;
-    String contact;
-    ArrayList<String> subscriptions;
+    private String id;
+    private String username;
+    private String contact;
+    private ArrayList<String> subscriptions;
     /**
      * This constructor creates a default Profile with no attributes
      */

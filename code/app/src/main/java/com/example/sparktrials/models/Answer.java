@@ -3,7 +3,7 @@ package com.example.sparktrials.models;
 import java.util.Date;
 
 public class Answer extends Post{
-    Question question;
+    private Question question;
 
     /**
      * An answer to a question for an experiment

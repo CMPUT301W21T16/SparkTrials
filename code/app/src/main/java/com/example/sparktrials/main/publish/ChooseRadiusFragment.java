@@ -26,6 +26,7 @@ public class ChooseRadiusFragment extends DialogFragment {
 
     private GeoMap map;
 
+    private EditText regionTitleEditText;
     private EditText radiusEditText;
     private Spinner unitsDropDownMenu;
 
@@ -42,8 +43,19 @@ public class ChooseRadiusFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_choose_radius, null);
 
+        regionTitleEditText = view.findViewById(R.id.title_edit_text);
         radiusEditText = view.findViewById(R.id.radius_edit_text);
         unitsDropDownMenu = view.findViewById(R.id.unit_drop_down_menu);
+
+        // If attributes already set, display them
+        double regionRadius = map.getGeoLocation().getRadius();
+        String regionTitle = map.getGeoLocation().getRegionTitle();
+        if (regionRadius > 0) {
+            // Radius is stored in metres, but the default selection is kilometres
+            radiusEditText.setText(Double.toString(regionRadius / 1000));
+        }
+        regionTitleEditText.setText(regionTitle);
+
 
         String[] units = {"km", "m"};
         ArrayAdapter<String> unitsAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, units);
@@ -54,6 +66,10 @@ public class ChooseRadiusFragment extends DialogFragment {
         builder.setPositiveButton("Confirm Radius", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                String titleString = regionTitleEditText.getText().toString();
+                map.getGeoLocation().setRegionTitle(titleString);
+                map.setCenterMarkerTitle(titleString);
+
                 String radiusString = radiusEditText.getText().toString().trim();
 
                 if (radiusString.equals("")) {

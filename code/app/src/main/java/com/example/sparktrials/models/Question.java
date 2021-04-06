@@ -12,7 +12,7 @@ import java.util.Date;
 
 public class Question extends Post {
     private String title;
-    ArrayList<Answer> answers;
+    private ArrayList<Answer> answers;
 
     /**
      * A constructor for initializing a question

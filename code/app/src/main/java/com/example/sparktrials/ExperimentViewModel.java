@@ -140,6 +140,7 @@ public class ExperimentViewModel extends ViewModel {
             region.setLat((Double) expData.getData().get("Latitude"));
             region.setLon((Double) expData.getData().get("Longitude"));
             region.setRadius((Double) expData.getData().get("Radius"));
+            region.setRegionTitle((String) expData.getData().get("Region Title"));
             experiment.setRegion(region);
             experiment.setReqLocation((Boolean) expData.getData().get("ReqLocation"));
             experiment.setMinNTrials(((Long) expData.getData().get("MinNTrials")).intValue());

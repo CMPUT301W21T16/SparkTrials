@@ -74,7 +74,7 @@ public class MapsActivity extends AppCompatActivity {
                 } else {
                     AlertDialog builder = new AlertDialog.Builder(MapsActivity.this)
                             .setTitle("ERROR")
-                            .setMessage("Long click somewhere to set a center for your region")
+                            .setMessage("Long click somewhere to set a center for your region.")
                             .setPositiveButton("OK",null)
                             .show();
                 }
@@ -127,6 +127,7 @@ public class MapsActivity extends AppCompatActivity {
             sendLocationBack.putExtra("Latitude", markedLocation.getLat());
             sendLocationBack.putExtra("Longitude", markedLocation.getLon());
             sendLocationBack.putExtra("Radius", map.getGeoLocation().getRadius());
+            sendLocationBack.putExtra("Region Title", map.getGeoLocation().getRegionTitle());
 
             int didPickLocation = (int) getIntent().getExtras().get("LOCATION_PICKED");
             setResult(didPickLocation, sendLocationBack);

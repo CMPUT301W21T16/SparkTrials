@@ -2,6 +2,7 @@ package com.example.sparktrials.models;
 
 import android.graphics.Color;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -66,6 +67,11 @@ public class GeoMap implements OnMapReadyCallback {
         map = googleMap;
 
         if (isEditable) {
+            // The map will show will Canada when first launched. I got the following
+            // values after a simple google search.
+            LatLng edmontonCityCentre = new LatLng(53.5439, -113.4923);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(edmontonCityCentre, 3.0f));
+
             map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                 @Override
                 public void onMapLongClick(LatLng center) {
@@ -114,21 +120,6 @@ public class GeoMap implements OnMapReadyCallback {
                  float zoomLevel = 13.0f;
                  map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, zoomLevel));
 
-            } else {
-                // The default region will be set to Edmonton, AB. I got the following values after
-                // a couple simple google searches.
-                LatLng defaultCenter = new LatLng(53.5439, -113.4923);
-                // Land area of Edmonton is 767.85 km^2 = pi*r^2/1000000 m^2
-                double radius = 15634;
-
-                setCenterMarkerOptions(defaultCenter);
-
-                centerMarker = map.addMarker(centerMarkerOptions);
-
-                displayCircle(defaultCenter, radius);
-
-                float zoomLevel = 10.0f;
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultCenter, zoomLevel));
             }
         }
     }

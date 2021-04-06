@@ -24,12 +24,12 @@ import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link tab_subscribed#newInstance} factory method to
+ * Use the {@link TabMyExperiments#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class tab_subscribed extends Fragment {
-    private ListView subExperiments;
-    private CustomList subExperiment_adapter;
+public class TabMyExperiments extends Fragment {
+    private ListView myExperiments;
+    private CustomList myExperiment_adapter;
     private Context context;
     private HomeViewModel homeViewModel;
 
@@ -42,26 +42,14 @@ public class tab_subscribed extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public tab_subscribed() {
+    public TabMyExperiments() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     *
-     * @return A new instance of fragment tab_subscribed.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static tab_subscribed newInstance() {
-        return new tab_subscribed();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        subExperiments = getView().findViewById(R.id.subscribed_list);
+        myExperiments = getView().findViewById(R.id.myExperiment_list);
         context = getActivity();
         IdManager idManager = new IdManager(context);
         homeViewModel = new HomeViewModel(idManager.getUserId());
@@ -69,18 +57,31 @@ public class tab_subscribed extends Fragment {
         final Observer<ArrayList<Experiment>> nameObserver = new Observer<ArrayList<Experiment>>() {
             @Override
             public void onChanged(@Nullable final ArrayList<Experiment> newList) {
-                subExperiment_adapter = new CustomList(context, newList);
-                subExperiments.setAdapter(subExperiment_adapter);
+                myExperiment_adapter = new CustomList(context, newList);
+                myExperiments.setAdapter(myExperiment_adapter);
             }
         };
-        homeViewModel.getSubExpList().observe(getViewLifecycleOwner(), nameObserver);
-        subExperiments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        homeViewModel.getMyExpList().observe(getViewLifecycleOwner(), nameObserver);
+        myExperiments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Experiment experiment = subExperiment_adapter.getItem(position);
+                Experiment experiment = myExperiment_adapter.getItem(position);
                 startExperimentActivity(experiment.getId());
+
             }
         });
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     *
+     * @return A new instance of fragment tab_my_experiments.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static TabMyExperiments newInstance() {
+        return new TabMyExperiments();
     }
 
     @Override
@@ -96,8 +97,9 @@ public class tab_subscribed extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tab_subscribed, container, false);
+        return inflater.inflate(R.layout.fragment_tab_my_experiments, container, false);
     }
+
     private void startExperimentActivity(String experimentID){
         Intent intent = new Intent(this.getActivity(), ExperimentActivity.class);
         intent.putExtra("EXPERIMENT_ID", experimentID);

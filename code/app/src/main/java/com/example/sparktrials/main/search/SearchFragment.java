@@ -10,9 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +40,9 @@ public class SearchFragment extends Fragment {
     private CustomList searchListAdapter;
     private ListView searchListView;
 
+    private Spinner filterListSpinner;
+    private FilterListAdapter filterListAdapter;
+
     private EditText searchBar;
     private ImageButton searchButton;
 
@@ -51,6 +57,13 @@ public class SearchFragment extends Fragment {
     public void onStart() {
         super.onStart();
         searchListView = getView().findViewById(R.id.search_list);
+        searchBar = getView().findViewById(R.id.search_bar);
+        searchButton = getView().findViewById(R.id.search_button);
+        filterListSpinner = getView().findViewById(R.id.filter_list_spinner);
+
+        filterListAdapter = new FilterListAdapter(getContext(), new String[]{""});
+        filterListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterListSpinner.setAdapter(filterListAdapter);
 
         searchManager = new ViewModelProvider(this).get(SearchViewModel.class);
 
@@ -64,9 +77,6 @@ public class SearchFragment extends Fragment {
             }
         };
         searchManager.getExperiments().observe(this, nameObserver);
-
-        searchBar = getView().findViewById(R.id.search_bar);
-        searchButton = getView().findViewById(R.id.search_button);
 
         // Handle clicking the "SEARCH" button
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +142,8 @@ public class SearchFragment extends Fragment {
     private void updateAdapter() {
         String[] keywords = getKeywords();
 
-        ArrayList<Experiment> searchResults = searchManager.search(keywords);
+        // Apply filters to searches.
+        ArrayList<Experiment> searchResults = searchManager.search(keywords, filterListAdapter.getChecked());
 
         searchListAdapter = new CustomList(getContext(), searchResults);
 

@@ -20,6 +20,10 @@ import com.example.sparktrials.models.ExperimentComparator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+/**
+ * This is an Array Adapter for the ListViews that show experiment information. Those ListViews are
+ * on SearchFragment and both tabs of HomeFragment of MainActivity.
+ */
 public class CustomList extends ArrayAdapter<Experiment> {
 
     private ArrayList<Experiment> experimentsList;  // This is the list of experiments that the

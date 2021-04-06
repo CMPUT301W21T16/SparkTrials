@@ -3,7 +3,6 @@ package com.example.sparktrials.main.home;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
@@ -19,9 +18,9 @@ public class FragmentPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 0:
-                return tab_my_experiments.newInstance();
+                return TabMyExperiments.newInstance();
             case 1:
-                return tab_subscribed.newInstance();
+                return TabSubscribed.newInstance();
             default:
                 return null;
         }

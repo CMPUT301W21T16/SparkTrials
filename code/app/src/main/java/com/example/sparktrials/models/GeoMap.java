@@ -1,14 +1,15 @@
 package com.example.sparktrials.models;
 
 import android.graphics.Color;
-import android.location.LocationProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -20,6 +21,9 @@ import java.util.ArrayList;
 public class GeoMap implements OnMapReadyCallback {
 
     private GoogleMap map;
+    private Marker centerMarker;
+    private MarkerOptions centerMarkerOptions;
+    private Circle circle;
 
     private GeoLocation geoLocation;
     private ArrayList<Trial> trials;
@@ -71,9 +75,10 @@ public class GeoMap implements OnMapReadyCallback {
                     geoLocation.setLat(center.latitude);
                     geoLocation.setLon(center.longitude);
 
+                    setCenterMarkerOptions(center);
+
                     // Add a marker to the map
-                    map.addMarker(new MarkerOptions()
-                            .position(center));
+                    centerMarker = map.addMarker(centerMarkerOptions);
 
                     // Center the screen around the marker
                     map.moveCamera(CameraUpdateFactory.newLatLng(center));
@@ -83,26 +88,31 @@ public class GeoMap implements OnMapReadyCallback {
             });
         } else {
             if (hasLocationSet) {
+                map.clear();
+
                 LatLng center = new LatLng(geoLocation.getLat(), geoLocation.getLon());
 
-                map.addMarker(new MarkerOptions()
-                        .position(center));
+                setCenterMarkerOptions(center);
 
-                // Add an orange marker for every trial
-                for (Trial trial : trials) {
-                    double trialLat = trial.getLocation().getLat();
-                    double trialLon = trial.getLocation().getLon();
-                    LatLng trialLocation = new LatLng(trialLat, trialLon);
+                centerMarker = map.addMarker(centerMarkerOptions);
+                setCenterMarkerTitle(geoLocation.getRegionTitle());
 
-                    map.addMarker(new MarkerOptions()
-                            .position(trialLocation)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-                }
+                 // Add an orange marker for every trial
+                 for (Trial trial : trials) {
+                     double trialLat = trial.getLocation().getLat();
+                     double trialLon = trial.getLocation().getLon();
+                     LatLng trialLocation = new LatLng(trialLat, trialLon);
 
-                displayCircle(center, geoLocation.getRadius());
+                     map.addMarker(new MarkerOptions()
+                             .position(trialLocation)
+                             .title(trial.getProfile().getUsername())
+                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                 }
 
-                float zoomLevel = 13.0f;
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, zoomLevel));
+                 displayCircle(center, geoLocation.getRadius());
+
+                 float zoomLevel = 13.0f;
+                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, zoomLevel));
 
             } else {
                 // The default region will be set to Edmonton, AB. I got the following values after
@@ -111,8 +121,9 @@ public class GeoMap implements OnMapReadyCallback {
                 // Land area of Edmonton is 767.85 km^2 = pi*r^2/1000000 m^2
                 double radius = 15634;
 
-                map.addMarker(new MarkerOptions()
-                        .position(defaultCenter));
+                setCenterMarkerOptions(defaultCenter);
+
+                centerMarker = map.addMarker(centerMarkerOptions);
 
                 displayCircle(defaultCenter, radius);
 
@@ -149,6 +160,10 @@ public class GeoMap implements OnMapReadyCallback {
      *      This represents the radius of the circle in meters.
      */
     public void displayCircle(LatLng center, double radius) {
+        if (circle != null) {
+            circle.remove();
+        }
+
         // Set the attributes of the circle to be drawn on the map.
         CircleOptions circleOptions = new CircleOptions();
         circleOptions.center(center);
@@ -158,7 +173,26 @@ public class GeoMap implements OnMapReadyCallback {
         circleOptions.fillColor(Color.argb(50, 0, 0, 120));
 
         // Add a circle to the map with the attributes set above.
-        map.addCircle(circleOptions);
+        circle = map.addCircle(circleOptions);
     }
 
+    /**
+     * Sets a title to the marker of the region's center.
+     * @param title
+     *      The title to be set
+     */
+    public void setCenterMarkerTitle(String title) {
+        centerMarker.setTitle(title);
+        centerMarker.showInfoWindow();
+    }
+
+    /**
+     * Creates and sets a (red) marker marking the center of the region.
+     * @param center
+     *      The coordinates of the marker to be set, i.e. the coordinates of the region center
+     */
+    private void setCenterMarkerOptions(LatLng center) {
+        centerMarkerOptions = new MarkerOptions()
+                                .position(center);
+    }
 }

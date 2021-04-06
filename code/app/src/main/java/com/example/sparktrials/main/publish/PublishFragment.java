@@ -40,6 +40,7 @@ public class PublishFragment extends DialogFragment {
     private double lat;
     private double lon;
     private double radius;
+    private String regionTitle;
 
     final private int didNotPickLocation = 0;
     final private int didPickLocation = 1;
@@ -121,7 +122,7 @@ public class PublishFragment extends DialogFragment {
                         String experimentType = spinner.getSelectedItem().toString();
                         Boolean reqLocation = Boolean.parseBoolean(trialLocations.getSelectedItem().toString());
                         Log.d("Type",experimentType);
-                        PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,lat,lon,radius,experimentType,reqLocation);
+                        PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,lat,lon,radius,regionTitle,experimentType,reqLocation);
                     }
                 })
                 .create();
@@ -151,6 +152,7 @@ public class PublishFragment extends DialogFragment {
             lat = (double) data.getExtras().get("Latitude");
             lon = (double) data.getExtras().get("Longitude");
             radius = (double) data.getExtras().get("Radius");
+            regionTitle = (String) data.getExtras().get("Region Title");
         }
 
     }

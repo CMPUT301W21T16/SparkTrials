@@ -39,14 +39,15 @@ public class PublishFragmentManager {
      * @param radius
      * The radius of the region.
      */
-    public PublishFragmentManager(String userID,String desc, String title, String MinNTrialsString, double lat, double lon, double radius, String experimentType,Boolean reqLocation){
+    public PublishFragmentManager(String userID,String desc, String title, String MinNTrialsString,
+                                    double lat, double lon, double radius, String regionTitle, String experimentType, Boolean reqLocation){
         try {
             minNTrials = Integer.parseInt(MinNTrialsString);
         }catch(NumberFormatException e){
             minNTrials = 0;
         }
         try{
-            geoLocation= new GeoLocation(lat, lon, radius);
+            geoLocation= new GeoLocation(lat, lon, radius, regionTitle);
         }catch (NumberFormatException e){
             geoLocation = new GeoLocation();
         }

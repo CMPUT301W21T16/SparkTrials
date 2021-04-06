@@ -18,19 +18,18 @@ import com.example.sparktrials.CustomList;
 import com.example.sparktrials.ExperimentActivity;
 import com.example.sparktrials.IdManager;
 import com.example.sparktrials.R;
-import com.example.sparktrials.main.search.SearchFragment;
 import com.example.sparktrials.models.Experiment;
 
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link tab_my_experiments#newInstance} factory method to
+ * Use the {@link TabSubscribed#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class tab_my_experiments extends Fragment {
-    private ListView myExperiments;
-    private CustomList myExperiment_adapter;
+public class TabSubscribed extends Fragment {
+    private ListView subExperiments;
+    private CustomList subExperiment_adapter;
     private Context context;
     private HomeViewModel homeViewModel;
 
@@ -43,34 +42,8 @@ public class tab_my_experiments extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public tab_my_experiments() {
+    public TabSubscribed() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        myExperiments = getView().findViewById(R.id.myExperiment_list);
-        context = getActivity();
-        IdManager idManager = new IdManager(context);
-        homeViewModel = new HomeViewModel(idManager.getUserId());
-
-        final Observer<ArrayList<Experiment>> nameObserver = new Observer<ArrayList<Experiment>>() {
-            @Override
-            public void onChanged(@Nullable final ArrayList<Experiment> newList) {
-                myExperiment_adapter = new CustomList(context, newList);
-                myExperiments.setAdapter(myExperiment_adapter);
-            }
-        };
-        homeViewModel.getMyExpList().observe(getViewLifecycleOwner(), nameObserver);
-        myExperiments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Experiment experiment = myExperiment_adapter.getItem(position);
-                startExperimentActivity(experiment.getId());
-
-            }
-        });
     }
 
     /**
@@ -78,11 +51,36 @@ public class tab_my_experiments extends Fragment {
      * this fragment using the provided parameters.
      *
      *
-     * @return A new instance of fragment tab_my_experiments.
+     * @return A new instance of fragment tab_subscribed.
      */
     // TODO: Rename and change types and number of parameters
-    public static tab_my_experiments newInstance() {
-        return new tab_my_experiments();
+    public static TabSubscribed newInstance() {
+        return new TabSubscribed();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        subExperiments = getView().findViewById(R.id.subscribed_list);
+        context = getActivity();
+        IdManager idManager = new IdManager(context);
+        homeViewModel = new HomeViewModel(idManager.getUserId());
+
+        final Observer<ArrayList<Experiment>> nameObserver = new Observer<ArrayList<Experiment>>() {
+            @Override
+            public void onChanged(@Nullable final ArrayList<Experiment> newList) {
+                subExperiment_adapter = new CustomList(context, newList);
+                subExperiments.setAdapter(subExperiment_adapter);
+            }
+        };
+        homeViewModel.getSubExpList().observe(getViewLifecycleOwner(), nameObserver);
+        subExperiments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Experiment experiment = subExperiment_adapter.getItem(position);
+                startExperimentActivity(experiment.getId());
+            }
+        });
     }
 
     @Override
@@ -98,9 +96,8 @@ public class tab_my_experiments extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tab_my_experiments, container, false);
+        return inflater.inflate(R.layout.fragment_tab_subscribed, container, false);
     }
-
     private void startExperimentActivity(String experimentID){
         Intent intent = new Intent(this.getActivity(), ExperimentActivity.class);
         intent.putExtra("EXPERIMENT_ID", experimentID);

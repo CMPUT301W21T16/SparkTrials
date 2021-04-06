@@ -72,7 +72,7 @@ public class SearchViewModel extends ViewModel {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 Boolean published = (Boolean) document.get("Published");
-                                if (published == null || published == true) {
+                                if (published) {
                                     String id = document.getId();
                                     String title = (String) document.get("Title");
                                     String desc = (String) document.get("Description");
@@ -83,7 +83,7 @@ public class SearchViewModel extends ViewModel {
                                     experiment.setTitle(title);
                                     experiment.setDesc(desc);
                                     experiment.setOpen(open);
-                                    experiment.setPublished(true || published);
+                                    experiment.setPublished(true); // Always true because of the if-statement
                                     experiment.setDate(date);
 
                                     String ownerId = (String) document.get("profileID");
@@ -118,7 +118,7 @@ public class SearchViewModel extends ViewModel {
                     }
                 });
     }
-
+//========================================================================
     /**
      * Searches through the list of experiments (from the database) and finds any experiments that
      * match at least one of the keywords.
@@ -127,7 +127,7 @@ public class SearchViewModel extends ViewModel {
      * @return
      *      Returns the list of experiments that match at least one of the keywords
      */
-    public ArrayList<Experiment> search(String[] keywords) {
+    public ArrayList<Experiment> search(String[] keywords, int[] filters) {
 
         ArrayList<Experiment> experimentsInDB = experiments.getValue();
 
@@ -140,7 +140,7 @@ public class SearchViewModel extends ViewModel {
                 for (int keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
                     String currentKeyword = keywords[keywordIndex];
                     Experiment experimentToBeSearched = experimentsInDB.get(experimentIndex);
-                    if (experimentMatches(currentKeyword, experimentToBeSearched)) {
+                    if (experimentMatches(currentKeyword, experimentToBeSearched, filters)) {
                         // If an experiment matches a keyword
                         resultSet.add(experimentToBeSearched);
                     }
@@ -160,17 +160,58 @@ public class SearchViewModel extends ViewModel {
      *      The keyword we want to check the experiment fields against.
      * @param experiment
      *      The experiment whose fields we want to check.
+     * @param filters
+     *      The filters applied to the search. It will be of size 2. The first integer will
+     *      filter based on Title, Description, or Username: 0 for no filter, 1 for title,
+     *      2 for description, and 3 for username. The second will filter based on
+     *      status, 0 for no filter, 1 for active status, 2 for inactive status.
      * @return
      *      true if the experiment has matching fields, false otherwise.
      */
-    private boolean experimentMatches(String keyword, Experiment experiment) {
+    private boolean experimentMatches(String keyword,
+                                      Experiment experiment, int[] filters) {
         String experimentTitle = experiment.getTitle().toLowerCase();
         String experimentDescription = experiment.getDesc().toLowerCase();
         String experimentOwnerUsername = experiment.getOwner().getUsername().toLowerCase();
+        boolean experimentStatus = experiment.getOpen();
 
-        return (experimentTitle.contains(keyword)
-                    || experimentDescription.contains(keyword)
-                    || experimentOwnerUsername.contains(keyword));
+        boolean matches = false;
+
+        if (filters[0] == 0) { // no field filter
+            if (experimentTitle.contains(keyword) || experimentDescription.contains(keyword) || experimentOwnerUsername.contains(keyword)) {
+                switch (filters[1]) {
+                    case 0: matches = true; break;
+                    case 1: matches = experimentStatus; break;
+                    case 2: matches = !experimentStatus; break;
+                }
+            }
+        } else if (filters[0] == 1) { // filter based on title
+            if (experimentTitle.contains(keyword)) {
+                switch (filters[1]) {
+                    case 0: matches = true; break;
+                    case 1: matches = experimentStatus; break;
+                    case 2: matches = !experimentStatus; break;
+                }
+            }
+        } else if (filters[0] == 2) { // filter based on description
+            if (experimentDescription.contains(keyword)) {
+                switch (filters[1]) {
+                    case 0: matches = true; break;
+                    case 1: matches = experimentStatus; break;
+                    case 2: matches = !experimentStatus; break;
+                }
+            }
+        } else { // filters[0] == 3, filter based on username
+            if (experimentOwnerUsername.contains(keyword)) {
+                switch (filters[1]) {
+                    case 0: matches = true; break;
+                    case 1: matches = experimentStatus; break;
+                    case 2: matches = !experimentStatus; break;
+                }
+            }
+        }
+
+        return matches;
     }
 
 }

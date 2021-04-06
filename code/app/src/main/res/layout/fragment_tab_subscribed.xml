@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.home.tab_subscribed" >
+    tools:context=".main.home.TabSubscribed" >
 
     <ListView
         android:id="@+id/subscribed_list"

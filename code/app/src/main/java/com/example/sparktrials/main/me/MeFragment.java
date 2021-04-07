@@ -59,6 +59,9 @@ public class MeFragment extends Fragment {
         IdManager idManager = new IdManager(this.getContext());
         userID=  idManager.getUserId();
 
+        tvUserID= getView().findViewById(R.id.user_id);
+        tvName = getView().findViewById(R.id.tvName);
+        tvContact = getView().findViewById(R.id.experimenter_contact);
 
         firebaseManager.get("users", userID, new Callback() {
             @Override
@@ -69,21 +72,18 @@ public class MeFragment extends Fragment {
 
 
                 // Set user id text view
-                tvUserID= getView().findViewById(R.id.user_id);
                 tvUserID.setText(userID);
 
                 // Set username
-                tvName = getView().findViewById(R.id.tvName);
                 tvName.setText(name);
-                // Set contact
-                tvContact = getView().findViewById(R.id.experimenter_contact);
-                tvContact.setText(contact);
 
-                // initialize update button
+                // Set contact
+                tvContact.setText(contact);
 
             }
         });
 
+        // initialize update button
         updateButton = getView().findViewById(R.id.btn_ep);
 
 
@@ -134,11 +134,13 @@ public class MeFragment extends Fragment {
 
             firebaseManager.update("users", userID, "name", nameInput );
             tvName.setText(nameInput);
+            name = nameInput;
 
         }
         if (!contactInput.isEmpty() ){
             firebaseManager.update("users", userID, "contact", contactInput );
             tvContact.setText(contactInput);
+            contact = contactInput;
         }
     }
 }

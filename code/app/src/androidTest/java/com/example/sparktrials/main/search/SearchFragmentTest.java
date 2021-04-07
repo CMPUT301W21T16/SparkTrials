@@ -1,9 +1,9 @@
 package com.example.sparktrials.main.search;
 
-import android.app.Activity;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -11,9 +11,13 @@ import androidx.test.rule.ActivityTestRule;
 import com.example.sparktrials.ExperimentActivity;
 import com.example.sparktrials.MainActivity;
 import com.example.sparktrials.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.robotium.solo.Solo;
-
-import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Before;
@@ -26,20 +30,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * This class runs IntentTests to test the functionality of SearchFragmentTest.
+ * This class runs Intent Tests to test the functionality of SearchFragment.
  */
 
 @RunWith(AndroidJUnit4.class)
 public class SearchFragmentTest {
 
     private Solo solo;
+
+    private FirebaseFirestore db;
+    String expTitle;
+
     @Rule
     public ActivityTestRule<MainActivity> rule =
             new ActivityTestRule<>(MainActivity.class, true, true);
-
-    // At time of testing, there exists an experiment in Firestore that should match the
-    // following word
-    String wordExists = "MapTest";
 
     /**
      * Runs before all tests and creates solo instance.
@@ -49,6 +53,14 @@ public class SearchFragmentTest {
     @Before
     public void setUp() throws Exception {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
+        db = FirebaseFirestore.getInstance();
+        expTitle = "SearchTest";
+
+        // Add experiment
+        solo.clickOnView(solo.getView(R.id.top_app_bar_publish_experiment));
+        solo.enterText((EditText)solo.getView(R.id.expTitle_editText), expTitle);
+        solo.clickOnButton("POST");
+        assertTrue(solo.waitForText(expTitle, 1, 2000));
     }
 
 
@@ -59,7 +71,6 @@ public class SearchFragmentTest {
      */
     @Test
     public void start() throws Exception {
-        Activity activity = rule.getActivity();
         solo.clickOnView(solo.getView(R.id.navigation_search));
     }
 
@@ -73,11 +84,7 @@ public class SearchFragmentTest {
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
         solo.clickOnView(solo.getView(R.id.navigation_search));
 
-        // We have 1 experiment in the list in Firestore, with title <as defined below>.
-        // Waiting for text instead of just searching as getting experiments from Firestore is
-        // asynchronous.
-        String experimentTitle = wordExists;
-        assertTrue(solo.waitForText(experimentTitle, 1, 2000));
+        assertTrue(solo.waitForText(expTitle, 1, 2000));
     }
 
     /**
@@ -98,10 +105,10 @@ public class SearchFragmentTest {
         assertFalse(solo.waitForText(wordDoesNotExist, 1, 1000));
 
         // Changing to lower case as search should match fields even if they're in lower case
-        solo.enterText((EditText) solo.getView(R.id.search_bar), wordExists.toLowerCase());
+        solo.enterText((EditText) solo.getView(R.id.search_bar), expTitle.toLowerCase());
         solo.clickOnView(solo.getView(R.id.search_button));
         solo.clearEditText((EditText) solo.getView(R.id.search_bar));
-        assertTrue(solo.waitForText(wordExists, 1, 1000));
+        assertTrue(solo.waitForText(expTitle, 1, 1000));
     }
 
     /**
@@ -113,11 +120,10 @@ public class SearchFragmentTest {
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
         solo.clickOnView(solo.getView(R.id.navigation_search));
 
-        String experimentTitle = wordExists;
-        solo.enterText((EditText) solo.getView(R.id.search_bar), experimentTitle);
+        solo.enterText((EditText) solo.getView(R.id.search_bar), expTitle);
         solo.clickOnView(solo.getView(R.id.search_button));
         solo.clearEditText((EditText) solo.getView(R.id.search_bar));
-        assertTrue(solo.waitForText(experimentTitle, 1, 1000));
+        assertTrue(solo.waitForText(expTitle, 1, 1000));
         solo.clickInList(0, 0); // Clicking the first item in the list after the search
 
         // Making sure ExperimentActivity is launched
@@ -127,18 +133,42 @@ public class SearchFragmentTest {
         // clicked on
         ExperimentActivity activity = (ExperimentActivity) solo.getCurrentActivity();
         final TextView experimentTitleTextView = activity.findViewById(R.id.text_title);
-        solo.waitForText(experimentTitle, 1, 1000);
+        solo.waitForText(expTitle, 1, 1000);
         String experimentActivityTitle = experimentTitleTextView.getText().toString();
-        assertTrue(experimentActivityTitle, experimentTitle.equals(experimentActivityTitle));
+        assertTrue(experimentActivityTitle, expTitle.equals(experimentActivityTitle));
     }
 
     /**
-     * Close activity after each test
+     * Close activity after each test.
      *
      * @throws Exception
      */
     @After
     public void tearDown() throws Exception {
         solo.finishOpenedActivities();
+    }
+
+    /**
+     * Deletes experiments that were created for testing purposes.
+     * @throws InterruptedException
+     */
+    @After
+    public void deleteExperiment() throws InterruptedException {
+        CollectionReference expCollection = db.collection("experiments");
+
+
+        expCollection.whereEqualTo("Title", expTitle).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (DocumentSnapshot doc: task.getResult()) {
+                            expCollection.document(doc.getId()).delete();
+                        }
+                    }
+                });
+
+        synchronized (solo) {
+            solo.wait(2000);
+        }
     }
 }

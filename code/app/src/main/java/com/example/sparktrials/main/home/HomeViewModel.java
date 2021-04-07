@@ -162,7 +162,7 @@ public class HomeViewModel extends ViewModel {
                                     if (task.isSuccessful()) {
                                         DocumentSnapshot experimentDocument = task.getResult();
                                         Boolean published = (Boolean) experimentDocument.get("Published");
-                                        if (published) {
+                                        if (published != null && published) {
                                             String id = experimentDocument.getId();
                                             String title = (String) experimentDocument.get("Title");
 

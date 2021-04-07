@@ -113,16 +113,17 @@ public class ActionFragment extends Fragment implements LocationListener {
                     @Override
                     public void onChanged(@Nullable final GeoLocation newLoc) {
                         if (newLoc != null) {
-                            if (manager.isWithinRegion(newLoc)) {
-                                // If the new location is within radius of experiment region.
-                                updateView();
-                                showViews();
-                            } else {
+                            if (manager.isLocationEnforced() && !manager.isWithinRegion(newLoc)) {
                                 hideViews();
 
                                 String message = "You are currently outside the region specified by the experiment owner.";
                                 trialsCount.setVisibility(View.VISIBLE);
                                 trialsCount.setText(message);
+                            } else {
+                                // If the new location is within radius of experiment region or trials
+                                // are not enforced to be withing region.
+                                updateView();
+                                showViews();
                             }
                         }
                     }
@@ -334,6 +335,7 @@ public class ActionFragment extends Fragment implements LocationListener {
         uploadButton.setVisibility(View.INVISIBLE);
         recordNumButton.setVisibility(View.INVISIBLE);
         generateQR.setVisibility(View.INVISIBLE);
+        registerBarcode.setVisibility(View.INVISIBLE);
         deleteTrials.setVisibility(View.INVISIBLE);
         valueEditText.setVisibility(View.INVISIBLE);
     }

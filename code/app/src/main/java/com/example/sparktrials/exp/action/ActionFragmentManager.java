@@ -269,6 +269,14 @@ public class ActionFragmentManager {
     }
 
     /**
+     * Checks if the experiment is such that trials are enforced to be withing region.
+     * @return
+     */
+    public boolean isLocationEnforced() {
+        return experiment.getReqLocation();
+    }
+
+    /**
      * Checks if a point on the Earth's surface is within the region of an experiment. Only meant
      * to be called for experiments that have a region set, i.e. distance between the center of the
      * region and the point is less than the radius of the region.

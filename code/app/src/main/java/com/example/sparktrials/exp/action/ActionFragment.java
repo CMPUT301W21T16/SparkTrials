@@ -370,6 +370,8 @@ public class ActionFragment extends Fragment implements LocationListener {
     public void binomialQrCodeDialog(){
         AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());
         biDialog.setTitle("Select QR Code Value");
+        String path = getContext().getExternalFilesDir("QrCodes").toString();
+        biDialog.setMessage("QrCode will save into \n" + path);
         final Spinner selection = new Spinner(getContext());
         String[] items = new String[]{"Pass", "Fail"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
@@ -446,6 +448,8 @@ public class ActionFragment extends Fragment implements LocationListener {
     public void countQrCodeDialog(){
         AlertDialog.Builder coDialog = new AlertDialog.Builder(getContext());
         coDialog.setTitle("Qr code will create a new count trial");
+        String path = getContext().getExternalFilesDir("QrCodes").toString();
+        coDialog.setMessage("QrCode will save into \n" + path);
         coDialog.setPositiveButton("GENERATE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -508,6 +512,8 @@ public class ActionFragment extends Fragment implements LocationListener {
     public void nonNegQrCountCodeDialog(){
         AlertDialog.Builder nncoDialog = new AlertDialog.Builder(getContext());
         nncoDialog.setTitle("Enter QR Code Value");
+        String path = getContext().getExternalFilesDir("QrCodes").toString();
+        nncoDialog.setMessage("QrCode will save into \n" + path);
         final EditText value = new EditText(getContext());
         value.setHint("Count");
         value.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -578,6 +584,8 @@ public class ActionFragment extends Fragment implements LocationListener {
     public void measureQrCodeDialog(){
         AlertDialog.Builder measDialog = new AlertDialog.Builder(getContext());
         measDialog.setTitle("Enter QR Code Value");
+        String path = getContext().getExternalFilesDir("QrCodes").toString();
+        measDialog.setMessage("QrCode will save into \n" + path);
         final EditText value = new EditText(getContext());
         value.setHint("Measurement");
         value.setInputType(InputType.TYPE_CLASS_NUMBER |

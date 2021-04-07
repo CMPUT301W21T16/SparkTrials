@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!--Shows a user's trials in the admin tab. Displays that user's trials, their results,
+and mean. Also shows the user and a button to select whether or not to ignore that user's trials or not-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

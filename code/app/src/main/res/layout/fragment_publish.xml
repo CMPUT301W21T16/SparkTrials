@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Allows a user to fill in the info needed for a new experiment
+Has textfields for experiment title, description, and min trials
+Has spinners for selecting experiment type, if it requires locations
+and if location constraints should be enforced-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"

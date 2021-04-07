@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!--Show a question in the question listView. Shows the title, the content,
+the date, the poster, and the number of answers the question has-->
 <RelativeLayout
 
     xmlns:android="http://schemas.android.com/apk/res/android"

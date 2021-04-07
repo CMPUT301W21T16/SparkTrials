@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!--Shows an answer to a post. Shows which number the answer is,
+the content of the answer, the poster, and the date it was posted-->
 <RelativeLayout
 
     xmlns:android="http://schemas.android.com/apk/res/android"

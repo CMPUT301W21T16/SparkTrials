@@ -213,16 +213,14 @@ public class Experiment {
             user_trials.get(user_id).add(trial);
         }
 
-        //for each user in the hash map, check if their trials should be included
-        //be checking if there are enough of them (enough = more than the min)
+        //for each user in the hash map, Add their trials to the valid trial list
         for (String i : user_trials.keySet()){
             ArrayList<Trial> trials_of_user = user_trials.get(i);
-            if (trials_of_user.size()>=this.minNTrials){
-                for (int j=0; j<trials_of_user.size(); j++){
-                    valid_trials.add(trials_of_user.get(j));
-                }
+            for (int j=0; j<trials_of_user.size(); j++){
+                valid_trials.add(trials_of_user.get(j));
             }
         }
+
 
         return valid_trials;
     }

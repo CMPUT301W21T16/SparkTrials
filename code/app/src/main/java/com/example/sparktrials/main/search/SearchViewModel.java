@@ -118,14 +118,20 @@ public class SearchViewModel extends ViewModel {
                     }
                 });
     }
-//========================================================================
+
     /**
      * Searches through the list of experiments (from the database) and finds any experiments that
      * match at least one of the keywords.
      * @param keywords
      *      This is the array of keywords that we will check the experiments against
+     * @param filters
+     *      The filters applied to the search. It will be of size 2. The first integer will
+     *      filter based on Title, Description, or Username: 0 for no filter, 1 for title,
+     *      2 for description, and 3 for username. The second will filter based on
+     *      status, 0 for no filter, 1 for active status, 2 for inactive status.
      * @return
-     *      Returns the list of experiments that match at least one of the keywords
+     *      Returns the list of experiments that match at least one of the keywords, after applying
+     *      the filters.
      */
     public ArrayList<Experiment> search(String[] keywords, int[] filters) {
 

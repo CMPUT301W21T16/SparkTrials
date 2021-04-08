@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class AdminFragmentTest {
@@ -36,7 +37,7 @@ public class AdminFragmentTest {
     @Before
     public void setUp() throws Exception{
         db = FirebaseFirestore.getInstance();
-        expTitle = "BinomialExperimentTest";
+        expTitle = "AdminFragmentTest";
         solo = new Solo(InstrumentationRegistry.getInstrumentation(),rule.getActivity());
         // Get owner's username
         solo.clickOnView(solo.getView(R.id.navigation_me));
@@ -68,6 +69,12 @@ public class AdminFragmentTest {
         solo.sleep(1000);
         solo.clickOnButton("YES");
         assertTrue(solo.searchText("Publish Experiment"));
+        solo.clickOnView(solo.getView(R.id.back_button));
+        solo.clickOnView(solo.getView(R.id.navigation_search));
+        solo.enterText((EditText) solo.getView(R.id.search_bar),expTitle);
+        solo.clickOnView(solo.getView(R.id.search_button));
+        solo.enterText((EditText) solo.getView(R.id.search_bar),"");
+        assertFalse(solo.searchText(expTitle));
     }
 
     @After

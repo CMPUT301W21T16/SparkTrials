@@ -41,7 +41,8 @@ has a listview that will contain the results of the search-->
             android:layout_weight="2"
             android:ems="10"
             android:hint="Search for experiment..."
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textSize="20dp" />
 
         <Space
             android:layout_width="10dp"
@@ -50,7 +51,7 @@ has a listview that will contain the results of the search-->
         <ImageButton
             android:id="@+id/search_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginRight="20dp"
             android:background="@color/header"
             android:src="@drawable/search_icon" />

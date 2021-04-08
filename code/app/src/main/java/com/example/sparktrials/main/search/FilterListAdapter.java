@@ -24,7 +24,6 @@ import java.util.ArrayList;
  * to a search in SearchFragment.
  */
 public class FilterListAdapter extends ArrayAdapter<String> {
-    private String[] items;  // This is the list of experiments that the
 
     // adapter will display on the ListView
     private Context context;
@@ -41,9 +40,8 @@ public class FilterListAdapter extends ArrayAdapter<String> {
      *      The list of filters (length 5): {"Title", "Description", "Username", "Status: Active", "Status: Inactive"}
      */
     public FilterListAdapter(@NonNull Context context, String[] items) {
-        super(context, 0, items);
+        super(context, 0, items); // items is just a throwaway array of length one containing ""
         this.context = context;
-        this.items = items;
     }
 
     @NonNull
@@ -53,14 +51,8 @@ public class FilterListAdapter extends ArrayAdapter<String> {
 
         if (view == null) {
             // Set the layout of list items to be based on list_content.xml
-            view = LayoutInflater.from(context).inflate(R.layout.filter_list, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.filters_closed, parent, false);
         }
-
-        view.findViewById(R.id.check_box_title).setVisibility(View.INVISIBLE);
-        view.findViewById(R.id.check_box_description).setVisibility(View.INVISIBLE);
-        view.findViewById(R.id.check_box_username).setVisibility(View.INVISIBLE);
-        view.findViewById(R.id.check_box_status_active).setVisibility(View.INVISIBLE);
-        view.findViewById(R.id.check_box_status_inactive).setVisibility(View.INVISIBLE);
 
         return view;
     }

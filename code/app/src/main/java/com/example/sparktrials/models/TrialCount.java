@@ -10,7 +10,7 @@ public class TrialCount extends Trial{
      */
     public TrialCount(){
         super();
-        this.value = 0.0;
+        this.value = 1.0;
     }
     /**
      * This constructor initializes a filled trial. Initializes count to 0 always
@@ -23,23 +23,6 @@ public class TrialCount extends Trial{
      */
     public TrialCount (String id, GeoLocation location, Profile profile){
         super(id, location, profile);
-        this.value = 0.0;
-    }
-
-    /**
-     * Increments the count attribute
-     */
-    public void addCount() {
-        this.value += 1.0;
-    }
-
-
-    /**
-     * Completely sets the count to a specified amount. Should not be used often - counts should be incremented
-     * @param count
-     *    The new count value that the trial will hold
-     */
-    public void setCount(Integer count) {
-        this.value = (double)count;
+        this.value = 1.0;
     }
 }

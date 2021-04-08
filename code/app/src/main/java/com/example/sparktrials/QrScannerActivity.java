@@ -1,139 +1,118 @@
 package com.example.sparktrials;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.Profile;
+import com.example.sparktrials.models.QrCode;
 import com.example.sparktrials.models.Trial;
 import com.example.sparktrials.models.TrialBinomial;
 import com.example.sparktrials.models.TrialCount;
 import com.example.sparktrials.models.TrialIntCount;
 import com.example.sparktrials.models.TrialMeasurement;
 import com.google.firebase.Timestamp;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-/**
- * A class to manage the data for ExperimentActivity - experiment and profile
- */
-public class ExperimentViewModel extends ViewModel {
-    public FirebaseManager manager = new FirebaseManager();
+public class QrScannerActivity extends AppCompatActivity {
 
-    private MutableLiveData<Experiment> exp;
-    private String expId;
-    private MutableLiveData<Profile> pro;
-    private String proId;
+    FirebaseManager db = new FirebaseManager();
+    private String userId;
+    private String trialId;
+    private MutableLiveData<Experiment> exp = new MutableLiveData<>();
+    private MutableLiveData<Trial> trial = new MutableLiveData<>();
+    private MutableLiveData<Profile> profile = new MutableLiveData<>();
 
-    final String TAG = "Fetching Experiment...";
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    /**
-     * Constructor for SearchViewModel
-     */
-    public ExperimentViewModel() {
-        exp = new MutableLiveData<>();
-        pro = new MutableLiveData<>();
-    }
-
-    /**
-     * Initializes profile and experiment
-     * @param id
-     *    the id of the experiment to retrieve from firebase
-     * @param uid
-     *    the id of the profile to retrieve from firebase
-     */
-    public void init(String id, String uid){
-        expId = id;
-        proId = uid;
+        IdManager idManager = new IdManager(this);
+        userId = idManager.getUserId();
         downloadProfile();
-        downloadExperiment();
+
+        IntentIntegrator qrIntegrator = new IntentIntegrator(this);
+        qrIntegrator.setPrompt("Scan a QRCode");
+        qrIntegrator.setOrientationLocked(true);
+        qrIntegrator.initiateScan();
     }
 
-    /**
-     * Gets the experiments in the database
-     * @return
-     *      Returns the list of experiments in the database
-     */
-    public MutableLiveData<Experiment> getExperiment() {
-        return exp;
-    }
-
-    /**
-     * Gets profile in the database
-     * @return
-     *    Returns the profile in the database
-     */
-    public MutableLiveData<Profile> getProfile() {return pro;}
-
-    /**
-     * Is called when subscribe button is pressed
-     * Adds or remove the experiment from subscription list of the profile
-     * @return
-     *    returns the profile, so that it updates the button name
-     */
-    public MutableLiveData<Profile> subscribe(){
-        Profile temp = new Profile(proId);
-
-        if (pro.getValue() != null) {
-            if (pro.getValue().getSubscriptions().contains(exp.getValue().getId())) {
-                //unsubscribe
-                pro.getValue().delSubscription(exp.getValue().getId());
-            } else {
-                //subscribe
-                pro.getValue().addSubscription(exp.getValue().getId());
-            }
-
-            temp.setSubscriptions(pro.getValue().getSubscriptions());
-            temp.setUsername(pro.getValue().getUsername());
-            temp.setContact(pro.getValue().getContact());
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        String codeResult = intentResult.getContents();
+        Pattern uuidPattern = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+        Matcher uuidMatcher = uuidPattern.matcher(codeResult);
+        String codeId;
+        if(!uuidMatcher.matches()){
+            codeId = UUID.nameUUIDFromBytes(codeResult.getBytes()).toString();
+        } else {
+            codeId = codeResult;
         }
-        pro.setValue(temp);
-        return pro;
+
+        createTrial(codeId);
     }
 
-    /**
-     * Uploads the subscription list to firebase
-     */
-    public void updateSubscribe(){
-        if (pro.getValue() != null) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("subscriptions", pro.getValue().getSubscriptions());
+    public void downloadProfile() {
+        db.get("users", userId, proData -> {
+            Profile prof = new Profile(userId);
 
-            manager.update("users", proId, map);
-        }
-    }
+            prof.setUsername((String) proData.getData().get("name"));
+            prof.setContact((String) proData.getData().get("contact"));
+            prof.setSubscriptions((ArrayList<String>) proData.getData().get("subscriptions"));
 
-    /**
-     * FIlls the pro attribute with a profile from firebase
-     */
-    private void downloadProfile() {
-        manager.get("users", proId, proData -> {
-            Profile profile = new Profile(proId);
-
-            Log.d(TAG, proData.getId() + " => " + proData.getData());
-            profile.setUsername((String) proData.getData().get("name"));
-            profile.setContact((String) proData.getData().get("contact"));
-            profile.setSubscriptions((ArrayList<String>) proData.getData().get("subscriptions"));
-            Log.d(TAG, proData.getId() + " => " + proData.getData());
-
-            pro.setValue(profile);
-
+            profile.setValue(prof);
         });
     }
 
-    /**
-     * Gets an experiment from the database.
-     */
-    private void downloadExperiment() {
-        manager.get("experiments", expId, expData -> {
+    public void createTrial(String qrId) {
+        db.get("qrCodeData", qrId, qrData -> {
+            String trialType;
+            try{
+                trialType = (String) qrData.getData().get("TrialType");
+            } catch(Exception e){
+                finish();
+                return;
+            }
+            Trial tri;
+            Double value = (Double) qrData.getData().get("Value");
+            if(trialType.equals("binomial trials")){
+                tri = new TrialBinomial(value == 1.0 ? true : false);
+            } else if(trialType.equals("counts")){
+                tri = new TrialCount();
+            } else if(trialType.equals("non-negative integer counts")) {
+                tri = new TrialIntCount(value.intValue());
+            } else {
+                tri = new TrialMeasurement(value);
+            }
+
+            tri.setProfile(profile.getValue());
+            tri.setId(UUID.randomUUID().toString());
+            trial.setValue(tri);
+            getExperiment((String) qrData.getData().get("ExperimentId"));
+        });
+    }
+
+    public void getExperiment(String expId){
+        db.get("experiments", expId, expData -> {
             Experiment experiment = new Experiment(expId);
 
-            Log.d(TAG, expData.getId() + " => " + expData.getData());
             experiment.setTitle((String) expData.getData().get("Title"));
             experiment.setDesc((String) expData.getData().get("Description"));
             GeoLocation region = new GeoLocation();
@@ -146,11 +125,13 @@ public class ExperimentViewModel extends ViewModel {
             Timestamp date = (Timestamp) expData.getData().get("Date");
             experiment.setDate(date.toDate());
             experiment.setOpen((Boolean) expData.getData().get("Open"));
-            experiment.setPublished((Boolean) expData.getData().get("Published"));
             experiment.setType((String) expData.getData().get("Type"));
             String uId = (String) expData.getData().get("profileID");
+            String username = (String) expData.getData().get("ownerName");
             Profile owner = new Profile(uId);
+            owner.setUsername(username);
             experiment.setOwner(owner);
+//            experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
             ArrayList<HashMap> trialsHash = (ArrayList<HashMap>) expData.getData().get("Trials");
             ArrayList<Trial> trials = new ArrayList<>();
             for(HashMap<String, Object> map: trialsHash){
@@ -193,20 +174,18 @@ public class ExperimentViewModel extends ViewModel {
             }
             experiment.setTrials(trials);
             experiment.setBlacklist((ArrayList<String>) expData.getData().get("Blacklist"));
-            Log.d(TAG, expData.getId() + " => " + expData.getData());
 
-            manager.get("users", experiment.getOwner().getId(), proData -> {
-                Log.d(TAG, proData.getId() + " => " + proData.getData());
-                experiment.getOwner().setUsername((String) proData.getData().get("name"));
-
-                exp.setValue(experiment);
-            });
-
+            exp.setValue(experiment);
+            uploadTrial();
         });
-
-
     }
 
+    public void uploadTrial(){
+        Experiment experiment = exp.getValue();
+        Trial tri = trial.getValue();
 
-
+        experiment.addTrial(tri);
+        db.uploadTrials(experiment);
+        finish();
+    }
 }

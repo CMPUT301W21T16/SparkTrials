@@ -13,16 +13,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sparktrials.FirebaseManager;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.Profile;
-import com.example.sparktrials.models.ProfileActivity;
+import com.example.sparktrials.ProfileActivity;
 import com.example.sparktrials.models.Trial;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,6 +67,8 @@ public class AuditLog extends ArrayAdapter<Profile> {
         userName = view.findViewById(R.id.user_name);
         ignoreButton = view.findViewById(R.id.ignore_button);
 
+        setFields(position);
+
         ignoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -88,17 +87,18 @@ public class AuditLog extends ArrayAdapter<Profile> {
                     dbManager.update("experiments", experiment.getId(), map);
                 }
 
-                String currentBtnText = ignoreButton.getText().toString();
+                Button tempIgnoreButton = v.findViewById(R.id.ignore_button);
+                String currentBtnText = tempIgnoreButton.getText().toString();
 
-                if(currentBtnText.equals("Ignore")){
-                    ignoreButton.setText("IGNORED");
+                if(currentBtnText.equals("IGNORE")){
+                    tempIgnoreButton.setText("IGNORED");
+                    tempIgnoreButton.setBackgroundColor(context.getResources().getColor(R.color.neutral));
                 } else {
-                    ignoreButton.setText("IGNORE");
+                    tempIgnoreButton.setText("IGNORE");
+                    tempIgnoreButton.setBackgroundColor(context.getResources().getColor(R.color.header));
                 }
             }
         });
-
-        setFields(position);
 
         userName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,9 +172,11 @@ public class AuditLog extends ArrayAdapter<Profile> {
         }
 
         if(experiment.getBlacklist().contains(user.getId())){
-            ignoreButton.setText("Ignored");
+            ignoreButton.setText("IGNORED");
+            ignoreButton.setBackgroundColor(context.getResources().getColor(R.color.neutral));
         } else {
-            ignoreButton.setText("Ignore");
+            ignoreButton.setText("IGNORE");
+            ignoreButton.setBackgroundColor(context.getResources().getColor(R.color.header));
         }
 
     }

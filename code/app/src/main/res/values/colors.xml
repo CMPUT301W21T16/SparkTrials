@@ -14,12 +14,17 @@
     <color name="backdrop">#FFFEFB</color>
     <color name="ghost">#CFDEE1</color>
     <color name="main_text">#21618F</color>
-    <color name="norm_text">#00060C</color>
+    <color name="norm_text">#3C3C3C</color>
     <color name="light_text">#3D3D3D</color>
-    <color name="spark_text">#F3C464</color>
+    <color name="spark_text">#F2BE54</color>
 
     <color name="positive">#65F13E</color>
     <color name="neutral">#8E8E8E</color>
     <color name="negative">#F45656</color>
+
+    <color name="title">#153E5C</color>
+    <color name="cancel">#A2ADBE</color>
+    <color name="divider">#4DA2ADBE</color>
+    <color name="norm_shadow">#1A3C3C3C</color>
 
 </resources>

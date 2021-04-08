@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"
@@ -17,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SparkTrials">
-        <activity android:name=".models.ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".QrScannerActivity"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -31,7 +33,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".main_ui.publish.MapsActivity"
+            android:name=".main.publish.MapsActivity"
             android:label="@string/title_activity_maps"
             android:parentActivityName=".MainActivity">
             <meta-data

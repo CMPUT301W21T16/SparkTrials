@@ -49,7 +49,6 @@ public class ActionFragment extends Fragment implements LocationListener {
     View view;
     TextView trialsNumber;
     TextView trialsCount;
-    int count;
     private ActionFragmentManager manager;
     private IdManager idManager;
     String id;
@@ -61,19 +60,22 @@ public class ActionFragment extends Fragment implements LocationListener {
     Button generateQR;
     Button deleteTrials;
     EditText valueEditText;
+    Button middleButton;
 
     LocationManager locationManager;
-    boolean reqLocation;
+    boolean hasLocationSet;
+    boolean enforceLocation;
     MutableLiveData<GeoLocation> currentLocation;
 
     public ActionFragment(Experiment experiment){
         this.manager= new ActionFragmentManager(experiment);
-        reqLocation = experiment.getReqLocation();
-        if (reqLocation) {
+        hasLocationSet = experiment.hasLocationSet();
+        if (hasLocationSet) {
             currentLocation = new MutableLiveData<>();
         } else {
             currentLocation = new MutableLiveData<>(null);
         }
+        enforceLocation = experiment.getReqLocation();
     }
 
     @Override
@@ -89,6 +91,8 @@ public class ActionFragment extends Fragment implements LocationListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (manager.getOpen()) {
             view = inflater.inflate(R.layout.fragment_action, container, false);
+            trialsNumber=view.findViewById(R.id.trials_completed);
+            trialsCount=view.findViewById(R.id.trials_count);
             leftButton = view.findViewById(R.id.action_bar_pass);
             rightButton = view.findViewById(R.id.action_bar_fail);
             uploadButton = view.findViewById(R.id.action_bar_upload_trials);
@@ -96,16 +100,26 @@ public class ActionFragment extends Fragment implements LocationListener {
             generateQR = view.findViewById(R.id.action_bar_generateQR);
             deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
             valueEditText = view.findViewById(R.id.countvalue_editText);
+            middleButton = view.findViewById(R.id.action_bar_addCount);
             updateView();
 
-            if (reqLocation) {
+            if (hasLocationSet) {
                 getLocation();
                 final Observer<GeoLocation> nameObserver = new Observer<GeoLocation>() {
                     @Override
                     public void onChanged(@Nullable final GeoLocation newLoc) {
-                        //System.out.println(currentLocation.getValue().getLat());
                         if (newLoc != null) {
-                            showViews();
+                            if (manager.isWithinRegion(newLoc)) {
+                                // If the new location is within radius of experiment region.
+                                updateView();
+                                showViews();
+                            } else {
+                                hideViews();
+
+                                String message = "You are currently outside the region specified by the experiment owner.";
+                                trialsCount.setVisibility(View.VISIBLE);
+                                trialsCount.setText(message);
+                            }
                         }
                     }
                 };
@@ -123,8 +137,8 @@ public class ActionFragment extends Fragment implements LocationListener {
     @Override
     public void onStart() {
         super.onStart();
-        
-        if (reqLocation) {
+
+        if (enforceLocation) {
             final Observer<GeoLocation> nameObserver = new Observer<GeoLocation>() {
                 @Override
                 public void onChanged(@Nullable final GeoLocation newLoc) {
@@ -145,11 +159,11 @@ public class ActionFragment extends Fragment implements LocationListener {
      *  The Id of the QrCode, currently used as the name for the QrCode
      * @throws IOException
      */
-    public void saveQrCode(Bitmap code, String id) throws IOException {
+    public void saveQrCode(Bitmap code, String id, Double value) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         code.compress(Bitmap.CompressFormat.PNG, 90, bytes);
-        //File dir = getContext().getExternalFilesDir("QrCodes" + File.separator + id + ".png");
-        File f = new File(getContext().getExternalFilesDir("QrCodes"), id + ".png");
+        String fileName = "Experiment_" + manager.getTitle() + "_Value_" + value.toString();
+        File f = new File(getContext().getExternalFilesDir("QrCodes"), fileName + ".png");
         boolean fc = f.createNewFile();
         if(fc){
             Log.d("File Creation", "Created file " + f.getAbsolutePath());
@@ -162,14 +176,19 @@ public class ActionFragment extends Fragment implements LocationListener {
     }
 
     public void updateView(){
-        int trials=manager.getNTrials();
+        trialsCount.setText("");
+        int trials=manager.getPreUploadedNTrials();
         Log.d("NUM Is", String.valueOf(trials));
         int minimumNumberTrials = manager.getMinNTrials();
-        trialsNumber=view.findViewById(R.id.trials_completed);
-        trialsCount=view.findViewById(R.id.trials_count);
+        /*
         if(manager.getType().equals("Counts".toLowerCase())){
             trialsCount.setText("Trial count: "+count);
         }
+        else{
+            trialsCount.setText("Trials Count:"+manager.getNTrials());
+        }
+        */
+        trialsCount.setText("Trials Count: "+(manager.getNTrials()-manager.getPreUploadedNTrials()));
         if (minimumNumberTrials>0)
             trialsNumber.setText(""+trials+"/"+minimumNumberTrials);
         else
@@ -227,7 +246,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                         manager.uploadQR(generated);
                         Log.d("Generated", generated.getQrId());
                         try {
-                            saveQrCode(qrMap, generated.getQrId());
+                            saveQrCode(qrMap, generated.getQrId(), generated.getValue());
                         } catch (IOException e) {
                             Log.d("QrSave", e.getMessage());
                         }
@@ -286,7 +305,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                         manager.uploadQR(generated);
                         Log.d("Generated", generated.getQrId());
                         try {
-                            saveQrCode(qrMap, generated.getQrId());
+                            saveQrCode(qrMap, generated.getQrId(), generated.getValue());
                         } catch (IOException e) {
                             Log.d("QrSave", e.getMessage());
                         }
@@ -351,7 +370,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                         manager.uploadQR(generated);
                         Log.d("Generated", generated.getQrId());
                         try {
-                            saveQrCode(qrMap, generated.getQrId());
+                            saveQrCode(qrMap, generated.getQrId(), generated.getValue());
                         } catch (IOException e) {
                             Log.d("QrSave", e.getMessage());
                         }
@@ -370,22 +389,11 @@ public class ActionFragment extends Fragment implements LocationListener {
                 alert.show();
             });
         } else if (manager.getType().equals("Counts".toLowerCase())) {
-            leftButton.setVisibility(View.VISIBLE);
-            rightButton.setVisibility(View.VISIBLE);
-            leftButton.setText("Add Count");
-            rightButton.setText("Commit Trial");
-            leftButton.setOnClickListener(new View.OnClickListener() {
+            middleButton.setVisibility(View.VISIBLE);
+            middleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    count += 1;
-                    updateView();
-                }
-            });
-            rightButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    manager.addCountTrial(count, currentLocation.getValue());
-                    count = 0;
+                    manager.addCountTrial(currentLocation.getValue());
                     updateView();
                 }
             });
@@ -399,7 +407,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                 AlertDialog.Builder coDialog = new AlertDialog.Builder(getContext());
                 coDialog.setTitle("Enter QR Code Value");
                 final Spinner selection = new Spinner(getContext());
-                String[] items = new String[]{"Increment trial", "Commit trial"};
+                String[] items = new String[]{"Increment trial"};
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
                 selection.setAdapter(adapter);
                 coDialog.setView(selection);
@@ -408,11 +416,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                     public void onClick(DialogInterface dialog, int which) {
                         String value = selection.getSelectedItem().toString();
                         QrCode generated;
-                        if(value.equals("Increment trial")){
-                            generated = manager.createQrCodeObject(1.0);
-                        } else {
-                            generated = manager.createQrCodeObject(-1.0);
-                        }
+                        generated = manager.createQrCodeObject(1.0);
                         Bitmap qrMap = null;
                         try {
                             qrMap = manager.IdToQrCode(generated.getQrId());
@@ -422,7 +426,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                         manager.uploadQR(generated);
                         Log.d("Generated", generated.getQrId());
                         try {
-                            saveQrCode(qrMap, generated.getQrId());
+                            saveQrCode(qrMap, generated.getQrId(), generated.getValue());
                         } catch (IOException e) {
                             Log.d("QrSave", e.getMessage());
                         }
@@ -444,15 +448,8 @@ public class ActionFragment extends Fragment implements LocationListener {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (manager.getNTrials() >= manager.getMinNTrials())
-                    manager.uploadTrials();
-                else {
-                    AlertDialog builder = new AlertDialog.Builder(getContext())
-                            .setTitle("ERROR")
-                            .setMessage("You have not reached the minimum number of trials")
-                            .setPositiveButton("OK", null)
-                            .show();
-                }
+                manager.uploadTrials();
+                updateView();
             }
         });
         deleteTrials.setOnClickListener(new View.OnClickListener() {
@@ -462,6 +459,19 @@ public class ActionFragment extends Fragment implements LocationListener {
                 updateView();
             }
         });
+    }
+
+    /**
+     * Hides all views that could alter trials (add, delete, generate QR codes, etc.).
+     */
+    private void hideViews() {
+        leftButton.setVisibility(View.INVISIBLE);
+        rightButton.setVisibility(View.INVISIBLE);
+        uploadButton.setVisibility(View.INVISIBLE);
+        recordNumButton.setVisibility(View.INVISIBLE);
+        generateQR.setVisibility(View.INVISIBLE);
+        deleteTrials.setVisibility(View.INVISIBLE);
+        valueEditText.setVisibility(View.INVISIBLE);
     }
 
     /**

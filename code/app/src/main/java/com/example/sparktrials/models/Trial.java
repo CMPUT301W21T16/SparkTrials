@@ -140,10 +140,10 @@ public abstract class Trial {
         this.date = date;
     }
 
-    public String getDay(){
+    public String getDay(Date date){
         String pattern = "EEE MMM MM HH:mm:ss z yyyy";
         DateFormat df = new SimpleDateFormat(pattern);
-        String strDate = df.format(date);
+        String strDate = df.format(this.date);
         strDate = strDate.substring(4,10);
         return strDate;
 

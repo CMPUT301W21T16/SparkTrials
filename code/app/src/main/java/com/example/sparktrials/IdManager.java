@@ -60,7 +60,6 @@ public class IdManager {
             public void onCallback(DocumentSnapshot document) {
                 Toast toast = new Toast(context);
                 toast.setDuration(Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.TOP,0,0);
                 if (document.exists()) {
                     toast.setText("Welcome back, " + document.getData().get("name"));
                     toast.show();

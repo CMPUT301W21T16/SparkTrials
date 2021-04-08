@@ -1,4 +1,4 @@
-package com.example.sparktrials.main_ui.publish;
+package com.example.sparktrials.main.publish;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,12 +7,9 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;

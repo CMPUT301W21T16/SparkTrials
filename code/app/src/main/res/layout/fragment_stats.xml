@@ -118,21 +118,38 @@
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/descriptives"
+            android:text="No Data To Plot"
+            android:gravity="center"
+            android:id="@+id/HistogramID"
+            android:textColor="@color/black">
+        </TextView>
         <com.github.mikephil.charting.charts.BarChart
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:id="@+id/barchartID"
-            android:layout_below="@id/descriptives"
-            android:layout_marginTop="20dp">
+            android:layout_below="@id/HistogramID"
+            android:layout_marginTop="5dp">
 
         </com.github.mikephil.charting.charts.BarChart>
 
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/barchartID"
+            android:text="No Data To Plot"
+            android:gravity="center"
+            android:id="@+id/PlotID"
+            android:textColor="@color/black">
+        </TextView>
         <com.github.mikephil.charting.charts.LineChart
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_below="@+id/barchartID"
-            android:layout_marginTop="20dp"
+            android:layout_height="300dp"
+            android:layout_below="@+id/PlotID"
+            android:layout_marginTop="5dp"
             android:id="@+id/linechartID">
 
         </com.github.mikephil.charting.charts.LineChart>

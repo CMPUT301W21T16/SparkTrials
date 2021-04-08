@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.example.sparktrials.models.Experiment;
-import com.example.sparktrials.models.ProfileActivity;
+import com.example.sparktrials.models.ExperimentComparator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,8 +35,6 @@ public class CustomList extends ArrayAdapter<Experiment> {
     private TextView experimentDate;
     private ImageView ownerIcon;
 
-    private View.OnClickListener onOwnerClick;
-
     /**
      * Constructor for a CustomList list adapter, which shows a customized list of experiments,
      * with some of their data
@@ -49,6 +47,7 @@ public class CustomList extends ArrayAdapter<Experiment> {
         super(context, 0, experiments);
         this.context = context;
         experimentsList = experiments;
+        experimentsList.sort(new ExperimentComparator()); // Sort based on descending order of date
     }
 
     @NonNull
@@ -113,7 +112,7 @@ public class CustomList extends ArrayAdapter<Experiment> {
         }
         experimentOwner.setText(experiment.getOwner().getUsername());
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         experimentDate.setText(dateFormat.format(experiment.getDate()));
     }

@@ -993,16 +993,16 @@ public class Experiment {
     public SpannableString getHistogramHeader(){
         String header = "";
         if (this.getType().equals("binomial trials")){
-            header = "Histogram showing proportion of binomial responses";
+            header = "Proportion of Pass/Fail";
         }
         if (this.getType().equals("counts")){
-            header = "Histogram showing total counts";
+            header = "Total Counts";
         }
         if (this.getType().equals("non-negative integer counts")){
-            header = "Histogram showing non-negative integer counts";
+            header = "Total Counts per Count";
         }
         if (this.getType().equals("measurement trials")){
-            header = "Histogram showing measurements";
+            header = "Total Measurements per Measurement";
         }
         SpannableString spannable_header = new SpannableString(header);
         spannable_header.setSpan(new UnderlineSpan(), 0 , header.length(), 0);
@@ -1017,16 +1017,16 @@ public class Experiment {
     public SpannableString getPlotHeader(){
         String header = "";
         if (this.getType().equals("binomial trials")){
-            header = "Plot showing proportion of success per day";
+            header = "Daily Success Rates";
         }
         if (this.getType().equals("counts")){
-            header = "Plot showing total counts per day";
+            header = "Total Daily Counts";
         }
         if (this.getType().equals("non-negative integer counts")){
-            header = "Plot showing mean non-negative integer counts & quartiles per day";
+            header = "Average Daily Counts";
         }
         if (this.getType().equals("measurement trials")){
-            header = "Plot showing mean measurements & quartiles per day";
+            header = "Average Daily Measurements";
         }
         SpannableString spannable_header = new SpannableString(header);
         spannable_header.setSpan(new UnderlineSpan(), 0 , header.length(), 0);

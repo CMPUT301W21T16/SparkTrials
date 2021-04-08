@@ -79,6 +79,10 @@ public class QrScannerActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         String codeResult = intentResult.getContents();
+        if(codeResult == null && resultCode != RESULT_OK){
+            finish();
+            return;
+        }
         if(scanReg == 0) {
             Pattern uuidPattern = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
             Matcher uuidMatcher = uuidPattern.matcher(codeResult);

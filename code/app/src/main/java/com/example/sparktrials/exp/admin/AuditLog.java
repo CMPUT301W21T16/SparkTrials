@@ -25,6 +25,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class is an arrayAdapter for the audit log of user trials on the admin tab of an experiment
+ */
+
 public class AuditLog extends ArrayAdapter<Profile> {
     private ArrayList<Trial> trialList;
     private ArrayList<Profile> userList;
@@ -73,6 +77,9 @@ public class AuditLog extends ArrayAdapter<Profile> {
             @Override
             public void onClick(View v){
                 ArrayList<String> blacklist = experiment.getBlacklist();
+                // for whichever element of the list the button was clicked on, check if the user
+                // is part of the current blacklist. If they are, remove them, if they arent add them
+                // then update the database with the change
                 if(!blacklist.contains(userList.get(position).getId())){
                     blacklist.add(userList.get(position).getId());
                     Map<String, Object> map = new HashMap<>();
@@ -170,7 +177,7 @@ public class AuditLog extends ArrayAdapter<Profile> {
             userName.setText(user.getUsername());
 
         }
-
+        //initial setting of the ignore button text
         if(experiment.getBlacklist().contains(user.getId())){
             ignoreButton.setText("IGNORED");
             ignoreButton.setBackgroundColor(context.getResources().getColor(R.color.neutral));

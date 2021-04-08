@@ -1,5 +1,9 @@
 package com.example.sparktrials.exp.admin;
 
+/**
+ * This class handles database updates and model changes for the admin fragment
+ */
+
 import androidx.lifecycle.ViewModel;
 
 import com.example.sparktrials.FirebaseManager;

@@ -369,6 +369,10 @@ public class ActionFragment extends Fragment implements LocationListener {
     @Override
     public void onProviderDisabled(@NonNull String provider) {}
 
+    /**
+     * Generates an alert dialog asking the user what value they want to attach to a QrCode for a
+     * binomial trial
+     */
     public void binomialQrCodeDialog(){
         AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());
         biDialog.setTitle("Select QR Code Value");
@@ -416,6 +420,10 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog asking the user what value they want to attach to a Barcode for a
+     * binomial trial
+     */
     public void binomialRegBarcode() {
         AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());
         biDialog.setTitle("Select Bar Code Value");
@@ -447,6 +455,9 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog confirming a user wants to generate a QrCode for count trials
+     */
     public void countQrCodeDialog(){
         AlertDialog.Builder coDialog = new AlertDialog.Builder(getContext());
         coDialog.setTitle("Qr code will create a new count trial");
@@ -485,6 +496,9 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog confirming a user wants to register a barcode for a count trial
+     */
     public void countRegBarcode() {
         AlertDialog.Builder coDialog = new AlertDialog.Builder(getContext());
         coDialog.setTitle("Barcode will create a new count trial");
@@ -511,6 +525,10 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog asking the user what value they want to attach to a QrCode for a
+     * non-negative count trial
+     */
     public void nonNegQrCountCodeDialog(){
         AlertDialog.Builder nncoDialog = new AlertDialog.Builder(getContext());
         nncoDialog.setTitle("Enter QR Code Value");
@@ -553,6 +571,10 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog asking the user what value they want to attach to a barcode for a
+     * non-negative count trial
+     */
     public void nonNegRegBarcode() {
         AlertDialog.Builder nncoDialog = new AlertDialog.Builder(getContext());
         nncoDialog.setTitle("Enter QR Code Value");
@@ -583,6 +605,10 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog asking the user what value they want to attach to a QrCode for a
+     * measurement trial
+     */
     public void measureQrCodeDialog(){
         AlertDialog.Builder measDialog = new AlertDialog.Builder(getContext());
         measDialog.setTitle("Enter QR Code Value");
@@ -627,6 +653,10 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog asking the user what value they want to attach to a barcode for a
+     * measurement trial
+     */
     public void measureRegBarcode() {
         AlertDialog.Builder measDialog = new AlertDialog.Builder(getContext());
         measDialog.setTitle("Enter QR Code Value");

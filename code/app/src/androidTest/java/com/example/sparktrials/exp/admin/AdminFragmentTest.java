@@ -1,4 +1,4 @@
-package com.example.sparktrials.exp.action;
+package com.example.sparktrials.exp.admin;
 
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -23,44 +23,56 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class BinomialExperimentTest {
+import static org.junit.Assert.assertTrue;
+
+public class AdminFragmentTest {
     private Solo solo;
     private FirebaseFirestore db;
     String expTitle, expOwnerId;
-
     @Rule
     public ActivityTestRule<MainActivity> rule =
             new ActivityTestRule<>(MainActivity.class, true, true);
+
     @Before
     public void setUp() throws Exception{
         db = FirebaseFirestore.getInstance();
         expTitle = "BinomialExperimentTest";
         solo = new Solo(InstrumentationRegistry.getInstrumentation(),rule.getActivity());
-
         // Get owner's username
         solo.clickOnView(solo.getView(R.id.navigation_me));
         expOwnerId =  ((TextView) solo.getView(R.id.user_id)).getText().toString();
         solo.clickOnView(solo.getView(R.id.navigation_home));
         solo.clickOnView(solo.getView(R.id.top_app_bar_publish_experiment));
         Spinner spinner = (Spinner) solo.getView(R.id.experiment_type_spinner);
-        spinner.setSelection(0,true);
-        solo.enterText((EditText) solo.getView(R.id.expTitle_editText),expTitle);
+        spinner.setSelection(0, true);
+        solo.enterText((EditText) solo.getView(R.id.expTitle_editText), expTitle);
         solo.clickOnButton("POST");
         solo.clickOnView(solo.getView(R.id.navigation_search));
         solo.enterText((EditText) solo.getView(R.id.search_bar),expTitle);
         solo.clickInList(0,0);
+        solo.clickOnScreen(900,600);
+        solo.sleep(1000);
     }
     @Test
-    public void addTrial(){
-        for (int i=0 ; i<5; i++)
-            solo.clickOnButton("Record Pass");
-        solo.sleep(10000);
+    public void testEndExperiment(){
+        solo.clickOnView(solo.getView(R.id.end_experiment_button));
+        solo.sleep(1000);
+        solo.clickOnScreen(150,600);
+        solo.sleep(1000);
+        assertTrue(solo.searchText("Experiment is Closed"));
     }
+
+    @Test
+    public void testUnPublish(){
+        solo.clickOnView(solo.getView(R.id.unpublish_experiment_button));
+        solo.sleep(1000);
+        solo.clickOnButton("YES");
+        assertTrue(solo.searchText("Publish Experiment"));
+    }
+
     @After
     public void deleteExperiment() throws InterruptedException {
         CollectionReference expCollection = db.collection("experiments");
-
-
         expCollection.whereEqualTo("Title", expTitle).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -75,5 +87,4 @@ public class BinomialExperimentTest {
             solo.wait(2000);
         }
     }
-
 }

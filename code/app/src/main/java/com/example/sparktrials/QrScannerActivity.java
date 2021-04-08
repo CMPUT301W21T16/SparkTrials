@@ -1,5 +1,17 @@
 package com.example.sparktrials;
 
+/**
+ * This class handles any time that the Qr/Bar code scanner is used in the app.
+ * Either for scanning a previously generated QRCode or previously registered Barcode
+ * Or for registering a barcode for use in adding trials.
+ *
+ * Each of the methods called during the running of this class are clled from within the asynchronous
+ * get calls from the database to avoid any timing issues with data not being retrieved in time
+ * e.g. createTrial is called first once the code is scanned and decoded. Then downloadExperiment
+ * is not called until the end of the callback function inside createTrial() so that we ensure the
+ * trial is created before we attempt to download the experiment.
+ */
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
@@ -50,7 +62,8 @@ public class QrScannerActivity extends AppCompatActivity {
     private MutableLiveData<GeoLocation> currentLocation = new MutableLiveData<>();
 
     LocationManager locationManager;
-    // to tell if scanning a QrCode/Barcode or registering a barcode
+    // scanReg = 1 when the scanner is being used to register a new barcode to the system
+    // scanReg = 0 when the scanner is being used to scan an already existing code to create a trial
     private int scanReg;
 
     @Override
@@ -80,10 +93,15 @@ public class QrScannerActivity extends AppCompatActivity {
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         String codeResult = intentResult.getContents();
         if(codeResult == null && resultCode != RESULT_OK){
+            Log.d("Scanner", "User hit back button");
             finish();
             return;
         }
         if(scanReg == 0) {
+            // here we check to see if the decoded value of the code is a UUID or not
+            // If it is we treat it as a QRCode that decoded into it's Id in the database
+            // If it isn't we use nameUUIDFromBytes to turn in into a UUID that would have been
+            // used to reference a generic barcode in the database
             Pattern uuidPattern = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
             Matcher uuidMatcher = uuidPattern.matcher(codeResult);
             String codeId;
@@ -95,6 +113,8 @@ public class QrScannerActivity extends AppCompatActivity {
 
             createTrial(codeId);
         } else {
+            // use nameUUIDFromBytes to have a consistent way of getting the same UUID next time
+            // this barcode is scanned
             String codeId = UUID.nameUUIDFromBytes(codeResult.getBytes()).toString();
             String experimentId = getIntent().getStringExtra("ExpId");
             String trialType = getIntent().getStringExtra("TrialType");
@@ -248,7 +268,13 @@ public class QrScannerActivity extends AppCompatActivity {
     }
 
     /**
-     * Add the generated trial to the experiment,
+     * Add the generated trial to the experiment
+     * Trials are only added if they could be added by a user normally through the action tab
+     * I.E: if the experiment is closed or unpublished, the trial is not added,
+     * If a user is not subscribed to the experiment, they will be subscribed to it prior to adding
+     * the trial
+     * If the experiment requires location then the user's location is added to the trial
+     * If the experiment has a region defined, then a user can only add a trial from within that region
      */
     public void uploadTrial(){
         Experiment experiment = exp.getValue();
@@ -261,6 +287,7 @@ public class QrScannerActivity extends AppCompatActivity {
             finish();
             return;
         }
+        //Do not add trials to closed experiments
         if(!experiment.getOpen()){
             Toast.makeText(getApplicationContext(), "That experiment is currently closed", Toast.LENGTH_SHORT).show();
             finish();
@@ -295,6 +322,7 @@ public class QrScannerActivity extends AppCompatActivity {
         finish();
     }
 
+    //Location listener for the QrCode Scanner
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(@NonNull Location location) {
@@ -304,6 +332,14 @@ public class QrScannerActivity extends AppCompatActivity {
         }
     };
 
+    // this is called whether the experiment needs location or not, however the location
+    // is only used if the experiment has locations turned on.
+
+    /**
+     * Method to retrieve the location of the user.
+     * This is called whether the experiment needs location or not, however the location
+     * is only used if the experiment has locations turned on.
+     */
     @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void getLocation() {

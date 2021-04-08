@@ -36,6 +36,11 @@ public class MeasurementExperimentTest {
     @Rule
     public ActivityTestRule<MainActivity> rule =
             new ActivityTestRule<>(MainActivity.class, true, true);
+    /**
+     * Gets the user ID from the profile tab, then publishes an experiment sued for testing. then searches
+     * for the experiment in the search tab and clicks on it
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception{
         db = FirebaseFirestore.getInstance();
@@ -56,6 +61,10 @@ public class MeasurementExperimentTest {
         solo.enterText((EditText) solo.getView(R.id.search_bar),expTitle);
         solo.clickInList(0,0);
     }
+
+    /**
+     * Adds a measurment trial
+     */
     @Test
     public void addMeasurementTrial(){
         EditText measurment = (EditText) solo.getView(R.id.countvalue_editText);
@@ -63,6 +72,10 @@ public class MeasurementExperimentTest {
         solo.clickOnButton("Record Number");
         solo.sleep(1000);
     }
+
+    /**
+     * Deletes trials and make sure UI is updated when trials are deleted
+     */
     @Test
     public void deleteTrials(){
         TextView trialsCount = (TextView) solo.getView(R.id.trials_count);
@@ -76,6 +89,11 @@ public class MeasurementExperimentTest {
         String textAfter = trialsCount.toString();
         assertTrue(textBefore.equals(textAfter));
     }
+
+    /**
+     * Deletes the experiment used for testing
+     * @throws InterruptedException
+     */
     @After
     public void deleteExperiment() throws InterruptedException {
         CollectionReference expCollection = db.collection("experiments");

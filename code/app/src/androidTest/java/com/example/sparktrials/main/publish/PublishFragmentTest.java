@@ -33,7 +33,7 @@ public class PublishFragmentTest {
     @Test
     public void checkDialogExistence(){
         solo.clickOnView(solo.getView(R.id.top_app_bar_publish_experiment));
-        assertTrue("Dialog is showing",solo.searchText("Add Experiment"));
+        assertTrue("Dialog is showing",solo.searchText("Publish Experiment"));
     }
 
     /**
@@ -42,7 +42,7 @@ public class PublishFragmentTest {
     @Test
     public void testCancelButton(){
         solo.clickOnView(solo.getView(R.id.top_app_bar_publish_experiment));
-        solo.clickOnButton("Cancel");
+        solo.clickOnButton("X");
         solo.sleep(1000);
         assertFalse("Dialog isnt showing",solo.searchText("Add Experiment"));
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);

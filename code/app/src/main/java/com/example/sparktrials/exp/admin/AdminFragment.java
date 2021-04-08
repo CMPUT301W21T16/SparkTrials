@@ -106,7 +106,7 @@ public class AdminFragment extends Fragment {
                         dialog.dismiss();
                     }
                 });
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                builder.setNeutralButton("NO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -115,6 +115,8 @@ public class AdminFragment extends Fragment {
 
                 AlertDialog alert = builder.create();
                 alert.show();
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.spark_text));
+                alert.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.neutral));
             } else {
                 manager.toggleExpPublished(experiment);
                 unpublishButton.setText("Unpublish Experiment");

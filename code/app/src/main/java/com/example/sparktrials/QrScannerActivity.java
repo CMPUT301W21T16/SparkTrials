@@ -1,11 +1,21 @@
 package com.example.sparktrials;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.webkit.GeolocationPermissions;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
@@ -25,6 +35,7 @@ import com.google.zxing.integration.android.IntentResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,23 +44,34 @@ public class QrScannerActivity extends AppCompatActivity {
 
     FirebaseManager db = new FirebaseManager();
     private String userId;
-    private String trialId;
     private MutableLiveData<Experiment> exp = new MutableLiveData<>();
     private MutableLiveData<Trial> trial = new MutableLiveData<>();
     private MutableLiveData<Profile> profile = new MutableLiveData<>();
+    private MutableLiveData<GeoLocation> currentLocation = new MutableLiveData<>();
+
+    LocationManager locationManager;
+    // to tell if scanning a QrCode/Barcode or registering a barcode
+    private int scanReg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getLocation();
         IdManager idManager = new IdManager(this);
         userId = idManager.getUserId();
         downloadProfile();
 
+        scanReg = getIntent().getIntExtra("ScanReg", 0);
+
         IntentIntegrator qrIntegrator = new IntentIntegrator(this);
-        qrIntegrator.setPrompt("Scan a QRCode");
+        if(scanReg == 0){
+            qrIntegrator.setPrompt("Scan a QRCode or Registered Bar Code");
+        } else {
+            qrIntegrator.setPrompt("Scan a Barcode to register");
+        }
         qrIntegrator.setOrientationLocked(true);
         qrIntegrator.initiateScan();
+
     }
 
     @Override
@@ -57,18 +79,46 @@ public class QrScannerActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         String codeResult = intentResult.getContents();
-        Pattern uuidPattern = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
-        Matcher uuidMatcher = uuidPattern.matcher(codeResult);
-        String codeId;
-        if(!uuidMatcher.matches()){
-            codeId = UUID.nameUUIDFromBytes(codeResult.getBytes()).toString();
+        if(scanReg == 0) {
+            Pattern uuidPattern = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+            Matcher uuidMatcher = uuidPattern.matcher(codeResult);
+            String codeId;
+            if(!uuidMatcher.matches()){
+                codeId = UUID.nameUUIDFromBytes(codeResult.getBytes()).toString();
+            } else {
+                codeId = codeResult;
+            }
+
+            createTrial(codeId);
         } else {
-            codeId = codeResult;
+            String codeId = UUID.nameUUIDFromBytes(codeResult.getBytes()).toString();
+            String experimentId = getIntent().getStringExtra("ExpId");
+            String trialType = getIntent().getStringExtra("TrialType");
+            double value = getIntent().getDoubleExtra("Value", 0.0);
+            QrCode newCode = new QrCode(codeId, experimentId, trialType, value);
+            uploadCode(newCode);
+            finish();
         }
 
-        createTrial(codeId);
     }
 
+    /**
+     * Uploads the Data of a qr code or barcode to the database
+     * @param code
+     *  The QrCode objet to be uploaded
+     */
+    public void uploadCode(QrCode code){
+        Map<String, Object> map = new HashMap<>();
+        map.put("Id", code.getQrId());
+        map.put("ExperimentId", code.getExperimentId());
+        map.put("TrialType", code.getTrialType());
+        map.put("Value", code.getValue());
+        db.set("qrCodeData", code.getQrId(), map);
+    }
+
+    /**
+     * Download the user's profile from the databae, as it is needed to create a trial
+     */
     public void downloadProfile() {
         db.get("users", userId, proData -> {
             Profile prof = new Profile(userId);
@@ -81,6 +131,11 @@ public class QrScannerActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Generate a new trial from a given Qr/Bar code Id
+     * @param qrId
+     *  The id of the Qr/Bar code
+     */
     public void createTrial(String qrId) {
         db.get("qrCodeData", qrId, qrData -> {
             String trialType;
@@ -109,6 +164,11 @@ public class QrScannerActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Retrieve the experiment the trial is for from the database
+     * @param expId
+     *  The id of the experiment
+     */
     public void getExperiment(String expId){
         db.get("experiments", expId, expData -> {
             Experiment experiment = new Experiment(expId);
@@ -131,7 +191,6 @@ public class QrScannerActivity extends AppCompatActivity {
             Profile owner = new Profile(uId);
             owner.setUsername(username);
             experiment.setOwner(owner);
-//            experiment.setTrials((ArrayList<Trial>) expData.getData().get("Trials"));
             ArrayList<HashMap> trialsHash = (ArrayList<HashMap>) expData.getData().get("Trials");
             ArrayList<Trial> trials = new ArrayList<>();
             for(HashMap<String, Object> map: trialsHash){
@@ -176,16 +235,132 @@ public class QrScannerActivity extends AppCompatActivity {
             experiment.setBlacklist((ArrayList<String>) expData.getData().get("Blacklist"));
 
             exp.setValue(experiment);
+            if(experiment.getReqLocation()){
+                getLocation();
+            }
             uploadTrial();
         });
+
     }
 
+    /**
+     * Add the generated trial to the experiment,
+     */
     public void uploadTrial(){
         Experiment experiment = exp.getValue();
         Trial tri = trial.getValue();
+        Profile pro = profile.getValue();
 
+        //Do not add trials to unpublished experiments
+        if(!experiment.getPublished()){
+            Toast.makeText(getApplicationContext(), "That experiment is unpublished", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        if(!experiment.getOpen()){
+            Toast.makeText(getApplicationContext(), "That experiment is currently closed", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        // if the user is not subscribed, subscribe them
+        if(!pro.getSubscriptions().contains(experiment.getId())){
+            pro.addSubscription(experiment.getId());
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("subscriptions", pro.getSubscriptions());
+            db.update("users", pro.getId(), map);
+        }
+
+        // if the experiment has locations enabled, attach the current location to the trial
+        if(experiment.hasLocationSet()){
+            tri.setLocation(currentLocation.getValue());
+            // if the experiment requires trials to be in a range, check whether the trial is
+            // within that range, if it isn't. do not add the trial
+            if(experiment.getReqLocation()){
+                if(!isWithinRegion(tri, experiment)){
+                    Toast.makeText(getApplicationContext(), "You are outside the range of this experiment", Toast.LENGTH_SHORT).show();
+                    finish();
+                    return;
+                }
+            }
+
+        }
+
+        // If all conditions for adding a trial are met, add the trial
         experiment.addTrial(tri);
         db.uploadTrials(experiment);
         finish();
     }
+
+    private final LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(@NonNull Location location) {
+            GeoLocation loc = new GeoLocation(location.getLatitude(), location.getLongitude());
+
+            currentLocation.setValue(loc);
+        }
+    };
+
+    @SuppressLint("MissingPermission")
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void getLocation() {
+        try {
+            locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, locationListener);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * function to calculate the distance between a trial location and the center of an
+     * experiment region
+     * @param trial
+     *  The trial to be checked
+     * @param experiment
+     *  The experiment with the range
+     * @return
+     *  The distance from trial location to center of experiment range
+     */
+    public double calculateDistance(Trial trial, Experiment experiment){
+        // Haversine formula is used here
+        // All distances in meters, angles in radians
+
+        double eLat = experiment.getRegion().getLat();
+        double eLon = experiment.getRegion().getLon();
+        double tLat = trial.getLocation().getLat();
+        double tLon = trial.getLocation().getLon();
+
+        final double R = 6371000; //mean earth radius
+
+        // Convert angles to radians
+        final double phi1 = eLat * Math.PI/180;
+        final double phi2 = tLat * Math.PI/180;
+        final double deltaPhi = (tLat - eLat) * Math.PI/180;
+        final double deltaLambda = (tLon - eLon) * Math.PI/180;
+
+        // Angular distance in radians between two points
+        final double a = Math.pow(Math.sin(deltaPhi/2), 2) + (Math.cos(phi1) * Math.cos(phi2)
+                * Math.pow(Math.sin(deltaLambda/2), 2));
+
+        // Square of half the chord length between the two points
+        final double c = Math.atan2(Math.sqrt(a), Math.sqrt(1-a)) * 2;
+
+        final double distance = R*c;
+        return distance;
+    }
+
+    /**
+     * return whether or not a trial is within range of an experiment
+     * @param trial
+     *  The trail in question
+     * @param experiment
+     *  The experiment in question
+     * @return
+     *  True if the trial is within experiment region
+     *  False if not
+     */
+    public boolean isWithinRegion(Trial trial, Experiment experiment){
+        return experiment.getRegion().getRadius() >= calculateDistance(trial, experiment);
+    }
+
 }

@@ -45,6 +45,15 @@ public class ActionFragmentManager {
     }
 
     /**
+     * Returns the Id of the experiment
+     * @return
+     *  The Id
+     */
+    public String getExpId(){
+        return experiment.getId();
+    }
+
+    /**
      * Adds a binomial trial to the experiment
      * @param result
      */
@@ -257,6 +266,14 @@ public class ActionFragmentManager {
         final double distance = R*c; // Distance between the two points
 
         return distance;
+    }
+
+    /**
+     * Checks if the experiment is such that trials are enforced to be withing region.
+     * @return
+     */
+    public boolean isLocationEnforced() {
+        return experiment.getReqLocation();
     }
 
     /**

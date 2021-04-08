@@ -1,8 +1,11 @@
 package com.example.sparktrials.main.publish;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +40,7 @@ public class PublishFragment extends DialogFragment {
     private double lat;
     private double lon;
     private double radius;
+    private String regionTitle;
 
     final private int didNotPickLocation = 0;
     final private int didPickLocation = 1;
@@ -48,6 +52,21 @@ public class PublishFragment extends DialogFragment {
      * @return
      */
     public AlertDialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
+        if (!hasInternetConnectivity()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("No Internet Connection");
+            builder.setMessage("Publishing Experiments not Available");
+            builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+            alert.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.neutral));
+            return alert;
+        }
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_publish, null);
         expDesc = view.findViewById(R.id.expDesc_editText);
         expTitle = view.findViewById(R.id.expTitle_editText);
@@ -103,7 +122,7 @@ public class PublishFragment extends DialogFragment {
                         String experimentType = spinner.getSelectedItem().toString();
                         Boolean reqLocation = Boolean.parseBoolean(trialLocations.getSelectedItem().toString());
                         Log.d("Type",experimentType);
-                        PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,lat,lon,radius,experimentType,reqLocation);
+                        PublishFragmentManager manager = new PublishFragmentManager(id,desc,title,MinNTrialsString,lat,lon,radius,regionTitle,experimentType,reqLocation);
                     }
                 })
                 .create();
@@ -133,7 +152,18 @@ public class PublishFragment extends DialogFragment {
             lat = (double) data.getExtras().get("Latitude");
             lon = (double) data.getExtras().get("Longitude");
             radius = (double) data.getExtras().get("Radius");
+            regionTitle = (String) data.getExtras().get("Region Title");
         }
 
     }
+
+    public boolean hasInternetConnectivity() {
+        ConnectivityManager cm =
+                (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return (activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting());
+    }
+
 }

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--QR Code UI that asks user to fill out what kind of trial they want their
+QR code to complete for them. Has a spinner for pass/fail trials and
+a number entry for measurement/integer count trials-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"

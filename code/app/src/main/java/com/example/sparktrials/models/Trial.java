@@ -1,5 +1,6 @@
 package com.example.sparktrials.models;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,11 +13,11 @@ import java.util.Date;
  * profile is the profile of the user who took this trial
  */
 public abstract class Trial {
-    String id;
-    GeoLocation location;
-    Profile profile;
-    Double value;
-    Date date;
+    protected String id;
+    protected GeoLocation location;
+    protected Profile profile;
+    protected Double value;
+    protected Date date;
 
     /**
      * This constructor creates a blank trial to be filled out

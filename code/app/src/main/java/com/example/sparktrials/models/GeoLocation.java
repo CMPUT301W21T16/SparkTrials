@@ -16,10 +16,15 @@ public class GeoLocation {
     // If the radius is 0, then this just a point on the map, otherwise it is a region
     private double radius;
 
+    // Some regions have titles
+    private String regionTitle;
+
+
     public GeoLocation(){
         this.lat = 1000.0;
         this.lon = 1000.0;
         this.radius = 0;
+        this.regionTitle = "";
     }
 
     /**
@@ -45,11 +50,13 @@ public class GeoLocation {
             this.lon = lon;
         }
         this.radius = 0;
+        this.regionTitle = "";
     }
 
-    public GeoLocation(Double lat, Double lon, Double radius) {
+    public GeoLocation(Double lat, Double lon, Double radius, String regionTitle) {
         this(lat, lon);
         this.radius = radius;
+        this.regionTitle = regionTitle;
     }
 
     /**
@@ -133,5 +140,23 @@ public class GeoLocation {
         } else {
             this.radius = radius;
         }
+    }
+
+    /**
+     * This returns the title of a region
+     * @return
+     *     Returns the title of the region
+     */
+    public String getRegionTitle() {
+        return this.regionTitle;
+    }
+
+    /**
+     * This edits the title of this geolocation
+     * @param regionTitle
+     *     Overrides the previously held title value
+     */
+    public void setRegionTitle(String regionTitle) {
+        this.regionTitle = regionTitle;
     }
 }

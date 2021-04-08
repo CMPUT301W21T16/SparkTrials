@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Displays how many trials have been submitted by people, then provides
+button/editTexts for the user to create trials. Some items are made invisible
+depending on which type of trial the experiment is for. At the bottom there
+are four more buttons to upload trials, deal with codes, and delete trials-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -125,14 +129,37 @@
         android:visibility="invisible"
         app:backgroundTint="@color/header" />
 
-    <Button
-        android:id="@+id/action_bar_generateQR"
+    <LinearLayout
+        android:id="@+id/LinearLayout04"
+        android:layout_height="60dp"
         android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2.6"
-        android:text="Generate QR Code"
-        android:visibility="invisible"
-        app:backgroundTint="@color/header" />
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/action_bar_generateQR"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.6"
+            android:text="Generate QR Code"
+            android:visibility="invisible"
+            app:backgroundTint="@color/header" />
+
+        <Space
+            android:layout_height="match_parent"
+            android:layout_width="10dp">
+        </Space>
+
+        <Button
+            android:id="@+id/action_bar_register_barcode"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.6"
+            android:text="Register Barcode"
+            android:visibility="invisible"
+            app:backgroundTint="@color/header"/>
+
+    </LinearLayout>
     <Button
         android:id="@+id/action_bar_delete_trials"
         android:layout_width="250dp"

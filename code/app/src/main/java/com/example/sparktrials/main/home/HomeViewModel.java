@@ -1,19 +1,16 @@
 package com.example.sparktrials.main.home;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.sparktrials.ExperimentActivity;
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -23,8 +20,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -159,37 +154,49 @@ public class HomeViewModel extends ViewModel {
                     if (eidList != null) {
                         for (String eid : eidList) {
                             Experiment experiment = new Experiment();
-                            Profile owner = new Profile();
-                            owner.setId(profileID);
-                            owner.setUsername((String) profile.get("name"));
-                            owner.setContact((String) profile.get("contact"));
-                            experiment.setOwner(owner);
                             DocumentReference dref = experimentsCollection.document(eid);
                             Log.w(TAG, eid);
                             dref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                     if (task.isSuccessful()) {
-                                        DocumentSnapshot value = task.getResult();
-                                        String id = value.getId();
-                                        String title = (String) value.get("Title");
+                                        DocumentSnapshot experimentDocument = task.getResult();
+                                        Boolean published = (Boolean) experimentDocument.get("Published");
+                                        if (published != null && published) {
+                                            String id = experimentDocument.getId();
+                                            String title = (String) experimentDocument.get("Title");
 
-                                        String desc = (String) value.get("Description");
-                                        Date date = (Date) value.getDate("Date", DocumentSnapshot.ServerTimestampBehavior.ESTIMATE);
-                                        if (value.getDate("Date", DocumentSnapshot.ServerTimestampBehavior.PREVIOUS) == null) {
-                                            Log.w(TAG, "Could not return date");
+                                            String desc = (String) experimentDocument.get("Description");
+                                            Date date = (Date) experimentDocument.getDate("Date", DocumentSnapshot.ServerTimestampBehavior.ESTIMATE);
+                                            if (experimentDocument.getDate("Date", DocumentSnapshot.ServerTimestampBehavior.PREVIOUS) == null) {
+                                                Log.w(TAG, "Could not return date");
+                                            }
+                                            Boolean open = (Boolean) experimentDocument.get("Open");
+
+                                            experiment.setId(id);
+                                            experiment.setTitle(title);
+                                            experiment.setDesc(desc);
+                                            experiment.setDate(date);
+                                            experiment.setOpen(open);
+
+                                            usersCollection.document((String) experimentDocument.get("profileID")).get()
+                                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                            DocumentSnapshot profileDocument = task.getResult();
+
+                                                            Profile owner = new Profile();
+                                                            owner.setId(profileDocument.getId());
+                                                            owner.setUsername((String) profileDocument.get("name"));
+                                                            owner.setContact((String) profileDocument.get("contact"));
+                                                            experiment.setOwner(owner);
+                                                            ArrayList<Experiment> x = subscribedExperiments.getValue();
+                                                            x.add(experiment);
+
+                                                            subscribedExperiments.setValue(x);
+                                                        }
+                                                    });
                                         }
-                                        Boolean open = (Boolean) value.get("Open");
-
-                                        experiment.setId(id);
-                                        experiment.setTitle(title);
-                                        experiment.setDesc(desc);
-                                        experiment.setDate(date);
-                                        experiment.setOpen(open);
-                                        ArrayList<Experiment> x = subscribedExperiments.getValue();
-                                        x.add(experiment);
-
-                                        subscribedExperiments.setValue(x);
                                     }
                                 }
 

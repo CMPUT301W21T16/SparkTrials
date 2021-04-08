@@ -1,6 +1,8 @@
 package com.example.sparktrials.main.search;
 
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;

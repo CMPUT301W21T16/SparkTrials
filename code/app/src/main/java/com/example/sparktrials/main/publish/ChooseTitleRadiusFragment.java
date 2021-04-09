@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.LatLng;
  * This represents the Fragment (to be displayed in MapsActivity) that allows the user to set the
  * radius of their region.
  */
-public class ChooseRadiusFragment extends DialogFragment {
+public class ChooseTitleRadiusFragment extends DialogFragment {
 
     private GeoMap map;
 
@@ -35,13 +35,13 @@ public class ChooseRadiusFragment extends DialogFragment {
      * @param map
      *      The map that the region was selected on.
      */
-    public ChooseRadiusFragment(GeoMap map) {
+    public ChooseTitleRadiusFragment(GeoMap map) {
         this.map = map;
     }
 
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_choose_radius, null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_choose_title_radius, null);
 
         regionTitleEditText = view.findViewById(R.id.title_edit_text);
         radiusEditText = view.findViewById(R.id.radius_edit_text);

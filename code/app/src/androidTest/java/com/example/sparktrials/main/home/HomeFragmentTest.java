@@ -23,7 +23,9 @@ import org.junit.Test;
 import com.example.sparktrials.R;
 import static org.junit.Assert.assertTrue;
 
-
+/**
+ * This class tests the UI of the owned experiments and subscribed experiments tab of the homeFragment
+ */
 public class HomeFragmentTest {
 
     private Solo solo;

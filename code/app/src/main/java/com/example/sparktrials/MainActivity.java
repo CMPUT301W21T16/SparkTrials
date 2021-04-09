@@ -26,6 +26,9 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+/**
+ * The startup of the app. Sets up the tabview, topbar, and initializes the user
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override

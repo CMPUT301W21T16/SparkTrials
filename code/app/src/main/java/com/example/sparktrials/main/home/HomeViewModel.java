@@ -41,56 +41,6 @@ public class HomeViewModel extends ViewModel {
         getMyExperiments();
         getSubscribedExperiments();
     }
-//    private void getExperimentsFromDB() {
-//
-//        experimentsCollection.get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            experiments.setValue(new ArrayList<>());
-//
-//                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                //Log.d(TAG, document.getId() + " => " + document.getData());
-//                                String id = document.getId();
-//                                String title = (String) document.get("Title");
-//                                String desc = (String) document.get("Description");
-//
-//                                Experiment experiment = new Experiment(id);
-//                                experiment.setTitle(title);
-//                                experiment.setDesc(desc);
-//
-//                                String ownerId = (String) document.get("profileID");
-//
-//                                usersCollection.document(ownerId).get()
-//                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                            @Override
-//                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                                if (task.isSuccessful()) {
-//                                                    DocumentSnapshot document = task.getResult();
-//                                                    String username = (String) document.get("name");
-//                                                    String phoneNum = (String) document.get("contact");
-//
-//                                                    Profile owner = new Profile(ownerId);
-//                                                    owner.setUsername(username);
-//                                                    owner.setContact(phoneNum);
-//
-//                                                    experiment.setOwner(owner);
-//
-//                                                    ArrayList<Experiment> x = experiments.getValue();
-//                                                    x.add(experiment);
-//
-//                                                    experiments.setValue(x);
-//                                                }
-//                                            }
-//                                        });
-//                            }
-//                        } else {
-//                            //Log.d(TAG, "Error getting documents: ", task.getException());
-//                        }
-//                    }
-//                });
-//    }
         private void getMyExperiments() {
             experimentsCollection.whereEqualTo("profileID",profileID)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {

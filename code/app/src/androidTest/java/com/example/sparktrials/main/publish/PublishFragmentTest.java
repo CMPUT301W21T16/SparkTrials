@@ -16,6 +16,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Tests aspects of the publishing new experiment UI
+ */
 @RunWith(AndroidJUnit4.class)
 public class PublishFragmentTest {
     private Solo solo;

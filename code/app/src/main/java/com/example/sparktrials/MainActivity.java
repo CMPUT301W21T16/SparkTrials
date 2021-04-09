@@ -26,6 +26,9 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+/**
+ * The startup of the app. Sets up the tabview, topbar, and initializes the user
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -56,10 +59,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.top_app_bar_draft:
-                        Log.d("BUTTON", "draftClicked");
-                        Toast.makeText(getApplicationContext(), "Welcome back.", Toast.LENGTH_SHORT).show();
-                        break;
                     case R.id.top_app_bar_scan_qr_code:
                         Log.d("BUTTON", "scanClicked");
                         Intent intent = new Intent(MainActivity.this, QrScannerActivity.class);

@@ -41,6 +41,11 @@ public class AdminFragment extends Fragment {
 
     Experiment experiment;
 
+    /**
+     * Constructor for the Admin fragment
+     * @param experiment
+     *  The experiment this admin fragment is for
+     */
     public AdminFragment(Experiment experiment){
         this.experiment = experiment;
     }
@@ -136,6 +141,11 @@ public class AdminFragment extends Fragment {
         });
     }
 
+    /**
+     *Set the text that tells a user whether or not the experiment is active
+     * @param activeText
+     *  The textview that shows whether or not the experiment is active
+     */
     public void setActiveText( TextView activeText){
         this.activeText = activeText;
     }

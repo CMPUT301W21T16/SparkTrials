@@ -17,6 +17,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.UUID;
 
+/**
+ * A singleton to keep track of a user's id. Accessible from anywhere
+ */
 public class IdManager {
     private Context context;
     private static boolean logged_in = false;

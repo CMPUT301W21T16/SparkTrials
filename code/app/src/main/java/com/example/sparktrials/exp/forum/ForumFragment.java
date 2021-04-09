@@ -82,14 +82,5 @@ public class ForumFragment extends Fragment {
             }
         });
 
-        // Dev use only!!
-//        questionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Question q = forumManager.getQuestions().getValue().get(position);
-//                FirebaseManager firebaseManager = new FirebaseManager();
-//                firebaseManager.delete("experiments/" + q.getExpId() + "/posts", q.getId());
-//            }
-//        });
     }
 }

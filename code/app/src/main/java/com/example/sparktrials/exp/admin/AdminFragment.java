@@ -41,6 +41,11 @@ public class AdminFragment extends Fragment {
 
     Experiment experiment;
 
+    /**
+     * Constructor for the Admin fragment
+     * @param experiment
+     *  The experiment this admin fragment is for
+     */
     public AdminFragment(Experiment experiment){
         this.experiment = experiment;
     }

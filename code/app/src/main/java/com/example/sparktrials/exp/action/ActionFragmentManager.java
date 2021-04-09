@@ -1,15 +1,19 @@
 package com.example.sparktrials.exp.action;
 
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 
 import com.example.sparktrials.FirebaseManager;
+import com.example.sparktrials.TrialsAdapter;
+import com.example.sparktrials.exp.DraftManager;
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.QrCode;
+import com.example.sparktrials.models.Trial;
 import com.example.sparktrials.models.TrialBinomial;
 import com.example.sparktrials.models.TrialCount;
 import com.example.sparktrials.models.TrialIntCount;
@@ -19,6 +23,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -34,6 +39,12 @@ public class ActionFragmentManager {
     private int originalNTrials;
     private String id;
     private Profile profile;
+    private DraftManager draftManager;
+
+    public void setDraftManager(DraftManager draftManager) {
+        draftManager.setExperiment(experiment);
+        this.draftManager = draftManager;
+    }
 
     public ActionFragmentManager(Experiment experiment) {
         this.id=id;
@@ -63,6 +74,7 @@ public class ActionFragmentManager {
         trial.setProfile(profile);
         trial.setLocation(location);
         experiment.addTrial(trial);
+        draftManager.addDraft(trial);
     }
 
     /**
@@ -75,6 +87,7 @@ public class ActionFragmentManager {
         trial.setProfile(profile);
         trial.setLocation(location);
         experiment.addTrial(trial);
+        draftManager.addDraft(trial);
     }
 
     /**
@@ -87,6 +100,7 @@ public class ActionFragmentManager {
         trial.setProfile(profile);
         trial.setLocation(location);
         experiment.addTrial(trial);
+        draftManager.addDraft(trial);
     }
 
     /**
@@ -95,6 +109,7 @@ public class ActionFragmentManager {
     public void addCountTrial(GeoLocation location){
         TrialCount trial = new TrialCount(UUID.randomUUID().toString(),location,profile);
         experiment.addTrial(trial);
+        draftManager.addDraft(trial);
     }
 
     /**
@@ -149,6 +164,7 @@ public class ActionFragmentManager {
     public void uploadTrials(){
         firebaseManager.uploadTrials(experiment);
         this.originalNTrials=Integer.parseInt(experiment.getNumTrials());
+        draftManager.deleteDrafts();
     }
     /**
      * Removes all trials inserted by the user from the experiment object
@@ -288,5 +304,10 @@ public class ActionFragmentManager {
     public boolean isWithinRegion(GeoLocation point) {
         return experiment.getRegion().getRadius() >= calculateDistance(point);
     }
+    public void uploadDrafts(ArrayList<Trial> trials){
+        experiment.addTrials(trials);
+        uploadTrials();
+    }
+
 
 }

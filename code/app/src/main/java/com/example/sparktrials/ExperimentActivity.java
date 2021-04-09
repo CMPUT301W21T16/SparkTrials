@@ -24,6 +24,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.sparktrials.exp.DraftsFragment;
 import com.example.sparktrials.exp.ViewPagerAdapter;
 import com.example.sparktrials.exp.action.ActionFragment;
 import com.example.sparktrials.exp.admin.AdminFragment;
@@ -145,6 +146,7 @@ public class ExperimentActivity extends AppCompatActivity {
                 adapter.addFragment(new ActionFragment(experiment), "Action");
                 adapter.addFragment(new StatsFragment(experiment), "Stats");
                 adapter.addFragment(new ForumFragment(experiment), "Forum");
+                adapter.addFragment(new DraftsFragment(experiment),"Drafts");
                 if (experiment.getRegion().getRadius() > 0 && hasInternetConnectivity()) {
                     adapter.addFragment(new LocationFragment(experiment), "Map");
                 }

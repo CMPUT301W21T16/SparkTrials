@@ -1,5 +1,9 @@
 package com.example.sparktrials.exp.admin;
 
+/**
+ * This class contains the view information for the admin tab of an experiment page
+ */
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -74,7 +79,12 @@ public class AdminFragment extends Fragment {
         endButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //The same button is used for opening and closing experiments, toggleExpOpen() is
+                // used to flip the open attribute of the experiment.
+                if(!experiment.getPublished() && !experiment.getOpen()){
+                    Toast.makeText(getContext(), "Cannot Open an unpublished experiment", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 manager.toggleExpOpen(experiment);
                 if (endButton.getText() == "END EXPERIMENT"){
                     endButton.setText("OPEN EXPERIMENT");
@@ -96,6 +106,8 @@ public class AdminFragment extends Fragment {
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        //unpublish experiment will unsubscribe all users from the experiment and
+                        // switch both the open and published attributes of the experiment to false
                         manager.unpublishExperiment(experiment.getId());
                         if(experiment.getOpen()) {
                             manager.toggleExpOpen(experiment);

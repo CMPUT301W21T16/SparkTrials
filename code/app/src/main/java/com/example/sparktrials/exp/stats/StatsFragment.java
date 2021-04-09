@@ -1,5 +1,6 @@
 package com.example.sparktrials.exp.stats;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +19,9 @@ import com.example.sparktrials.models.Trial;
 import com.example.sparktrials.models.TrialBinomial;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -26,8 +29,12 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.common.primitives.Doubles;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -41,9 +48,9 @@ public class StatsFragment extends Fragment {
     }
     BarChart barChart;
     LineChart lineChart;
-    TextView mean_tv, numTrials_tv, std_tv, median_tv, q1_tv, q3_tv;
+    TextView mean_tv, numTrials_tv, std_tv, median_tv, q1_tv, q3_tv, histoHeading_tv, plotHeading_tv;
 
-
+    String label = "Mean";
     /**
      * Creates the stat fragment view
      * @param inflater
@@ -65,20 +72,6 @@ public class StatsFragment extends Fragment {
      * @param savedInstanceState
      */
     public void onViewCreated(View view, Bundle savedInstanceState){
-
-        // This is Testing data
-       /* Experiment thisExp = new Experiment("testingAlex");
-        ArrayList<Trial> trial= new ArrayList<>();
-        TrialBinomial newBinomial = new TrialBinomial("1", new GeoLocation(), new Profile("1234"), true) ;
-        TrialBinomial newBinomial2 = new TrialBinomial("2", new GeoLocation(), new Profile("1234"), false) ;
-        TrialBinomial newBinomial3 = new TrialBinomial("3", new GeoLocation(), new Profile("1234"), false) ;
-        TrialBinomial newBinomial4 = new TrialBinomial("4", new GeoLocation(), new Profile("1234"), true) ;
-        trial.add(newBinomial);
-        trial.add(newBinomial2);
-        trial.add(newBinomial3);
-        trial.add(newBinomial4);
-        thisExp.addTrials(trial);
-        // Testing data ends here
 
         /**
          * Initialize descriptive statistics UI and set them appropriately calling from experiment class methods
@@ -104,76 +97,142 @@ public class StatsFragment extends Fragment {
         q3_tv = getView().findViewById(R.id.q3ID);
         q3_tv.setText((experiment.getQ3()));
 
+        histoHeading_tv = getView().findViewById(R.id.HistogramID);
+        histoHeading_tv.setText(experiment.getHistogramHeader());
+
+        plotHeading_tv = getView().findViewById(R.id.PlotID);
+        plotHeading_tv.setText(experiment.getPlotHeader());
 
         /**
          * Initialize histogram and set X and Y data calling from experiment class
          */
+
         barChart = (BarChart) getView().findViewById(R.id.barchartID);
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         int[] frequencies = experiment.frequencies();
         int xAxisLength = experiment.getXaxis().length;
-        for (int i = 0; i<xAxisLength; i++){
-            barEntries.add(new BarEntry((float) i, (float) (frequencies[i])));
-        }
-        BarDataSet barDataSet = new BarDataSet(barEntries, "totals");
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setGranularity(1f);
-       // xAxis.setCenterAxisLabels(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setLabelCount(experiment.removeDupes().length);
-        Log.d("int",(""+ experiment.removeDupes()));
-        xAxis.setDrawGridLines(false);
-        xAxis.setEnabled(true);
-        //xAxis.setLabelCount(2);
-
-
-        xAxis.setValueFormatter(new ValueFormatter() {
-            /**
-             * This method casts the X axis values necessary for the used graphing Library
-             * @param value
-             * @return
-             * Integer values for x-axis of histogram
-             */
-            @Override
-            public String getFormattedValue(float value){
-                String [] vals = experiment.getXaxis();
-                return vals[(int) value];
+        if (!experiment.getValidTrials().isEmpty()) {
+            for (int i = 0; i < xAxisLength; i++) {
+                barEntries.add(new BarEntry((float) i, (float) (frequencies[i])));
             }
-        });
-        // Set data to histogram
-        BarData theData = new BarData(barDataSet);
-        barChart.setData(theData);
+            if (experiment.getType().equals("counts")) {
+                label = "Counts";
+            } else if (experiment.getType().equals("binomial trials")) {
+                label = "Proportion of Success";
+            }
+            BarDataSet barDataSet = new BarDataSet(barEntries, "Frequency");
+            XAxis xAxis = barChart.getXAxis();
+            xAxis.setGranularity(1f);
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setLabelCount(experiment.removeDupes().length);
 
+            xAxis.setDrawGridLines(false);
+            xAxis.setEnabled(true);
+            /**
+             * Format X-Axis for histogram
+             */
+            xAxis.setValueFormatter(new ValueFormatter() {
+                /**
+                 * This method casts the X axis values necessary for the used graphing Library
+                 *
+                 * @param value
+                 * @return Integer values for x-axis of histogram
+                 */
+                @Override
+                public String getFormattedValue(float value) {
+                    String[] vals = experiment.getXaxis();
+                    return vals[(int) value];
+                }
+            });
+            // Set data to histogram
+            BarData theData = new BarData(barDataSet);
+            barDataSet.setValueTextSize(10f);
+            barChart.setData(theData);
+            barChart.getDescription().setEnabled(false);
+        }
 
-        // Initialize line plot
         /**
-         * To Do: implement tracking over time this is dummy data for now
+         * Implements Line Plots
          */
         lineChart = (LineChart) getView().findViewById(R.id.linechartID);
-        ArrayList <Entry> lineEntries =  new ArrayList<>();
-        lineEntries.add(new Entry (1, 20));
-        lineEntries.add(new Entry(2, 30));
-        XAxis plotXAxis = lineChart.getXAxis();
-        plotXAxis.setLabelCount(experiment.daysOfTrials().size(), true);
-        Log.d("dates, ", ""+ experiment.daysOfTrials());
-        Log.d("values", ""+experiment.getXaxis());
-        plotXAxis.setValueFormatter(new ValueFormatter() {
-            /**
-             * This method casts the X axis values necessary for the used graphing Library
-             * @param value
-             * @return
-             * Integer values for x-axis of histogram
-             */
-            @Override
-            public String getFormattedValue(float value){
-               ArrayList<String> vals= experiment.daysOfTrials();
-                return vals.toString();
-            }
-        });
-        plotXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        LineDataSet lineDataSet = new LineDataSet(lineEntries, "values");
-        LineData lineData = new LineData(lineDataSet);
-        lineChart.setData(lineData);
+        if(!experiment.getValidTrials().isEmpty()) {
 
+            // Stores Plot data
+            ArrayList<Entry> lineEntries = new ArrayList<>();
+            for (int i = 0; i < experiment.daysOfTrials().size(); i++) {
+                lineEntries.add(new Entry(((float) i), (float) (experiment.daysFrequencies()[i])));
+            }
+            // Customize Lines For Data
+            ArrayList<ILineDataSet> lines = new ArrayList<>();
+            LineDataSet mainDataSet = new LineDataSet(lineEntries, label);
+            mainDataSet.setCircleColor(Color.RED);
+            mainDataSet.setColor(Color.RED);
+            mainDataSet.setValueTextSize(10f);
+            lineChart.getDescription().setEnabled(false);
+            lines.add(mainDataSet);
+            LineData data = new LineData(lines);
+            lineChart.setData(data);
+            XAxis plotXAxis = lineChart.getXAxis();
+            plotXAxis.setLabelCount(experiment.daysOfTrials().size(), true);
+            plotXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            YAxis plotYAxis = lineChart.getAxisLeft();
+            double min = Doubles.min(experiment.daysFrequencies());
+            plotYAxis.setAxisMinimum((float) min);
+            plotXAxis.setValueFormatter(new ValueFormatter() {
+                /**
+                 * This method casts the X axis values necessary for the used graphing Library
+                 *
+                 * @param value
+                 * @return String values for x-axis of line plot
+                 */
+                final ArrayList<String> vals = experiment.daysOfTrials();
+                @Override
+                public String getAxisLabel(float value, AxisBase axisBase) {
+                    int pos = Math.round(value);
+                    for (int i = 0; i < vals.size(); i++) {
+                        if (value > i - 2 && value < i + 1) {
+                            pos = i;
+                        }
+                        if (pos < vals.size()) {
+                            return vals.get(pos);
+                        }
+                    }
+                    return "";
+                }
+            });
+
+
+            // Check if experiment is measurement or non-negative for quanitle data
+            if (experiment.getType().equals("measurement trials") || experiment.getType().equals("non-negative integer counts")) {
+                ArrayList<Entry> q1Entries = new ArrayList<>();
+                for (int i = 0; i < experiment.daysOfTrials().size(); i++) {
+                    q1Entries.add(new Entry((float) i, (float) (experiment.q1Plots()[i])));
+
+                }
+                LineDataSet q1DataSet = new LineDataSet(q1Entries, "Quartile 1");
+                q1DataSet.setCircleColor(Color.BLUE);
+                q1DataSet.setColor(Color.BLUE);
+                q1DataSet.setValueTextSize(10f);
+                lines.add(q1DataSet);
+                ArrayList<Entry> q3Entries = new ArrayList<>();
+                for (int i = 0; i < experiment.daysOfTrials().size(); i++) {
+                    q3Entries.add(new Entry((float) i, (float) (experiment.q3Plots()[i])));
+
+                }
+                LineDataSet q3DataSet = new LineDataSet(q3Entries, "Quartile 3");
+                q3DataSet.setCircleColor(Color.GREEN);
+                q3DataSet.setColor(Color.GREEN);
+                q3DataSet.setValueTextSize(10f);
+                lines.add(q3DataSet);
+                double q1Min = Doubles.min(experiment.q1Plots());
+                double q3Min = Doubles.min(experiment.q3Plots());
+                double meanMin = Doubles.min(experiment.daysFrequencies());
+                if (q1Min < meanMin || q3Min < meanMin) {
+                    double lowerB = Doubles.min(q1Min, q3Min);
+                    plotYAxis.setAxisMinimum((float) lowerB);
+                }
+            }
+            lineChart.setData(data);
+        }
     }
 }

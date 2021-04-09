@@ -1,15 +1,16 @@
 package com.example.sparktrials.models;
 
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 /**
  * An experiment class that has an owner, multiple specs that define the experiment, and trials
@@ -213,14 +214,13 @@ public class Experiment {
             user_trials.get(user_id).add(trial);
         }
 
-        //for each user in the hash map, Add their trials to the valid trial list
+        //for each user in the hash map, Add their trials to the list of valid trials
         for (String i : user_trials.keySet()){
             ArrayList<Trial> trials_of_user = user_trials.get(i);
             for (int j=0; j<trials_of_user.size(); j++){
                 valid_trials.add(trials_of_user.get(j));
             }
         }
-
 
         return valid_trials;
     }
@@ -471,11 +471,12 @@ public class Experiment {
      * @return
      *    Returns the string of the date
      */
-    public String getDay(){
-        String pattern = "EEE MMM DD HH:mm:ss z yyyy";
+    public String getDay(Date date){
+        String pattern = "EEE MMM dd HH:mm:ss z yyyy";
         DateFormat df = new SimpleDateFormat(pattern);
         String strDate = df.format(date);
         strDate = strDate.substring(4,10);
+
         return strDate;
     }
     /**
@@ -569,22 +570,24 @@ public class Experiment {
             values.add( (Double) ( getValidTrials().get(i).getValue()));
         }
         Collections.sort(values);
+
         return values;
     }
 
+    /**
+     * Determines all the days trials occurs
+     * @return
+     * Array List of type string
+     */
     public ArrayList<String> daysOfTrials(){
-
         ArrayList<String> days = new ArrayList<>();
         for (int i = 0 ; i < getValidTrials().size(); i++){
-
-
-            this.getDay();
-            if (!days.contains(getValidTrials().get(i).getDay())){
-                 days.add(getValidTrials().get(i).getDay());
-
+            Date date = getValidTrials().get(i).getDate();
+            String day = getDay(date);
+            if (!days.contains(day)){
+                 days.add(day);
             }
         }
-
         return  days;
     }
 
@@ -595,10 +598,11 @@ public class Experiment {
      */
     public Double[] removeDupes(){
         Double[] cleanArray ;
-        HashSet<Double> noDupes = new HashSet<Double>(trialsValuesSorted());
+        LinkedHashSet <Double> noDupes = new LinkedHashSet<Double>(trialsValuesSorted());
         cleanArray = new Double[noDupes.size()];
         noDupes.toArray(cleanArray);
         return cleanArray;
+
     }
 
     /**
@@ -644,6 +648,7 @@ public class Experiment {
 
             return str;
         }
+
     }
 
     /**
@@ -673,6 +678,7 @@ public class Experiment {
             }
             return frequencies;
 
+
         } else {
             Double binSize = (upperBound-lowerBound)/maxBins;
 
@@ -692,6 +698,165 @@ public class Experiment {
         }
     }
 
+    /**
+     * Calculates desired frequencies for days useful for line plots
+     * @return
+     * frequencies of type double
+     */
+    public double [] daysFrequencies(){
+        double []frequencies = new double [daysOfTrials().size()];
+        int numDays = daysOfTrials().size();
+        if (this.getType().equals("binomial trials")){
+            double success = 0;
+            double failure = 1 ;
+            for (int i = 0 ; i < numDays ; i++){
+                String day = daysOfTrials().get(i);
+                double proportionOfSuccess = 0;
+                for (int j = 0; j< getValidTrials().size(); j++){
+                    String dayOfThisTrial = getDay(getValidTrials().get(j).getDate());
+                    if (day.equals(dayOfThisTrial)){
+                        if(getValidTrials().get(j).getValue() == 0){
+                            success +=1;
+                        }
+                        else {
+                            failure+=1;
+                        }
+                    }
+                }
+                proportionOfSuccess = success/failure;
+                frequencies[i]+=proportionOfSuccess;
+            }
+            return frequencies;
+        }
+        if (this.getType().equals("counts")){
+            for (int i = 0 ; i < numDays ; i++){
+                String day = daysOfTrials().get(i);
+                for (int j = 0; j< getValidTrials().size(); j++){
+                    String dayOfThisTrial = getDay(getValidTrials().get(j).getDate());
+                    if (day.equals(dayOfThisTrial)){
+                        frequencies[i]+=getValidTrials().get(j).getValue();
+                    }
+                }
+            }
+            return frequencies;
+        }
+        if (this.getType().equals("non-negative integer counts")){
+            for (int i = 0 ; i < daysOfTrials().size() ; i++){
+                double count = 0;
+                double sum = 0;
+                String day = daysOfTrials().get(i);
+                for (int j = 0; j< getValidTrials().size(); j++){
+                    String dayOfThisTrial = getDay(getValidTrials().get(j).getDate());
+                    if (day.equals(dayOfThisTrial)){
+                        sum+=getValidTrials().get(j).getValue();
+                        count +=1;
+                    }
+                }
+                frequencies[i]= sum/count;
+            }
+            return frequencies;
+        }
+        if (this.getType().equals("measurement trials")){
+            for (int i = 0 ; i < numDays ; i++){
+                double count = 0;
+                double sum = 0;
+                String day = daysOfTrials().get(i);
+                for (int j = 0; j< getValidTrials().size(); j++){
+                    String dayOfThisTrial = getDay(getValidTrials().get(j).getDate());
+                    if (day.equals(dayOfThisTrial)){
+                        sum+=getValidTrials().get(j).getValue();
+                        count +=1;
+                    }
+                }
+                frequencies[i]= sum/count;
+            }
+            return frequencies;
+        }
+        return frequencies;
+    }
+
+    /**
+     * Calculates q1 data for line plots over days
+     * @return
+     * Q1 points over days of type double
+     */
+    public double [] q1Plots(){
+        double []frequencies = new double [daysOfTrials().size()];
+        ArrayList<String> days = daysOfTrials();
+        if (trialsValuesSorted().isEmpty()) {
+            frequencies[0] = 0;
+            return frequencies;
+        }
+        int numDays = days.size();
+        for (int i=0; i<numDays;i++){
+            ArrayList<Double> thisDaysValues = new ArrayList<>();
+            for (int j=0;j<getValidTrials().size();j++){
+                String day = getDay(getValidTrials().get(j).getDate());
+                if (day.equals(days.get(i))){
+                    thisDaysValues.add(getValidTrials().get(j).getValue());
+                }
+            }
+            Collections.sort(thisDaysValues);
+            double quartile;
+            if (thisDaysValues.size() <= 3){
+                quartile = thisDaysValues.get(0);
+            } else {
+                int length = thisDaysValues.size();
+                float newArraySize = (length * ((float) (1) * 25 / 100));
+                if (newArraySize % 1 == 0) {
+                    quartile = thisDaysValues.get((int) newArraySize);
+                } else {
+                    int newArraySize1 = (int) (newArraySize);
+                    quartile = (thisDaysValues.get(newArraySize1) + thisDaysValues.get(newArraySize1 + 1)) / 2.0;
+                }
+            }
+            frequencies[i] = quartile;
+
+        }
+        return frequencies;
+    }
+
+    /**
+     * Calculates Q3 plots for graphing over days
+     * @return
+     * q3 plots of type double
+     */
+    public double [] q3Plots(){
+        double []frequencies = new double [daysOfTrials().size()];
+        ArrayList<String> days = daysOfTrials();
+        if (trialsValuesSorted().isEmpty()) {
+            frequencies[0] = 0;
+            return frequencies;
+        }
+        int numDays = days.size();
+        for (int i=0; i<numDays;i++){
+            ArrayList<Double> thisDaysValues = new ArrayList<>();
+            for (int j=0;j<getValidTrials().size();j++){
+                String day = getDay(getValidTrials().get(j).getDate());
+                if (day.equals(days.get(i))){
+                    thisDaysValues.add(getValidTrials().get(j).getValue());
+                }
+            }
+            Collections.sort(thisDaysValues);
+            double quartile;
+            if (thisDaysValues.size() <= 3){
+                quartile = thisDaysValues.get(0);
+            } else {
+                int length = thisDaysValues.size();
+                float newArraySize = (length * ((float) (3) * 25 / 100));
+                if (newArraySize % 1 == 0) {
+                    quartile = thisDaysValues.get((int) newArraySize);
+                } else {
+                    int newArraySize1 = (int) (newArraySize);
+                    quartile = (thisDaysValues.get(newArraySize1) + thisDaysValues.get(newArraySize1 + 1)) / 2.0;
+                }
+            }
+            frequencies[i] = quartile;
+
+        }
+        return frequencies;
+
+    }
     /**
      * Calculates the Median value for the experiment
      * If even number of numbers, then take average of middle two
@@ -818,5 +983,53 @@ public class Experiment {
         }
         mean = sum / ((double) num);
         return String.format("%.2f", mean);
+    }
+
+    /**
+     * Determines necessary header for histogram graph
+     * @return
+     * Spannable header (underlined) for histogram
+     */
+    public SpannableString getHistogramHeader(){
+        String header = "";
+        if (this.getType().equals("binomial trials")){
+            header = "Proportion of Pass/Fail";
+        }
+        if (this.getType().equals("counts")){
+            header = "Total Counts";
+        }
+        if (this.getType().equals("non-negative integer counts")){
+            header = "Total Counts per Count";
+        }
+        if (this.getType().equals("measurement trials")){
+            header = "Total Measurements per Measurement";
+        }
+        SpannableString spannable_header = new SpannableString(header);
+        spannable_header.setSpan(new UnderlineSpan(), 0 , header.length(), 0);
+        return spannable_header;
+    }
+
+    /**
+     * Determines header for plots
+     * @return
+     * Spannable header for plots
+     */
+    public SpannableString getPlotHeader(){
+        String header = "";
+        if (this.getType().equals("binomial trials")){
+            header = "Daily Success Rates";
+        }
+        if (this.getType().equals("counts")){
+            header = "Total Daily Counts";
+        }
+        if (this.getType().equals("non-negative integer counts")){
+            header = "Average Daily Counts";
+        }
+        if (this.getType().equals("measurement trials")){
+            header = "Average Daily Measurements";
+        }
+        SpannableString spannable_header = new SpannableString(header);
+        spannable_header.setSpan(new UnderlineSpan(), 0 , header.length(), 0);
+        return spannable_header;
     }
 }

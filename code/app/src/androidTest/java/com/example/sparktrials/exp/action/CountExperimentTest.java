@@ -39,6 +39,11 @@ public class CountExperimentTest {
     @Rule
     public ActivityTestRule<MainActivity> rule =
             new ActivityTestRule<>(MainActivity.class, true, true);
+    /**
+     * Gets the user ID from the profile tab, then publishes an experiment sued for testing. then searches
+     * for the experiment in the search tab and clicks on it
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception{
         db = FirebaseFirestore.getInstance();
@@ -59,6 +64,10 @@ public class CountExperimentTest {
         solo.enterText((EditText) solo.getView(R.id.search_bar),expTitle);
         solo.clickInList(0,0);
     }
+
+    /**
+     * Deletes Trials and make sure UI is updated when entered trials are deleted
+     */
     @Test
     public void deleteTrials(){
         TextView trialsCount = (TextView) solo.getView(R.id.trials_count);
@@ -70,6 +79,10 @@ public class CountExperimentTest {
         String textAfter = trialsCount.toString();
         assertTrue(textBefore.equals(textAfter));
     }
+
+    /**
+     * Tests the increment count button
+     */
     @Test
     public void incrementCount(){
         TextView trialsCount = (TextView) solo.getView(R.id.trials_count);
@@ -77,6 +90,10 @@ public class CountExperimentTest {
         solo.clickOnButton("Add Count");
         solo.sleep(1000);;
     }
+
+    /**
+     * Tests the upload trials button
+     */
     @Test
     public void uploadTrials(){
         TextView trialsCount = (TextView) solo.getView(R.id.trials_count);
@@ -86,6 +103,11 @@ public class CountExperimentTest {
         solo.clickOnButton("Upload Trials");
         solo.sleep(1000);;
     }
+
+    /**
+     * Deletes the test experiment
+     * @throws InterruptedException
+     */
     @After
     public void deleteExperiment() throws InterruptedException {
         CollectionReference expCollection = db.collection("experiments");

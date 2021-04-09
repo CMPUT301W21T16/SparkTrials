@@ -127,6 +127,17 @@ public class ExperimentActivity extends AppCompatActivity {
 
             @Override
             public void onChanged(Experiment experiment) {
+                if (!expManager.getProfile().getValue().getSubscriptions().contains(experiment.getId())
+                        && experiment.hasLocationSet()
+                        && !experiment.getOwner().getId().equals(expManager.getProfile().getValue().getId())){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ExperimentActivity.this);
+                    builder.setTitle("This experiment requires your location to be recorded");
+                    builder.setNeutralButton("OK", null);
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                    alert.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.neutral));
+                }
+
                 titleText.setText(experiment.getTitle());
                 descText.setText(experiment.getDesc());
                 if (experiment.getOpen()) {

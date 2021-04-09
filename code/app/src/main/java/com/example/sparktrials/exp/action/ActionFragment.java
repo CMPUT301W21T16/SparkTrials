@@ -47,6 +47,9 @@ import java.io.IOException;
 
 import static android.content.Context.LOCATION_SERVICE;
 
+/**
+ * This class handles all the UI related to the action tab - uploading/creating trials
+ */
 public class ActionFragment extends Fragment implements LocationListener {
     View view;
     TextView trialsNumber;

@@ -21,6 +21,9 @@ import com.example.sparktrials.IdManager;
 import com.example.sparktrials.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+/**
+ * The fragment that shows the information of a profile: uid, name, contact info. Has edit capabilities
+ */
 public class MeFragment extends Fragment {
 
 

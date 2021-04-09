@@ -120,12 +120,7 @@ public class ForumViewModel extends ViewModel {
                             existingQuestions.get(existingQuestions.indexOf(question)).setAnswers(newAnswers);
                             // Sort answers by earliest first
                             existingQuestions.get(existingQuestions.indexOf(question)).sortAnswersLatestFirst();
-//                            Log.d("forum_data",  "Before: " + existingQuestions.get(existingQuestions.indexOf(question)).getDate());
                             existingQuestions.get(existingQuestions.indexOf(question)).reverseAnswers();
-//                            Log.d("forum_data",  "After: " + existingQuestions.get(existingQuestions.indexOf(question)).getDate());
-//                            for (Answer a: existingQuestions.get(existingQuestions.indexOf(question)).getAnswers()) {
-//                                Log.d("forum_data", a.getQuestion().getTitle()+":  "+a.getDate());
-//                            }
 
                             // Sort questions by latest first
                             existingQuestions.sort((d1,d2) -> d1.compareTo(d2));

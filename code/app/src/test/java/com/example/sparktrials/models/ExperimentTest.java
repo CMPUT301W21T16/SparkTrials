@@ -44,7 +44,7 @@ public class ExperimentTest extends TestCase {
         exp.setMinNTrials(5);
         ArrayList<Trial> toSet = this.createTrials();
         exp.setTrials(toSet);
-        assertEquals("getValidTrials returns wrong amount", 11, exp.getValidTrials().size());
+        assertEquals("getValidTrials returns wrong amount", 15, exp.getValidTrials().size());
         assertEquals("getValidTrials returns wrong trial", "4", exp.getValidTrials().get(0).getId());
         assertEquals("getValidTrials returns wrong trial", "14", exp.getAllTrials().get(exp.getAllTrials().size()-1).getId());
     }
@@ -251,7 +251,7 @@ public class ExperimentTest extends TestCase {
         ArrayList<Trial> trials = new ArrayList<>();
 
         for (int i=1; i<101; i++){
-            TrialCount trial = new TrialCount(""+i, uni_loc, profile);
+            TrialIntCount trial = new TrialIntCount(""+i, uni_loc, profile, 0);
             if (i<40 && i%2==0){
                 trial.setCount(i);
 
@@ -262,7 +262,7 @@ public class ExperimentTest extends TestCase {
                 trials.add(trial);
             } else if ( i >= 80 && i%5==0) {
                 trial.setCount(i);
-                TrialCount trial2 = new TrialCount("1"+i, uni_loc, profile);
+                TrialIntCount trial2 = new TrialIntCount("1"+i, uni_loc, profile, 0);
                 trial2.setCount(i);
 
                 trials.add(trial);
@@ -274,7 +274,7 @@ public class ExperimentTest extends TestCase {
         this.exp.addTrials(trials);
 
         assertEquals("removeDupes does not work", 37, this.exp.removeDupes().length);
-        assertEquals("frequencies does not work", 37, exp.frequencies().length);
+        assertEquals("frequencies does not work", 15, exp.frequencies().length);
         assertEquals("median does not work", "46.5", exp.getMedian());
         assertEquals("Q1 does not work", "23.00", exp.getQ1());
         assertEquals("Q3 does not work", "76.50", exp.getQ3());

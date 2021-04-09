@@ -73,6 +73,7 @@ public class SearchViewModel extends ViewModel {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 Boolean published = (Boolean) document.get("Published");
                                 if (published) {
+                                    // Get all the published experiments and set their respective attributes
                                     String id = document.getId();
                                     String title = (String) document.get("Title");
                                     String desc = (String) document.get("Description");
@@ -88,6 +89,7 @@ public class SearchViewModel extends ViewModel {
 
                                     String ownerId = (String) document.get("profileID");
 
+                                    // Get details of the owner of the experiment and set their attributes
                                     usersCollection.document(ownerId).get()
                                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                 @Override
@@ -103,9 +105,13 @@ public class SearchViewModel extends ViewModel {
 
                                                         experiment.setOwner(owner);
 
+                                                        // Add the experiment (with all it's info and
+                                                        // owner info) to the list of experiments
                                                         ArrayList<Experiment> x = experiments.getValue();
                                                         x.add(experiment);
 
+                                                        // Updates the value of experiments so that
+                                                        // the observer in SearchFragment updates the UI
                                                         experiments.setValue(x);
                                                     }
                                                 }
@@ -137,11 +143,22 @@ public class SearchViewModel extends ViewModel {
 
         ArrayList<Experiment> experimentsInDB = experiments.getValue();
 
-        if (keywords.length == 0) {
-            return experimentsInDB;
-        } else {
-            HashSet<Experiment> resultSet = new HashSet<>();  // To avoid duplicates
+        HashSet<Experiment> resultSet = new HashSet<>();  // To avoid duplicates
 
+        if (keywords.length == 0) {
+            if (filters[1] == 0) {
+                return experimentsInDB;
+            } else {
+                // Get only experiments with the status that the user chose
+                for (int experimentIndex = 0; experimentIndex < experimentsInDB.size(); experimentIndex++) {
+                    Experiment experimentToBeSearched = experimentsInDB.get(experimentIndex);
+                    if (experimentMatches("", experimentToBeSearched, filters)) {
+                        // If an experiment matches a keyword
+                        resultSet.add(experimentToBeSearched);
+                    }
+                }
+            }
+        } else {
             for (int experimentIndex = 0; experimentIndex < experimentsInDB.size(); experimentIndex++) {
                 for (int keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
                     String currentKeyword = keywords[keywordIndex];
@@ -152,12 +169,12 @@ public class SearchViewModel extends ViewModel {
                     }
                 }
             }
-
-            ArrayList<Experiment> results = new ArrayList<>();
-            results.addAll(resultSet);
-
-            return results;
         }
+
+        ArrayList<Experiment> results = new ArrayList<>();
+        results.addAll(resultSet);
+
+        return results;
     }
 
     /**
@@ -167,9 +184,10 @@ public class SearchViewModel extends ViewModel {
      * @param experiment
      *      The experiment whose fields we want to check.
      * @param filters
-     *      The filters applied to the search. It will be of size 2. The first integer will
-     *      filter based on Title, Description, or Username: 0 for no filter, 1 for title,
-     *      2 for description, and 3 for username. The second will filter based on
+     *      The filters applied to the search. It will be of size 2.
+     *      The first integer will filter based on Title, Description, or Username: 0 for no filter,
+     *      1 for title, 2 for description, and 3 for username.
+     *      The second integer will filter based on
      *      status, 0 for no filter, 1 for active status, 2 for inactive status.
      * @return
      *      true if the experiment has matching fields, false otherwise.

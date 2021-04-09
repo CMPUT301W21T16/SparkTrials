@@ -39,6 +39,7 @@ public class LocationFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_location, container, false);
 
+        // This is the fragment that will display the map
         mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map_fragment_experiment_activity);
 
         // A map shown under the "Map" tab of ExperimentActivity is not editable.

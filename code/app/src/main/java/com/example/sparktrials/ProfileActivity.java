@@ -124,10 +124,7 @@ public class ProfileActivity extends AppCompatActivity {
         userProfile.observe(this, nameObserver);
 
         backToMain.setOnClickListener((v) -> {
-            Intent intent = new Intent(getBaseContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            this.finish();
+            finish();
         });
 
     }

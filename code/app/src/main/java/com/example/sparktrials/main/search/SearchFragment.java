@@ -95,7 +95,7 @@ public class SearchFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Experiment experiment = searchListAdapter.getItem(position);
 
-                startExperimentActivity(experiment.getId(), experiment.getOwner().getId());
+                startExperimentActivity(experiment.getId());
             }
         });
 
@@ -164,13 +164,10 @@ public class SearchFragment extends Fragment {
      * @param experimentId
      *      This is the ID of the experiment whose information we want displayed, namely the
      *      experiment that the user chose after clicking on its corresponding ListView element
-     * @param ownerId
-     *      This is the ID of the owner of the experiment
      */
-    private void startExperimentActivity(String experimentId, String ownerId) {
+    private void startExperimentActivity(String experimentId) {
         Intent intent = new Intent(this.getActivity(), ExperimentActivity.class);
         intent.putExtra("EXPERIMENT_ID", experimentId);
-        intent.putExtra("USER_ID", ownerId);
         startActivity(intent);
     }
 }

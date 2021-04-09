@@ -66,7 +66,8 @@ public class GeoMap implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
-        if (isEditable) {
+        if (isEditable) { // i.e. if the user is picking a location (in MapsActivity)
+
             // The map will show will Canada when first launched. I got the following
             // values after a simple google search.
             LatLng edmontonCityCentre = new LatLng(53.5439, -113.4923);
@@ -92,35 +93,36 @@ public class GeoMap implements OnMapReadyCallback {
                     markerSet = true;
                 }
             });
-        } else {
-            if (hasLocationSet) {
-                map.clear();
+        } else if (hasLocationSet) { // If the user is looking at the MAP tab of a
+                                     // location-enabled experiment
 
-                LatLng center = new LatLng(geoLocation.getLat(), geoLocation.getLon());
+            map.clear(); // Clear the map of anything
 
-                setCenterMarkerOptions(center);
+            LatLng center = new LatLng(geoLocation.getLat(), geoLocation.getLon());
+            setCenterMarkerOptions(center);
 
-                centerMarker = map.addMarker(centerMarkerOptions);
-                setCenterMarkerTitle(geoLocation.getRegionTitle());
+            // Add a marker to the center of the region, and set its title
+            centerMarker = map.addMarker(centerMarkerOptions);
+            setCenterMarkerTitle(geoLocation.getRegionTitle());
 
-                 // Add an orange marker for every trial
-                 for (Trial trial : trials) {
-                     double trialLat = trial.getLocation().getLat();
-                     double trialLon = trial.getLocation().getLon();
-                     LatLng trialLocation = new LatLng(trialLat, trialLon);
+             // Add an orange marker for every trial
+             for (Trial trial : trials) {
+                 double trialLat = trial.getLocation().getLat();
+                 double trialLon = trial.getLocation().getLon();
+                 LatLng trialLocation = new LatLng(trialLat, trialLon);
 
-                     map.addMarker(new MarkerOptions()
-                             .position(trialLocation)
-                             .title(trial.getProfile().getUsername())
-                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-                 }
+                 map.addMarker(new MarkerOptions()
+                         .position(trialLocation)
+                         .title(trial.getProfile().getUsername())
+                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+             }
 
-                 displayCircle(center, geoLocation.getRadius());
+             // Display a circle centered around the region center, marking the region
+             displayCircle(center, geoLocation.getRadius());
 
-                 float zoomLevel = 13.0f;
-                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, zoomLevel));
+             float zoomLevel = 13.0f;
+             map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, zoomLevel));
 
-            }
         }
     }
 

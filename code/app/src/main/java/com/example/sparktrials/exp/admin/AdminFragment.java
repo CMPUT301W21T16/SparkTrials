@@ -136,6 +136,11 @@ public class AdminFragment extends Fragment {
         });
     }
 
+    /**
+     *Set the text that tells a user whether or not the experiment is active
+     * @param activeText
+     *  The textview that shows whether or not the experiment is active
+     */
     public void setActiveText( TextView activeText){
         this.activeText = activeText;
     }

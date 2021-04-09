@@ -56,7 +56,7 @@ public class MapsActivity extends AppCompatActivity {
                         sendBackCoords(true);
                     } else {
                         // If radius is not set, ask for radius again
-                        new ChooseRadiusFragment(map).show(getSupportFragmentManager(), "Choose Region Fragment");
+                        new ChooseTitleRadiusFragment(map).show(getSupportFragmentManager(), "Choose Region Fragment");
                     }
                 } else {
                     // Region cannot be selected if there is no center (and no radius)
@@ -73,7 +73,7 @@ public class MapsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (map.isMarkerSet()) {
-                    new ChooseRadiusFragment(map).show(getSupportFragmentManager(), "Choose Region Fragment");
+                    new ChooseTitleRadiusFragment(map).show(getSupportFragmentManager(), "Choose Region Fragment");
                 } else {
                     // Radius for the region cannot be set before the center for the region is chosen
                     new AlertDialog.Builder(MapsActivity.this)

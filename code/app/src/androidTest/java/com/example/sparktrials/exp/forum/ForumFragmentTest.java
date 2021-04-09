@@ -24,6 +24,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+/**
+ * Tests the forum fragment by inserting a forum questing, then replying to that question and making sure the reply functionality works.
+ */
 public class ForumFragmentTest {
     private Solo solo;
     private FirebaseFirestore db;
@@ -51,6 +54,10 @@ public class ForumFragmentTest {
         solo.clickInList(0,0);
         solo.clickOnView(solo.getView(R.id.tablayout_id));
     }
+
+    /**
+     * Adds a question then adds a reply to that question
+     */
     @Test
     public void addQuestion(){
         solo.clickOnButton("Ask Question");
@@ -65,6 +72,10 @@ public class ForumFragmentTest {
         solo.sleep(10000);
     }
 
+    /**
+     * Deletes the experiment used for testing
+     * @throws InterruptedException
+     */
     @After
     public void deleteExperiment() throws InterruptedException {
         CollectionReference expCollection = db.collection("experiments");

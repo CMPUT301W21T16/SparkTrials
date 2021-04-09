@@ -18,6 +18,9 @@ import com.example.sparktrials.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+/**
+ * UI Fragment class that displays user's subscribed and published experiments in their respective tabs
+ */
 public class HomeFragment extends Fragment {
 
     private ViewPager2 viewPager2;
@@ -32,6 +35,14 @@ public class HomeFragment extends Fragment {
 
     }
 
+    /**
+     * Creates the HomeFragment view
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     *      returns the HomeFragment view
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -40,6 +51,11 @@ public class HomeFragment extends Fragment {
 
     }
 
+    /**
+     * After HomeFragment view is created, populates whats inside the view.
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -47,6 +63,7 @@ public class HomeFragment extends Fragment {
         pagerAdapter = new FragmentPagerAdapter(getChildFragmentManager(),getViewLifecycleOwner().getLifecycle());
         viewPager2 = getView().findViewById(R.id.pager_id);
         viewPager2.setAdapter(pagerAdapter);
+        //switches between tabs
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

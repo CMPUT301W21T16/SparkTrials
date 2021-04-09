@@ -40,15 +40,25 @@ public class ActionFragmentManager {
     private DraftManager draftManager;
     private Boolean draftsLoaded;
 
+    /**
+     * Sets a draftManager that stores trials
+     * @param draftManager
+     */
     public void setDraftManager(DraftManager draftManager) {
         draftManager.setExperiment(experiment);
         this.draftManager = draftManager;
+        //checks if trials have already been loaded from file
+        //if not already loaded it loads the trials into the experiment
         if (draftsLoaded == Boolean.FALSE) {
             addDraftsToExperiment();
             this.draftsLoaded = Boolean.TRUE;
         }
 
     }
+
+    /**
+     * Adds trials saved in file to the experiment
+     */
     public void addDraftsToExperiment(){
         experiment.addTrials(draftManager.getDraft_trials());
 
@@ -314,10 +324,5 @@ public class ActionFragmentManager {
     public boolean isWithinRegion(GeoLocation point) {
         return experiment.getRegion().getRadius() >= calculateDistance(point);
     }
-    public void uploadDrafts(ArrayList<Trial> trials){
-        experiment.addTrials(trials);
-        uploadTrials();
-    }
-
 
 }

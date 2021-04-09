@@ -157,7 +157,6 @@ public class ExperimentActivity extends AppCompatActivity {
 
         subscribe.setOnClickListener((v) -> {
             this.subscribe();
-
         });
 
         // Launches a ProfileActivity when the username of an Experiment's Owner is clicked on
@@ -191,7 +190,7 @@ public class ExperimentActivity extends AppCompatActivity {
      * If the experiment requires locations, sends a warning message
      */
     public void subscribe() {
-        if (expManager.getExperiment().getValue().getReqLocation() &&
+        if (expManager.getExperiment().getValue().hasLocationSet() &&
                 !expManager.getProfile().getValue().getSubscriptions().contains(experimentId)) {
             //Experiment requires locations and user is not currently subscribed
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

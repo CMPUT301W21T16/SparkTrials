@@ -1,13 +1,11 @@
 package com.example.sparktrials.exp.action;
 
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 
 import com.example.sparktrials.FirebaseManager;
-import com.example.sparktrials.TrialsAdapter;
 import com.example.sparktrials.exp.DraftManager;
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.GeoLocation;
@@ -40,16 +38,27 @@ public class ActionFragmentManager {
     private String id;
     private Profile profile;
     private DraftManager draftManager;
+    private Boolean draftsLoaded;
 
     public void setDraftManager(DraftManager draftManager) {
         draftManager.setExperiment(experiment);
         this.draftManager = draftManager;
+        if (draftsLoaded == Boolean.FALSE) {
+            addDraftsToExperiment();
+            this.draftsLoaded = Boolean.TRUE;
+        }
+
+    }
+    public void addDraftsToExperiment(){
+        experiment.addTrials(draftManager.getDraft_trials());
+
     }
 
     public ActionFragmentManager(Experiment experiment) {
         this.id=id;
         this.experiment=experiment;
         this.originalNTrials=Integer.parseInt(experiment.getNumTrials());
+        this.draftsLoaded = Boolean.FALSE;
     }
     public void setProfile(String id){
         profile=firebaseManager.downloadProfile(id);
@@ -174,6 +183,7 @@ public class ActionFragmentManager {
         for (int i=0;i<elementsToRemove;i++){
             experiment.delTrial(experiment.getAllTrials().size()-1);
         }
+        draftManager.deleteDrafts();
     }
 
     /**

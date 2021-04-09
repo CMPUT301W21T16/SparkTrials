@@ -70,6 +70,11 @@ public class ActionFragmentManager {
         this.originalNTrials=Integer.parseInt(experiment.getNumTrials());
         this.draftsLoaded = Boolean.FALSE;
     }
+
+    /**
+     * Sets the profile of the user
+     * @param id
+     */
     public void setProfile(String id){
         profile=firebaseManager.downloadProfile(id);
     }

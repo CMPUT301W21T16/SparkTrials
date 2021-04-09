@@ -6,10 +6,12 @@ import android.graphics.Color;
 import android.util.Log;
 
 import com.example.sparktrials.FirebaseManager;
+import com.example.sparktrials.exp.DraftManager;
 import com.example.sparktrials.models.Experiment;
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.Profile;
 import com.example.sparktrials.models.QrCode;
+import com.example.sparktrials.models.Trial;
 import com.example.sparktrials.models.TrialBinomial;
 import com.example.sparktrials.models.TrialCount;
 import com.example.sparktrials.models.TrialIntCount;
@@ -19,6 +21,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -34,11 +37,38 @@ public class ActionFragmentManager {
     private int originalNTrials;
     private String id;
     private Profile profile;
+    private DraftManager draftManager;
+    private Boolean draftsLoaded;
+
+    /**
+     * Sets a draftManager that stores trials
+     * @param draftManager
+     */
+    public void setDraftManager(DraftManager draftManager) {
+        draftManager.setExperiment(experiment);
+        this.draftManager = draftManager;
+        //checks if trials have already been loaded from file
+        //if not already loaded it loads the trials into the experiment
+        if (draftsLoaded == Boolean.FALSE) {
+            addDraftsToExperiment();
+            this.draftsLoaded = Boolean.TRUE;
+        }
+
+    }
+
+    /**
+     * Adds trials saved in file to the experiment
+     */
+    public void addDraftsToExperiment(){
+        experiment.addTrials(draftManager.getDraft_trials());
+
+    }
 
     public ActionFragmentManager(Experiment experiment) {
         this.id=id;
         this.experiment=experiment;
         this.originalNTrials=Integer.parseInt(experiment.getNumTrials());
+        this.draftsLoaded = Boolean.FALSE;
     }
 
     /**
@@ -68,6 +98,7 @@ public class ActionFragmentManager {
         trial.setProfile(profile);
         trial.setLocation(location);
         experiment.addTrial(trial);
+        draftManager.addDraft(trial);
     }
 
     /**
@@ -80,6 +111,7 @@ public class ActionFragmentManager {
         trial.setProfile(profile);
         trial.setLocation(location);
         experiment.addTrial(trial);
+        draftManager.addDraft(trial);
     }
 
     /**
@@ -92,6 +124,7 @@ public class ActionFragmentManager {
         trial.setProfile(profile);
         trial.setLocation(location);
         experiment.addTrial(trial);
+        draftManager.addDraft(trial);
     }
 
     /**
@@ -100,6 +133,7 @@ public class ActionFragmentManager {
     public void addCountTrial(GeoLocation location){
         TrialCount trial = new TrialCount(UUID.randomUUID().toString(),location,profile);
         experiment.addTrial(trial);
+        draftManager.addDraft(trial);
     }
 
     /**
@@ -154,6 +188,7 @@ public class ActionFragmentManager {
     public void uploadTrials(){
         firebaseManager.uploadTrials(experiment);
         this.originalNTrials=Integer.parseInt(experiment.getNumTrials());
+        draftManager.deleteDrafts();
     }
     /**
      * Removes all trials inserted by the user from the experiment object
@@ -163,6 +198,7 @@ public class ActionFragmentManager {
         for (int i=0;i<elementsToRemove;i++){
             experiment.delTrial(experiment.getAllTrials().size()-1);
         }
+        draftManager.deleteDrafts();
     }
 
     /**

@@ -32,10 +32,13 @@ import androidx.lifecycle.Observer;
 import com.example.sparktrials.IdManager;
 import com.example.sparktrials.QrScannerActivity;
 import com.example.sparktrials.R;
+import com.example.sparktrials.exp.DraftManager;
 import com.example.sparktrials.models.Experiment;
 
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.QrCode;
+import com.example.sparktrials.models.Trial;
+import com.example.sparktrials.models.TrialBinomial;
 import com.google.zxing.WriterException;
 
 import org.jetbrains.annotations.NotNull;
@@ -116,6 +119,7 @@ public class ActionFragment extends Fragment implements LocationListener {
             deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
             valueEditText = view.findViewById(R.id.countvalue_editText);
             middleButton = view.findViewById(R.id.action_bar_addCount);
+            manager.setDraftManager(new DraftManager(getActivity()));
             updateView();
 
             if (hasLocationSet) {

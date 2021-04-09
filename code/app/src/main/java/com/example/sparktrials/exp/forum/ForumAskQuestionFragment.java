@@ -22,16 +22,29 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import java.util.Date;
 import java.util.HashMap;
 
+/**
+ * This class represents the fragment when you click on "ask question" button.
+ */
 public class ForumAskQuestionFragment extends BottomSheetDialogFragment {
     private Experiment experiment;
 
+    /**
+     * Creates a new instance of ForumAskQuestionFragment.
+     * @param experiment an experiment to pass to the new instance.
+     * @return a new ForumAskQuestionFragment.
+     */
     public static ForumAskQuestionFragment newInstance(Experiment experiment) {
         return new ForumAskQuestionFragment(experiment);
     }
 
+    /**
+     * Constructor for ForumAskQuestionFragment.
+     * @param experiment an experiment to pass to the fragment.
+     */
     public ForumAskQuestionFragment(Experiment experiment) {
         this.experiment = experiment;
     }
+
 
     @Nullable
     @Override

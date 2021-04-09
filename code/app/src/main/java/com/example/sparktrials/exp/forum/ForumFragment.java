@@ -25,6 +25,9 @@ import com.example.sparktrials.models.Question;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents the main forum fragment.
+ */
 public class ForumFragment extends Fragment {
     View view;
     Experiment experiment;
@@ -33,6 +36,11 @@ public class ForumFragment extends Fragment {
     private ForumViewModel forumManager;
 
     private Button askQuestionButton;
+
+    /**
+     * Constructor for ForumFragment
+     * @param experiment an experiment to pass to the fragment.
+     */
     public ForumFragment(Experiment experiment){
         this.experiment = experiment;
     }

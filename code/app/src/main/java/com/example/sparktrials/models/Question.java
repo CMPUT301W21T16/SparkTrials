@@ -96,33 +96,55 @@ public class Question extends Post {
         this.answers.add(answer);
     }
 
+    /**
+     * Get the title of the question.
+     * @return string representation of the title.
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Get the count of answers in this question.
+     * @return int representation of count.
+     */
     public int getAnswerCount() {
         return answers.size();
     }
 
 
+    /**
+     * Sort the answers arraylist in a latest first order.
+     * @param latestFirst A boolean value to determine if sort the list in latest first.
+     *                    If false, sort the list in earliest first order.
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void sortAnswersLatestFirst() {
+    public void sortAnswersLatestFirst(Boolean latestFirst) {
         answers.sort((d1,d2) -> d1.compareTo(d2));
-        reverseAnswers();
+        if (latestFirst)
+            reverseAnswers();
     }
 
+    /**
+     * Reverse the answers arraylist.
+     */
     public void reverseAnswers() {
-        Collections.sort(answers, Collections.reverseOrder());
+        Collections.reverse(this.answers);
     }
 
+    /**
+     * Get the latest reply time in answers.
+     * @return The date of the latest reply in answers.
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public Date getLastReplyTime() {
-        sortAnswersLatestFirst();
+        sortAnswersLatestFirst(true);
         if (answers.isEmpty())
             return getDate();
         return answers.get(0).getDate();
     }
 
+    
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public int compareTo(Object o) {

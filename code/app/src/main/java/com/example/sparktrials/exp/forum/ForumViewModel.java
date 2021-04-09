@@ -122,7 +122,6 @@ public class ForumViewModel extends ViewModel {
                         @RequiresApi(api = Build.VERSION_CODES.N)
                         @Override
                         public void onCallback(DocumentSnapshot document) {
-//                            Log.d("forum_data","----------------------");
                             String name = (String) document.get("name");
                             String contact = (String) document.get("contact");
                             Profile profile = new Profile(document.getId(), name, contact);
@@ -133,9 +132,7 @@ public class ForumViewModel extends ViewModel {
 
                             existingQuestions.get(existingQuestions.indexOf(question)).setAnswers(newAnswers);
                             // Sort answers by earliest first
-                            existingQuestions.get(existingQuestions.indexOf(question)).sortAnswersLatestFirst();
-                            existingQuestions.get(existingQuestions.indexOf(question)).reverseAnswers();
-
+                            existingQuestions.get(existingQuestions.indexOf(question)).sortAnswersLatestFirst(false);
                             // Sort questions by latest first
                             existingQuestions.sort((d1,d2) -> d1.compareTo(d2));
                             Collections.sort(existingQuestions, Collections.reverseOrder());

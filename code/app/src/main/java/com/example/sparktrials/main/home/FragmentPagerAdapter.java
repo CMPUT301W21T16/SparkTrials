@@ -6,6 +6,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+/**
+ * Custom adapter for viewpager in HomeFragment
+ */
 public class FragmentPagerAdapter extends FragmentStateAdapter {
     public static int fragmentSize = 2;
 
@@ -13,6 +16,12 @@ public class FragmentPagerAdapter extends FragmentStateAdapter {
         super(fragmentManager, lifecycle);
     }
 
+    /**
+     * Creates the respective fragment for each tab.
+     * @param position
+     *      position of tab
+     * @return
+     */
     @NonNull
     @Override
     public Fragment createFragment(int position) {
@@ -26,6 +35,10 @@ public class FragmentPagerAdapter extends FragmentStateAdapter {
         }
     }
 
+    /**
+     * returns number of fragments in the adapter
+     * @return
+     */
     @Override
     public int getItemCount() {
         return 2;

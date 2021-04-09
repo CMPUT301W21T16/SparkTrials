@@ -17,10 +17,18 @@ import com.example.sparktrials.models.Question;
 
 import java.util.ArrayList;
 
+/**
+ * A custom ArrayAdapter class to handle ListView contents in ForumFragment.
+ */
 public class CustomQuestionList extends ArrayAdapter<Question> {
     private ArrayList<Question> questions;
     private Context context;
 
+    /**
+     * Constructor for CustomQuestionList.
+     * @param context the fragment context.
+     * @param questions an arraylist of questions.
+     */
     public CustomQuestionList(Context context, ArrayList<Question> questions) {
         super(context, 0, questions);
         this.context = context;

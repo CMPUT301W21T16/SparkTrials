@@ -32,12 +32,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+/**
+ * A class to manage the data for ForumFragment
+ */
 public class ForumViewModel extends ViewModel {
     private String experimentId;
     private MutableLiveData<ArrayList<Question>> questions;
     private FirebaseFirestore db;
     private final String LOG_TAG = "ForumViewModel";
 
+    /**
+     * Constructor for ForumViewModel
+     */
     public ForumViewModel(String experimentId) {
         this.experimentId = experimentId;
         questions = new MutableLiveData<>();
@@ -46,6 +52,9 @@ public class ForumViewModel extends ViewModel {
         getForumQuestions();
     }
 
+    /**
+     * Get Forum Questions from Firestore.
+     */
     private void getForumQuestions() {
         CollectionReference ref = db.collection("experiments").document(experimentId).collection("posts");
         FirebaseManager firebaseManager = new FirebaseManager();
@@ -84,6 +93,11 @@ public class ForumViewModel extends ViewModel {
         });
     }
 
+
+    /**
+     * Get Answers from a given question on Firestore.
+     * @param question
+     */
     public void getPostAnswers(Question question) {
         CollectionReference ref = db.collection("experiments").document(experimentId)
                 .collection("posts").document(question.getId()).collection("comments");
@@ -108,7 +122,6 @@ public class ForumViewModel extends ViewModel {
                         @RequiresApi(api = Build.VERSION_CODES.N)
                         @Override
                         public void onCallback(DocumentSnapshot document) {
-//                            Log.d("forum_data","----------------------");
                             String name = (String) document.get("name");
                             String contact = (String) document.get("contact");
                             Profile profile = new Profile(document.getId(), name, contact);
@@ -119,9 +132,7 @@ public class ForumViewModel extends ViewModel {
 
                             existingQuestions.get(existingQuestions.indexOf(question)).setAnswers(newAnswers);
                             // Sort answers by earliest first
-                            existingQuestions.get(existingQuestions.indexOf(question)).sortAnswersLatestFirst();
-                            existingQuestions.get(existingQuestions.indexOf(question)).reverseAnswers();
-
+                            existingQuestions.get(existingQuestions.indexOf(question)).sortAnswersLatestFirst(false);
                             // Sort questions by latest first
                             existingQuestions.sort((d1,d2) -> d1.compareTo(d2));
                             Collections.sort(existingQuestions, Collections.reverseOrder());
@@ -135,7 +146,12 @@ public class ForumViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Get Questions as a MutableLiveData of Arraylist.
+     * @return MutableLiveData object of an Arraylist of QUestions.
+     */
     public MutableLiveData<ArrayList<Question>> getQuestions() {
         return questions;
     }
+    
 }

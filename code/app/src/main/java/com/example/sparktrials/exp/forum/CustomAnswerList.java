@@ -19,15 +19,25 @@ import com.example.sparktrials.models.Answer;
 
 import java.util.ArrayList;
 
+/**
+ * A custom ArrayAdapter class to handle ListView contents in ForumDetailFragment.
+ */
 public class CustomAnswerList extends ArrayAdapter<Answer> {
     private ArrayList<Answer> answers;
     private Context context;
 
+
+    /**
+     * Constructor for CustomAnswerList.
+     * @param context the fragment context.
+     * @param answers an arraylist of answers.
+     */
     public CustomAnswerList(Context context, ArrayList<Answer> answers) {
         super(context, 0, answers);
         this.context = context;
         this.answers = answers;
     }
+
 
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;

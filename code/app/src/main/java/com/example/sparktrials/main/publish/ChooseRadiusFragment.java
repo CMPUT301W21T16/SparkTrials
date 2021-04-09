@@ -56,11 +56,11 @@ public class ChooseRadiusFragment extends DialogFragment {
         }
         regionTitleEditText.setText(regionTitle);
 
-
         String[] units = {"km", "m"};
         ArrayAdapter<String> unitsAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, units);
         unitsDropDownMenu.setAdapter(unitsAdapter);
 
+        // Create the dialog to be displayed
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setView(view);
         builder.setPositiveButton("Confirm Radius", new DialogInterface.OnClickListener() {
@@ -72,12 +72,7 @@ public class ChooseRadiusFragment extends DialogFragment {
 
                 String radiusString = radiusEditText.getText().toString().trim();
 
-                if (radiusString.equals("")) {
-                    new AlertDialog.Builder(getContext())
-                            .setTitle("ERROR")
-                            .setMessage("Radius cannot be empty!")
-                            .setPositiveButton("OK",null);
-                } else {
+                if (!radiusString.equals("")) {
                     double radius = Double.parseDouble(radiusString);
                     if (unitsDropDownMenu.getSelectedItem().equals("km")) {
                         // If the radius is set in kilometers, convert it to meters
@@ -85,6 +80,7 @@ public class ChooseRadiusFragment extends DialogFragment {
                     } else {
                         map.getGeoLocation().setRadius(radius);
                     }
+                    // Display the region circle on the map
                     LatLng center = new LatLng(map.getGeoLocation().getLat(), map.getGeoLocation().getLon());
                     map.displayCircle(center, map.getGeoLocation().getRadius());
                 }

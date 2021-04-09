@@ -355,19 +355,16 @@ public class ActionFragment extends Fragment implements LocationListener {
         }
     }
 
+    /**
+     * Called when the location of the device changes
+     * @param location
+     */
     @Override
     public void onLocationChanged(@NonNull Location location) {
         // Update the currentLocation of the user
         GeoLocation cLoc = new GeoLocation(location.getLatitude(), location.getLongitude());
-
         currentLocation.setValue(cLoc);
     }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {}
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {}
 
     public void binomialQrCodeDialog(){
         AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());

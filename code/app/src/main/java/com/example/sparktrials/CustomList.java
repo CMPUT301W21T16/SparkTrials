@@ -132,5 +132,4 @@ public class CustomList extends ArrayAdapter<Experiment> {
         intent.putExtra("USER_ID", ownerId);
         ((Activity) getContext()).startActivityForResult(intent, 0); // Throwaway requestCode
     }
-
 }

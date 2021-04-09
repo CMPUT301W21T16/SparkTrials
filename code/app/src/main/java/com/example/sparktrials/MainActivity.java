@@ -59,10 +59,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.top_app_bar_draft:
-                        Log.d("BUTTON", "draftClicked");
-                        Toast.makeText(getApplicationContext(), "Welcome back.", Toast.LENGTH_SHORT).show();
-                        break;
                     case R.id.top_app_bar_scan_qr_code:
                         Log.d("BUTTON", "scanClicked");
                         Intent intent = new Intent(MainActivity.this, QrScannerActivity.class);

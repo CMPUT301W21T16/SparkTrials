@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 R.id.navigation_home, R.id.navigation_search, R.id.navigation_me)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
         Toolbar myToolbar = (Toolbar) findViewById(R.id.top_app_bar);
         myToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
 
@@ -74,12 +74,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-//        setSupportActionBar(myToolbar);
+
         NavigationUI.setupWithNavController(navView, navController);
         IdManager idManager = new IdManager(this);
         idManager.login();
-
-
     }
 
 }

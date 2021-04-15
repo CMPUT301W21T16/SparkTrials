@@ -38,9 +38,15 @@ public class PublishFragmentManager {
      * The longitude
      * @param radius
      * The radius of the region.
+     * @param regionTitle
+     * The title of the region
+     * @param experimentType
+     * The type of the experiment
+     * @param reqLocation
+     * Whether or not the user wants to enforce that trials must be added from within the region
      */
     public PublishFragmentManager(String userID,String desc, String title, String MinNTrialsString,
-                                    double lat, double lon, double radius, String regionTitle, String experimentType, Boolean reqLocation){
+                                    double lat, double lon, double radius, String regionTitle, String experimentType, boolean reqLocation){
         try {
             minNTrials = Integer.parseInt(MinNTrialsString);
         }catch(NumberFormatException e){

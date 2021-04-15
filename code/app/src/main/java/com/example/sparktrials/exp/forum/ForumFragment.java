@@ -25,6 +25,9 @@ import com.example.sparktrials.models.Question;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents the main forum fragment.
+ */
 public class ForumFragment extends Fragment {
     View view;
     Experiment experiment;
@@ -33,6 +36,11 @@ public class ForumFragment extends Fragment {
     private ForumViewModel forumManager;
 
     private Button askQuestionButton;
+
+    /**
+     * Constructor for ForumFragment
+     * @param experiment an experiment to pass to the fragment.
+     */
     public ForumFragment(Experiment experiment){
         this.experiment = experiment;
     }
@@ -82,14 +90,5 @@ public class ForumFragment extends Fragment {
             }
         });
 
-        // Dev use only!!
-//        questionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Question q = forumManager.getQuestions().getValue().get(position);
-//                FirebaseManager firebaseManager = new FirebaseManager();
-//                firebaseManager.delete("experiments/" + q.getExpId() + "/posts", q.getId());
-//            }
-//        });
     }
 }

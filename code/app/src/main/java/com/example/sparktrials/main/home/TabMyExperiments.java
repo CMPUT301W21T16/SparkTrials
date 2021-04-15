@@ -23,24 +23,14 @@ import com.example.sparktrials.models.Experiment;
 import java.util.ArrayList;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link TabMyExperiments#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for showing user's subscribed experiments
+ * Created by viewpager in HomeFragment
  */
 public class TabMyExperiments extends Fragment {
     private ListView myExperiments;
     private CustomList myExperiment_adapter;
     private Context context;
     private HomeViewModel homeViewModel;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public TabMyExperiments() {
         // Required empty public constructor
@@ -73,13 +63,8 @@ public class TabMyExperiments extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     *
      * @return A new instance of fragment tab_my_experiments.
      */
-    // TODO: Rename and change types and number of parameters
     public static TabMyExperiments newInstance() {
         return new TabMyExperiments();
     }
@@ -87,11 +72,8 @@ public class TabMyExperiments extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,7 +81,11 @@ public class TabMyExperiments extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_tab_my_experiments, container, false);
     }
-
+    /**
+     * Launches ExperimentActivity with the experiment the user clicked on
+     * @param experimentID
+     *      the ID of the experiment the user clicked on
+     */
     private void startExperimentActivity(String experimentID){
         Intent intent = new Intent(this.getActivity(), ExperimentActivity.class);
         intent.putExtra("EXPERIMENT_ID", experimentID);

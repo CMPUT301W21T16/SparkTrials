@@ -1,6 +1,8 @@
 package com.example.sparktrials.exp.forum;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +14,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.example.sparktrials.ProfileActivity;
 import com.example.sparktrials.R;
 import com.example.sparktrials.models.Question;
 
 import java.util.ArrayList;
 
+/**
+ * A custom ArrayAdapter class to handle ListView contents in ForumFragment.
+ */
 public class CustomQuestionList extends ArrayAdapter<Question> {
     private ArrayList<Question> questions;
     private Context context;
 
+    /**
+     * Constructor for CustomQuestionList.
+     * @param context the fragment context.
+     * @param questions an arraylist of questions.
+     */
     public CustomQuestionList(Context context, ArrayList<Question> questions) {
         super(context, 0, questions);
         this.context = context;
@@ -49,7 +60,26 @@ public class CustomQuestionList extends ArrayAdapter<Question> {
         author.setText(question.getAuthor().getUsername());
         reply_number.setText("" + question.getAnswerCount());
 
+        author.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startProfileActivity(question.getAuthor().getId());
+            }
+        });
+
         return view;
+    }
+
+    /**
+     * This method starts a ProfileActivity, which displays the information of the owner of an
+     * experiment.
+     * @param ownerId
+     *      The user whose profile we want to display.
+     */
+    private void startProfileActivity(String ownerId) {
+        Intent intent = new Intent(getContext(), ProfileActivity.class);
+        intent.putExtra("USER_ID", ownerId);
+        ((Activity) getContext()).startActivityForResult(intent, 0); // Throwaway requestCode
     }
 
 }

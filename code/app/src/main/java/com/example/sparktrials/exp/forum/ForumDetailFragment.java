@@ -27,14 +27,26 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This class represents the fragment when you click on an forum post.
+ */
 public class ForumDetailFragment extends BottomSheetDialogFragment {
     private Question question;
     private ArrayAdapter<Answer> answerAdapter;
 
+    /**
+     * Constructor for ForumDetailFragment.
+     * @param question a question to pass to the fragment.
+     */
     public ForumDetailFragment(Question question) {
         this.question = question;
     }
 
+    /**
+     * Creates a new instance of ForumDetailFragment.
+     * @param question a question to pass to the new instance.
+     * @return a new instance of ForumDetailFragment.
+     */
     public static ForumDetailFragment newInstance(Question question) {
         return new ForumDetailFragment(question);
     }
@@ -55,6 +67,7 @@ public class ForumDetailFragment extends BottomSheetDialogFragment {
         title.setText(question.getTitle());
         answerList.setAdapter(answerAdapter);
 
+        // Show no reply text if the post has no reply.
         if (answerAdapter.getCount() == 0)
             noReplyYet.setVisibility(View.VISIBLE);
         else

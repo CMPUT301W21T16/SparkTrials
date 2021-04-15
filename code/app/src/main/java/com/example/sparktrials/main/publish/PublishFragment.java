@@ -28,7 +28,6 @@ import com.example.sparktrials.models.Experiment;
  * The class containing the UI associated with publishing experiments, handles input and UI
  */
 public class PublishFragment extends DialogFragment {
-    private DatePickerDialog.OnDateSetListener expDateListener;
     private EditText expDesc;
     private EditText expTitle;
     private EditText expMinNTrials;
@@ -117,8 +116,6 @@ public class PublishFragment extends DialogFragment {
                         String desc = expDesc.getText().toString();
                         String title = expTitle.getText().toString();
                         String MinNTrialsString = expMinNTrials.getText().toString();
-                        //String latString = expLat.getText().toString();
-                        //String lonString = expLon.getText().toString();
                         String experimentType = spinner.getSelectedItem().toString();
                         Boolean reqLocation = Boolean.parseBoolean(trialLocations.getSelectedItem().toString());
                         Log.d("Type",experimentType);
@@ -134,10 +131,16 @@ public class PublishFragment extends DialogFragment {
         return dialog;
     }
 
+    /**
+     * Starts MapsActivity which allows the user to pick a location
+     */
     private void startMapsActivity() {
         Intent launchMapsActivity = new Intent(getContext(), MapsActivity.class);
+
+        // Attach the result codes
         launchMapsActivity.putExtra("NO_LOCATION_PICKED", didNotPickLocation);
         launchMapsActivity.putExtra("LOCATION_PICKED", didPickLocation);
+
         startActivityForResult(launchMapsActivity, 0);
     }
 
@@ -154,9 +157,13 @@ public class PublishFragment extends DialogFragment {
             radius = (double) data.getExtras().get("Radius");
             regionTitle = (String) data.getExtras().get("Region Title");
         }
-
     }
 
+    /**
+     * Checks if the device is connected to the internet
+     * @return
+     *      Returns true if device is connected tp the internet, false otherwise
+     */
     public boolean hasInternetConnectivity() {
         ConnectivityManager cm =
                 (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);

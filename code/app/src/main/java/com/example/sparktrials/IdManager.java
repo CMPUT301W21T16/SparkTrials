@@ -17,10 +17,17 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.UUID;
 
+/**
+ * A singleton to keep track of a user's id. Accessible from anywhere
+ */
 public class IdManager {
     private Context context;
     private static boolean logged_in = false;
 
+    /**
+     * Constructor for IdManager
+     * @param context the current context.
+     */
     public IdManager(Context context) {
         this.context = context.getApplicationContext();
     }
@@ -45,11 +52,17 @@ public class IdManager {
         return userId;
     }
 
-
+    /**
+     * Generate a random UUID
+     * @return a String of a random UUID.
+     */
     public String generateRandomId() {
         return UUID.randomUUID().toString();
     }
 
+    /**
+     * Handles auto login when the app launches.
+     */
     public void login() {
         if (logged_in)
             return;

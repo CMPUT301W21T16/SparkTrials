@@ -32,10 +32,13 @@ import androidx.lifecycle.Observer;
 import com.example.sparktrials.IdManager;
 import com.example.sparktrials.QrScannerActivity;
 import com.example.sparktrials.R;
+import com.example.sparktrials.exp.DraftManager;
 import com.example.sparktrials.models.Experiment;
 
 import com.example.sparktrials.models.GeoLocation;
 import com.example.sparktrials.models.QrCode;
+import com.example.sparktrials.models.Trial;
+import com.example.sparktrials.models.TrialBinomial;
 import com.google.zxing.WriterException;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +50,9 @@ import java.io.IOException;
 
 import static android.content.Context.LOCATION_SERVICE;
 
+/**
+ * This class handles all the UI related to the action tab - uploading/creating trials
+ */
 public class ActionFragment extends Fragment implements LocationListener {
     View view;
     TextView trialsNumber;
@@ -70,6 +76,10 @@ public class ActionFragment extends Fragment implements LocationListener {
     boolean enforceLocation;
     MutableLiveData<GeoLocation> currentLocation;
 
+    /**
+     * Initializing actionfragment manager
+     * @param experiment
+     */
     public ActionFragment(Experiment experiment){
         this.manager= new ActionFragmentManager(experiment);
         hasLocationSet = experiment.hasLocationSet();
@@ -81,6 +91,10 @@ public class ActionFragment extends Fragment implements LocationListener {
         enforceLocation = experiment.getReqLocation();
     }
 
+    /**
+     * Initializes the idManager to get the user ID for the action fragment manager
+     * @param context
+     */
     @Override
     public void onAttach(@NotNull Context context){
         super.onAttach(context);
@@ -105,6 +119,7 @@ public class ActionFragment extends Fragment implements LocationListener {
             deleteTrials = view.findViewById(R.id.action_bar_delete_trials);
             valueEditText = view.findViewById(R.id.countvalue_editText);
             middleButton = view.findViewById(R.id.action_bar_addCount);
+            manager.setDraftManager(new DraftManager(getActivity()));
             updateView();
 
             if (hasLocationSet) {
@@ -114,6 +129,8 @@ public class ActionFragment extends Fragment implements LocationListener {
                     public void onChanged(@Nullable final GeoLocation newLoc) {
                         if (newLoc != null) {
                             if (manager.isLocationEnforced() && !manager.isWithinRegion(newLoc)) {
+                                // If trial locations are enforced to be within the region and the user
+                                // is within the region.
                                 hideViews();
 
                                 String message = "You are currently outside the region specified by the experiment owner.";
@@ -121,7 +138,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                                 trialsCount.setText(message);
                             } else {
                                 // If the new location is within radius of experiment region or trials
-                                // are not enforced to be withing region.
+                                // are not enforced to be within region.
                                 updateView();
                                 showViews();
                             }
@@ -180,20 +197,17 @@ public class ActionFragment extends Fragment implements LocationListener {
         fo.close();
     }
 
+    /**
+     * Updates the view whenever a user enters a trial. Updates the number of trials displayed on the screen.
+     */
     public void updateView(){
         trialsCount.setText("");
         int trials=manager.getPreUploadedNTrials();
         Log.d("NUM Is", String.valueOf(trials));
         int minimumNumberTrials = manager.getMinNTrials();
-        /*
-        if(manager.getType().equals("Counts".toLowerCase())){
-            trialsCount.setText("Trial count: "+count);
-        }
-        else{
-            trialsCount.setText("Trials Count:"+manager.getNTrials());
-        }
-        */
+        //Updates the textview showing the trial count.
         trialsCount.setText("Trials Count: "+(manager.getNTrials()-manager.getPreUploadedNTrials()));
+        //If the experiment has a minimum number of trials we add that the trials number
         if (minimumNumberTrials>0)
             trialsNumber.setText(""+trials+"/"+minimumNumberTrials);
         else
@@ -208,9 +222,11 @@ public class ActionFragment extends Fragment implements LocationListener {
         generateQR.setVisibility(View.VISIBLE);
         registerBarcode.setVisibility(View.VISIBLE);
         deleteTrials.setVisibility(View.VISIBLE);
+        //If the type of experiment is a binomial trial we present the appropriate UI
         if (manager.getType().equals("binomial trials".toLowerCase())) {
             leftButton.setVisibility(View.VISIBLE);
             rightButton.setVisibility(View.VISIBLE);
+            //When the user clicks on the pass button, we call the addtrial method in the manager
             leftButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -218,6 +234,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                     updateView();
                 }
             });
+            //If the user clicks on the fail button we add a fail trial
             rightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -234,6 +251,7 @@ public class ActionFragment extends Fragment implements LocationListener {
         } else if (manager.getType().equals("Non-Negative Integer Counts".toLowerCase())) {
             recordNumButton.setVisibility(View.VISIBLE);
             valueEditText.setVisibility(View.VISIBLE);
+            //Adds a trial and shows an alert dialog if the user enters an invalid input
             recordNumButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -264,6 +282,7 @@ public class ActionFragment extends Fragment implements LocationListener {
             valueEditText.setInputType(InputType.TYPE_CLASS_NUMBER |
                     InputType.TYPE_NUMBER_FLAG_DECIMAL |
                     InputType.TYPE_NUMBER_FLAG_SIGNED);
+            //Creates a measururment trial if the input is valid, if not shows an alert dialog box asking the user to enter valid input
             recordNumButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -293,6 +312,7 @@ public class ActionFragment extends Fragment implements LocationListener {
             middleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //Adds count trial then updates view
                     manager.addCountTrial(currentLocation.getValue());
                     updateView();
                 }
@@ -310,6 +330,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                 countRegBarcode();
             });
         }
+        //Calls the manager uploadtrials method
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -317,6 +338,7 @@ public class ActionFragment extends Fragment implements LocationListener {
                 updateView();
             }
         });
+        //Calls the manager delete trials method
         deleteTrials.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -355,20 +377,21 @@ public class ActionFragment extends Fragment implements LocationListener {
         }
     }
 
+    /**
+     * Called when the location of the device changes
+     * @param location
+     */
     @Override
     public void onLocationChanged(@NonNull Location location) {
         // Update the currentLocation of the user
         GeoLocation cLoc = new GeoLocation(location.getLatitude(), location.getLongitude());
-
         currentLocation.setValue(cLoc);
     }
 
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {}
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {}
-
+    /**
+     * Generates an alert dialog asking the user what value they want to attach to a QrCode for a
+     * binomial trial
+     */
     public void binomialQrCodeDialog(){
         AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());
         biDialog.setTitle("Select QR Code Value");
@@ -416,6 +439,10 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog asking the user what value they want to attach to a Barcode for a
+     * binomial trial
+     */
     public void binomialRegBarcode() {
         AlertDialog.Builder biDialog = new AlertDialog.Builder(getContext());
         biDialog.setTitle("Select Bar Code Value");
@@ -447,6 +474,9 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog confirming a user wants to generate a QrCode for count trials
+     */
     public void countQrCodeDialog(){
         AlertDialog.Builder coDialog = new AlertDialog.Builder(getContext());
         coDialog.setTitle("Qr code will create a new count trial");
@@ -485,6 +515,9 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog confirming a user wants to register a barcode for a count trial
+     */
     public void countRegBarcode() {
         AlertDialog.Builder coDialog = new AlertDialog.Builder(getContext());
         coDialog.setTitle("Barcode will create a new count trial");
@@ -511,6 +544,10 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog asking the user what value they want to attach to a QrCode for a
+     * non-negative count trial
+     */
     public void nonNegQrCountCodeDialog(){
         AlertDialog.Builder nncoDialog = new AlertDialog.Builder(getContext());
         nncoDialog.setTitle("Enter QR Code Value");
@@ -553,6 +590,10 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog asking the user what value they want to attach to a barcode for a
+     * non-negative count trial
+     */
     public void nonNegRegBarcode() {
         AlertDialog.Builder nncoDialog = new AlertDialog.Builder(getContext());
         nncoDialog.setTitle("Enter QR Code Value");
@@ -583,6 +624,10 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog asking the user what value they want to attach to a QrCode for a
+     * measurement trial
+     */
     public void measureQrCodeDialog(){
         AlertDialog.Builder measDialog = new AlertDialog.Builder(getContext());
         measDialog.setTitle("Enter QR Code Value");
@@ -627,6 +672,10 @@ public class ActionFragment extends Fragment implements LocationListener {
         alert.show();
     }
 
+    /**
+     * Generates an alert dialog asking the user what value they want to attach to a barcode for a
+     * measurement trial
+     */
     public void measureRegBarcode() {
         AlertDialog.Builder measDialog = new AlertDialog.Builder(getContext());
         measDialog.setTitle("Enter QR Code Value");

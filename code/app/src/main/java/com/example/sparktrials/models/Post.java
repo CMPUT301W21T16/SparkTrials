@@ -69,13 +69,19 @@ public abstract class Post implements Comparable {
      */
     public Date getDate(){ return date; }
 
-
+    /**
+     * Get the date in a string format
+     * @param date
+     * @return A formatted string of the date.
+     */
     public String getFormattedDate(Date date) {
         return formatter.format(date);
     }
 
-
-
+    /**
+     * Get the id of the post.
+     * @return String representation of the id.
+     */
     public String getId() {
         return id;
     }

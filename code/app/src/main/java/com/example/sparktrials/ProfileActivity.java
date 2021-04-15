@@ -56,10 +56,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.top_app_bar_draft:
-                        Log.d("BUTTON", "draftClicked");
-                        Toast.makeText(getApplicationContext(), "Welcome back.", Toast.LENGTH_SHORT).show();
-                        break;
                     case R.id.top_app_bar_scan_qr_code:
                         Log.d("BUTTON", "scanClicked");
                         break;
@@ -124,10 +120,7 @@ public class ProfileActivity extends AppCompatActivity {
         userProfile.observe(this, nameObserver);
 
         backToMain.setOnClickListener((v) -> {
-            Intent intent = new Intent(getBaseContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            this.finish();
+            finish();
         });
 
     }

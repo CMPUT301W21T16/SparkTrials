@@ -50,7 +50,6 @@ public class ExperimentViewModel extends ViewModel {
     public void init(String id, String uid){
         expId = id;
         proId = uid;
-        downloadProfile();
         downloadExperiment();
     }
 
@@ -131,6 +130,7 @@ public class ExperimentViewModel extends ViewModel {
      */
     private void downloadExperiment() {
         manager.get("experiments", expId, expData -> {
+            downloadProfile();
             Experiment experiment = new Experiment(expId);
 
             Log.d(TAG, expData.getId() + " => " + expData.getData());

@@ -72,10 +72,6 @@ public class ExperimentActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.top_app_bar_draft:
-                        Log.d("BUTTON", "draftClicked");
-                        Toast.makeText(getApplicationContext(), "Welcome back.", Toast.LENGTH_SHORT).show();
-                        break;
                     case R.id.top_app_bar_scan_qr_code:
                         Log.d("BUTTON", "scanClicked");
                         Intent intent = new Intent(ExperimentActivity.this, QrScannerActivity.class);
@@ -131,6 +127,17 @@ public class ExperimentActivity extends AppCompatActivity {
 
             @Override
             public void onChanged(Experiment experiment) {
+                if (!expManager.getProfile().getValue().getSubscriptions().contains(experiment.getId())
+                        && experiment.hasLocationSet()
+                        && !experiment.getOwner().getId().equals(expManager.getProfile().getValue().getId())){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ExperimentActivity.this);
+                    builder.setTitle("This experiment requires your location to be recorded");
+                    builder.setNeutralButton("OK", null);
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                    alert.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.neutral));
+                }
+
                 titleText.setText(experiment.getTitle());
                 descText.setText(experiment.getDesc());
                 if (experiment.getOpen()) {
@@ -161,7 +168,6 @@ public class ExperimentActivity extends AppCompatActivity {
 
         subscribe.setOnClickListener((v) -> {
             this.subscribe();
-
         });
 
         // Launches a ProfileActivity when the username of an Experiment's Owner is clicked on
@@ -195,7 +201,7 @@ public class ExperimentActivity extends AppCompatActivity {
      * If the experiment requires locations, sends a warning message
      */
     public void subscribe() {
-        if (expManager.getExperiment().getValue().getReqLocation() &&
+        if (expManager.getExperiment().getValue().hasLocationSet() &&
                 !expManager.getProfile().getValue().getSubscriptions().contains(experimentId)) {
             //Experiment requires locations and user is not currently subscribed
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

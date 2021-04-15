@@ -10,8 +10,6 @@ and then two charts from mikephil.charting.charts-->
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
@@ -119,12 +117,15 @@ and then two charts from mikephil.charting.charts-->
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="60dp"
             android:layout_below="@id/descriptives"
             android:text="No Data To Plot"
             android:gravity="center"
             android:id="@+id/HistogramID"
-            android:textColor="@color/black">
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:textColor="@color/main_text">
         </TextView>
         <com.github.mikephil.charting.charts.BarChart
             android:layout_width="match_parent"
@@ -137,12 +138,15 @@ and then two charts from mikephil.charting.charts-->
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="60dp"
             android:layout_below="@id/barchartID"
             android:text="No Data To Plot"
             android:gravity="center"
             android:id="@+id/PlotID"
-            android:textColor="@color/black">
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:textColor="@color/main_text">
         </TextView>
         <com.github.mikephil.charting.charts.LineChart
             android:layout_width="match_parent"

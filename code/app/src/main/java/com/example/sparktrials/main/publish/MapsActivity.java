@@ -42,6 +42,7 @@ public class MapsActivity extends AppCompatActivity {
 
         map = new GeoMap(true);
 
+        // Display map when it loads
         mapFragment.getMapAsync(map);
 
         confirmLocation = findViewById(R.id.confirm_region_button);
@@ -54,9 +55,11 @@ public class MapsActivity extends AppCompatActivity {
                     if (map.getGeoLocation().getRadius() > 0) {
                         sendBackCoords(true);
                     } else {
-                        new ChooseRadiusFragment(map).show(getSupportFragmentManager(), "Choose Region Fragment");
+                        // If radius is not set, ask for radius again
+                        new ChooseTitleRadiusFragment(map).show(getSupportFragmentManager(), "Choose Region Fragment");
                     }
                 } else {
+                    // Region cannot be selected if there is no center (and no radius)
                     new AlertDialog.Builder(MapsActivity.this)
                             .setTitle("ERROR")
                             .setMessage("Long click somewhere to set a center for your region.")
@@ -70,9 +73,10 @@ public class MapsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (map.isMarkerSet()) {
-                    new ChooseRadiusFragment(map).show(getSupportFragmentManager(), "Choose Region Fragment");
+                    new ChooseTitleRadiusFragment(map).show(getSupportFragmentManager(), "Choose Region Fragment");
                 } else {
-                    AlertDialog builder = new AlertDialog.Builder(MapsActivity.this)
+                    // Radius for the region cannot be set before the center for the region is chosen
+                    new AlertDialog.Builder(MapsActivity.this)
                             .setTitle("ERROR")
                             .setMessage("Long click somewhere to set a center for your region.")
                             .setPositiveButton("OK",null)
@@ -120,7 +124,10 @@ public class MapsActivity extends AppCompatActivity {
      *      Indicates whether a region has been chosen.
      */
     private void sendBackCoords(boolean hasPickedLocation) {
-        //Intent goBackToPublishFragment = new Intent(this, MainActivity.class);
+        // Get the result codes
+        int didPickLocation = (int) getIntent().getExtras().get("LOCATION_PICKED");
+        int didNotPickLocation = (int) getIntent().getExtras().get("NO_LOCATION_PICKED");
+
         if (hasPickedLocation) {
             Intent sendLocationBack = new Intent(this, MainActivity.class);
             GeoLocation markedLocation = map.getGeoLocation();
@@ -129,15 +136,11 @@ public class MapsActivity extends AppCompatActivity {
             sendLocationBack.putExtra("Radius", map.getGeoLocation().getRadius());
             sendLocationBack.putExtra("Region Title", map.getGeoLocation().getRegionTitle());
 
-            int didPickLocation = (int) getIntent().getExtras().get("LOCATION_PICKED");
             setResult(didPickLocation, sendLocationBack);
         } else {
-            int didNotPickLocation = (int) getIntent().getExtras().get("NO_LOCATION_PICKED");
             setResult(didNotPickLocation);
         }
         finish();
     }
-
-
 
 }

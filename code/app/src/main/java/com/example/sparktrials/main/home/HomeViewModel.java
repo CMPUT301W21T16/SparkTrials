@@ -23,6 +23,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * The HomeViewModel class extends ViewModel. It is responsible for managing the logic behind the home UI.
+ * myExperiments holds the user's published experiments
+ * subscribedExperiments holds the user's subscribed experiments
+ */
 public class HomeViewModel extends ViewModel {
 
     private static final String TAG = "Fetching documents...";
@@ -34,6 +39,11 @@ public class HomeViewModel extends ViewModel {
     private final CollectionReference experimentsCollection = db.collection("experiments");
     private final CollectionReference usersCollection = db.collection("users");
 
+    /**
+     * Only constructor for HomeViewModel.
+     * @param pid
+     *      Profile ID of the user.
+     */
     public HomeViewModel(String pid) {
         profileID = pid;
         myExperiments = new MutableLiveData<>();
@@ -41,175 +51,147 @@ public class HomeViewModel extends ViewModel {
         getMyExperiments();
         getSubscribedExperiments();
     }
-//    private void getExperimentsFromDB() {
-//
-//        experimentsCollection.get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            experiments.setValue(new ArrayList<>());
-//
-//                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                //Log.d(TAG, document.getId() + " => " + document.getData());
-//                                String id = document.getId();
-//                                String title = (String) document.get("Title");
-//                                String desc = (String) document.get("Description");
-//
-//                                Experiment experiment = new Experiment(id);
-//                                experiment.setTitle(title);
-//                                experiment.setDesc(desc);
-//
-//                                String ownerId = (String) document.get("profileID");
-//
-//                                usersCollection.document(ownerId).get()
-//                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                            @Override
-//                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                                if (task.isSuccessful()) {
-//                                                    DocumentSnapshot document = task.getResult();
-//                                                    String username = (String) document.get("name");
-//                                                    String phoneNum = (String) document.get("contact");
-//
-//                                                    Profile owner = new Profile(ownerId);
-//                                                    owner.setUsername(username);
-//                                                    owner.setContact(phoneNum);
-//
-//                                                    experiment.setOwner(owner);
-//
-//                                                    ArrayList<Experiment> x = experiments.getValue();
-//                                                    x.add(experiment);
-//
-//                                                    experiments.setValue(x);
-//                                                }
-//                                            }
-//                                        });
-//                            }
-//                        } else {
-//                            //Log.d(TAG, "Error getting documents: ", task.getException());
-//                        }
-//                    }
-//                });
-//    }
-        private void getMyExperiments() {
-            experimentsCollection.whereEqualTo("profileID",profileID)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                     @Override
-                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                         if (error != null) {
-                             Log.w(TAG, "Listen failed.",error);
-                             return;
-                         }
-                         myExperiments.setValue(new ArrayList<>());
-                         for(QueryDocumentSnapshot document: value) {
-                             String id = document.getId();
-                             String title = (String) document.get("Title");
-                             String desc = (String) document.get("Description");
-                             Boolean open = (Boolean) document.get("Open");
-                             Date date = document.getTimestamp("Date").toDate();
 
-                             Experiment exp = new Experiment(id);
-                             exp.setTitle(title);
-                             exp.setDesc(desc);
-                             exp.setOpen(open);
-                             exp.setDate(date);
-
-                             usersCollection.document(profileID).get()
-                                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                     @Override
-                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                         if (task.isSuccessful()) {
-                                             DocumentSnapshot document = task.getResult();
-                                             String username = (String) document.get("name");
-                                             String phoneNum = (String) document.get("contact");
-
-                                             Profile owner = new Profile(profileID);
-                                             owner.setUsername(username);
-                                             owner.setContact(phoneNum);
-
-                                             exp.setOwner(owner);
-
-                                             ArrayList<Experiment> x = myExperiments.getValue();
-                                             x.add(exp);
-
-                                             myExperiments.setValue(x);
-                                         }
-                                     }
-                                 });
-
-                         }
+    /**
+     * Gets the experiments published by the user from firebase
+     */
+    private void getMyExperiments() {
+        experimentsCollection.whereEqualTo("profileID",profileID)
+            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                 @Override
+                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                     if (error != null) {
+                         Log.w(TAG, "Listen failed.",error);
+                         return;
                      }
-                 });
-        }
-        private void getSubscribedExperiments() {
-            usersCollection.document(profileID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot profile, @Nullable FirebaseFirestoreException error) {
-                    if (error != null) {
-                        Log.w(TAG, "Listen failed.", error);
-                        return;
-                    }
-                    subscribedExperiments.setValue(new ArrayList<>());
-                    eidList = (ArrayList<String>) profile.get("subscriptions");
-                    if (eidList != null) {
-                        for (String eid : eidList) {
-                            Experiment experiment = new Experiment();
-                            DocumentReference dref = experimentsCollection.document(eid);
-                            Log.w(TAG, eid);
-                            dref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        DocumentSnapshot experimentDocument = task.getResult();
-                                        Boolean published = (Boolean) experimentDocument.get("Published");
-                                        if (published != null && published) {
-                                            String id = experimentDocument.getId();
-                                            String title = (String) experimentDocument.get("Title");
+                     myExperiments.setValue(new ArrayList<>());
+                     for(QueryDocumentSnapshot document: value) {
+                         String id = document.getId();
+                         String title = (String) document.get("Title");
+                         String desc = (String) document.get("Description");
+                         Boolean open = (Boolean) document.get("Open");
+                         Date date = document.getTimestamp("Date").toDate();
 
-                                            String desc = (String) experimentDocument.get("Description");
-                                            Date date = (Date) experimentDocument.getDate("Date", DocumentSnapshot.ServerTimestampBehavior.ESTIMATE);
-                                            if (experimentDocument.getDate("Date", DocumentSnapshot.ServerTimestampBehavior.PREVIOUS) == null) {
-                                                Log.w(TAG, "Could not return date");
-                                            }
-                                            Boolean open = (Boolean) experimentDocument.get("Open");
+                         Experiment exp = new Experiment(id);
+                         exp.setTitle(title);
+                         exp.setDesc(desc);
+                         exp.setOpen(open);
+                         exp.setDate(date);
 
-                                            experiment.setId(id);
-                                            experiment.setTitle(title);
-                                            experiment.setDesc(desc);
-                                            experiment.setDate(date);
-                                            experiment.setOpen(open);
+                         usersCollection.document(profileID).get()
+                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                 @Override
+                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                     if (task.isSuccessful()) {
+                                         DocumentSnapshot document = task.getResult();
+                                         String username = (String) document.get("name");
+                                         String phoneNum = (String) document.get("contact");
 
-                                            usersCollection.document((String) experimentDocument.get("profileID")).get()
-                                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                            DocumentSnapshot profileDocument = task.getResult();
+                                         Profile owner = new Profile(profileID);
+                                         owner.setUsername(username);
+                                         owner.setContact(phoneNum);
 
-                                                            Profile owner = new Profile();
-                                                            owner.setId(profileDocument.getId());
-                                                            owner.setUsername((String) profileDocument.get("name"));
-                                                            owner.setContact((String) profileDocument.get("contact"));
-                                                            experiment.setOwner(owner);
-                                                            ArrayList<Experiment> x = subscribedExperiments.getValue();
-                                                            x.add(experiment);
+                                         exp.setOwner(owner);
+                                         // Add the experiment (with all it's info and
+                                         // owner info) to the list of experiments
+                                         ArrayList<Experiment> x = myExperiments.getValue();
+                                         x.add(exp);
+                                         // Updates the value of experiments so that
+                                         // the observer in HomeFragment updates the UI
+                                         myExperiments.setValue(x);
+                                     }
+                                 }
+                             });
 
-                                                            subscribedExperiments.setValue(x);
-                                                        }
-                                                    });
+                     }
+                 }
+             });
+    }
+
+    /**
+     * Gets the experiments that the user is subscribed to from firebase.
+     */
+    private void getSubscribedExperiments() {
+        usersCollection.document(profileID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot profile, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.w(TAG, "Listen failed.", error);
+                    return;
+                }
+                subscribedExperiments.setValue(new ArrayList<>());
+                eidList = (ArrayList<String>) profile.get("subscriptions");
+                if (eidList != null) {
+                    for (String eid : eidList) {
+                        Experiment experiment = new Experiment();
+                        DocumentReference dref = experimentsCollection.document(eid);
+                        Log.w(TAG, eid);
+                        dref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot experimentDocument = task.getResult();
+                                    Boolean published = (Boolean) experimentDocument.get("Published");
+                                    if (published != null && published) {
+                                        String id = experimentDocument.getId();
+                                        String title = (String) experimentDocument.get("Title");
+
+                                        String desc = (String) experimentDocument.get("Description");
+                                        Date date = (Date) experimentDocument.getDate("Date", DocumentSnapshot.ServerTimestampBehavior.ESTIMATE);
+                                        if (experimentDocument.getDate("Date", DocumentSnapshot.ServerTimestampBehavior.PREVIOUS) == null) {
+                                            Log.w(TAG, "Could not return date");
                                         }
+                                        Boolean open = (Boolean) experimentDocument.get("Open");
+
+                                        experiment.setId(id);
+                                        experiment.setTitle(title);
+                                        experiment.setDesc(desc);
+                                        experiment.setDate(date);
+                                        experiment.setOpen(open);
+
+                                        usersCollection.document((String) experimentDocument.get("profileID")).get()
+                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                        DocumentSnapshot profileDocument = task.getResult();
+
+                                                        Profile owner = new Profile();
+                                                        owner.setId(profileDocument.getId());
+                                                        owner.setUsername((String) profileDocument.get("name"));
+                                                        owner.setContact((String) profileDocument.get("contact"));
+                                                        experiment.setOwner(owner);
+                                                        ArrayList<Experiment> x = subscribedExperiments.getValue();
+                                                        // Add the experiment (with all it's info and
+                                                        // owner info) to the list of experiments
+                                                        x.add(experiment);
+                                                        // Updates the value of experiments so that
+                                                        // the observer in HomeFragment updates the UI
+                                                        subscribedExperiments.setValue(x);
+                                                    }
+                                                });
                                     }
                                 }
+                            }
 
 
-                            });
-                        }
+                        });
                     }
                 }
+            }
 
-            });
-        }
+        });
+    }
 
-        public MutableLiveData<ArrayList<Experiment>> getMyExpList() {return myExperiments;}
-        public MutableLiveData<ArrayList<Experiment>> getSubExpList() {return subscribedExperiments;}
+    /**
+     * @return
+     *      Returns an array containing the user's published experiment
+     */
+    public MutableLiveData<ArrayList<Experiment>> getMyExpList() {return myExperiments;}
+
+    /**
+     * @return
+     *      Returns an array containing the user's subscribed experiments
+     */
+    public MutableLiveData<ArrayList<Experiment>> getSubExpList() {return subscribedExperiments;}
 
 }

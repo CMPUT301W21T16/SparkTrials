@@ -33,6 +33,11 @@ public class NonNegIntExperimentTest {
     @Rule
     public ActivityTestRule<MainActivity> rule =
             new ActivityTestRule<>(MainActivity.class, true, true);
+    /**
+     * Gets the user ID from the profile tab, then publishes an experiment sued for testing. then searches
+     * for the experiment in the search tab and clicks on it
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception{
         db = FirebaseFirestore.getInstance();
@@ -53,6 +58,10 @@ public class NonNegIntExperimentTest {
         solo.enterText((EditText) solo.getView(R.id.search_bar),expTitle);
         solo.clickInList(0,0);
     }
+
+    /**
+     * Adds a non negative integer trial
+     */
     @Test
     public void addNonNegIntTrial(){
         EditText measurment = (EditText) solo.getView(R.id.countvalue_editText);
@@ -60,6 +69,10 @@ public class NonNegIntExperimentTest {
         solo.clickOnButton("Record Number");
         solo.sleep(1000);
     }
+
+    /**
+     * Deletes trials and makes sure UI is updated
+     */
     @Test
     public void deleteTrials(){
         TextView trialsCount = (TextView) solo.getView(R.id.trials_count);
@@ -73,6 +86,11 @@ public class NonNegIntExperimentTest {
         String textAfter = trialsCount.toString();
         assertTrue(textBefore.equals(textAfter));
     }
+
+    /**
+     * Deletes experiment used for testing
+     * @throws InterruptedException
+     */
     @After
     public void deleteExperiment() throws InterruptedException {
         CollectionReference expCollection = db.collection("experiments");

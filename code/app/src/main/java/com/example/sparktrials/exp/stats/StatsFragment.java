@@ -170,8 +170,8 @@ public class StatsFragment extends Fragment {
             mainDataSet.setValueTextSize(10f);
             lineChart.getDescription().setEnabled(false);
             lines.add(mainDataSet);
-            LineData data = new LineData(lines);
-            lineChart.setData(data);
+            //LineData data = new LineData(lines);
+            //lineChart.setData(data);
             XAxis plotXAxis = lineChart.getXAxis();
             plotXAxis.setLabelCount(experiment.daysOfTrials().size(), true);
             plotXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -231,8 +231,12 @@ public class StatsFragment extends Fragment {
                     double lowerB = Doubles.min(q1Min, q3Min);
                     plotYAxis.setAxisMinimum((float) lowerB);
                 }
+
+
             }
+            LineData data = new LineData(lines);
             lineChart.setData(data);
+
         }
     }
 }

@@ -824,10 +824,7 @@ public class Experiment {
     public double [] q3Plots(){
         double []frequencies = new double [daysOfTrials().size()];
         ArrayList<String> days = daysOfTrials();
-        if (trialsValuesSorted().isEmpty()) {
-            frequencies[0] = 0;
-            return frequencies;
-        }
+
         int numDays = days.size();
         for (int i=0; i<numDays;i++){
             ArrayList<Double> thisDaysValues = new ArrayList<>();
@@ -854,6 +851,7 @@ public class Experiment {
             frequencies[i] = quartile;
 
         }
+        Log.d("q3", ""+ frequencies[0]);
         return frequencies;
 
     }
